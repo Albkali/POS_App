@@ -5,7 +5,8 @@ class CustomTextFiled extends StatelessWidget {
   final String? title;
   final IconData? icon;
   final bool? isContentPedding;
-  const CustomTextFiled({Key? key,this.title,this.icon,this.isContentPedding = false}) : super(key: key);
+  final TextEditingController? textEditingController;
+  const CustomTextFiled({Key? key,this.title,this.icon,this.isContentPedding = false, this.textEditingController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +15,7 @@ class CustomTextFiled extends StatelessWidget {
       // width: 35,
       color: AppColor.white,
       child:  TextField(
+        controller: textEditingController,
         decoration: InputDecoration(
           contentPadding: isContentPedding == false ?  EdgeInsets.only(top: 5,left: 20,right: 20,bottom: 10) : EdgeInsets.only(top: 0,left: 10,right: 0,bottom: 15),
           border: InputBorder.none,

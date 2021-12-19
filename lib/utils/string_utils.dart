@@ -39,4 +39,5 @@ class UtilStrings {
   static const businessLocation = 'Business Location';
   static const discountType = 'Discount Type:';
   static const discountAmount = 'Discount Amount:';
+  static const sellList = 'List of Sell';
 }

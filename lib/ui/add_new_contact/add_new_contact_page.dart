@@ -161,7 +161,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                         // fontWeight: FontWeight.w900,
                         color: AppColor.black_2,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 12, horizontal: 10),
                     ),
                   ),

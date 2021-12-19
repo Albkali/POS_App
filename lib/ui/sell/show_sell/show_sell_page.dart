@@ -38,13 +38,13 @@ class ShowSellPage extends StatelessWidget {
                     ),
                     const Gap(15),
                     Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           right: 20, top: 0, left: 250, bottom: 0),
                       child: Container(
                         height: 30,
                         width: 30,
                         color: Colors.red,
-                        child: Icon(
+                        child: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         ),
@@ -87,7 +87,7 @@ class ShowSellPage extends StatelessWidget {
                                   Utils.boldSubHeadingText(
                                       text: UtilStrings.product, textSize: 14),
                                   const Gap(4),
-                                  Icon(
+                                  const Icon(
                                     Icons.info,
                                     color: AppColor.sky_blue,
                                     size: 20,
@@ -102,7 +102,7 @@ class ShowSellPage extends StatelessWidget {
                               Utils.boldSubHeadingText(
                                   text: UtilStrings.subTotal, textSize: 14),
                               Utils.customVerticalDivider(),
-                              Icon(
+                              const Icon(
                                 Icons.clear,
                                 size: 20,
                               ),
@@ -307,20 +307,6 @@ class ShowSellPage extends StatelessWidget {
                         ),
                       ),
                       const Gap(20),
-                      Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            width: 200,
-                            child: SmallCustomButtonWithIcon(
-                              label: 'Other Transaction',
-                              isLeft: true,
-                              icon: Icons.schedule_outlined,
-                              textColor: AppColor.white,
-                              bgcolor: AppColor.blue,
-                            ),
-                          )),
-                      const Gap(20),
-
                     ],
                   ),
                 ),

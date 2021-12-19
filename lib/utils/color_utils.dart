@@ -17,6 +17,7 @@ class AppColor {
   static const Color green = Color(0xFF00B107);
   static const Color btn_red = Color(0xFFE41730);
   static const Color black_2 = Color(0xFF191414);
+  static const Color sky_grey = Color(0xFFB2BDCB);
 
 
 

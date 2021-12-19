@@ -68,14 +68,17 @@ class Utils {
 
 
 
-  static AppBar customAppBar({required String text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor}) {
+  static AppBar customAppBar({required String text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor,void Function()? onTap}) {
     return AppBar(
       elevation: isCenter == false ? 5 : 1,
       backgroundColor: color ?? Colors.teal,
       title:  Text(text,style: TextStyle(color: textColor ?? Colors.white),),
       centerTitle: isCenter == false ? true : false,
-      leading: isCenter == false ? const Icon(
-        Icons.arrow_back_ios_outlined,
+      leading: isCenter == false ? InkWell(
+        onTap: onTap,
+        child: const Icon(
+          Icons.arrow_back_ios_outlined,
+        ),
       ) : Container(),
       actions:  [
         Padding(

@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pos/di_container.dart';
+import 'package:pos/repository/auth_repo.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
 import 'package:pos/ui/auth/link/link_page.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
+import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_page.dart';
 import 'package:pos/ui/view_payment/view_payment_page.dart';
-
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'provider/sell_list_provider.dart';
 import 'ui/sell/show_sell/show_sell_page.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:provider/provider.dart';
+
+import 'provider/auth_provider.dart';
+import 'di_container.dart' as di;
+import 'utils/preference_utils.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+   await di.init();
+  await inits();
+  runApp(MultiProvider(
+    providers:[
+      ChangeNotifierProvider(create: (context) => di.sl<AuthProvider>()),
+      ChangeNotifierProvider(create: (context) => di.sl<SellListProvider>()),
+    ],
+    child: const MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,20 +38,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'POS App',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home:   ReturnSellPage(),
+      home: getString(PrefKeyConstants.TOKEN).isEmpty?const LoginPage() : HomePage(),
+      // home:   LoginPage(),
+      // home:   LinkPage(),
     );
   }
 }

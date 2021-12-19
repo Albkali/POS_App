@@ -74,14 +74,14 @@ class ReturnSellPage extends StatelessWidget {
                         Utils.mediumHeadingText(
                             text: '${UtilStrings.invoiceNumber}:'),
                         const Gap(5),
-                        ContainerBorder(
+                        const ContainerBorder(
                             child: CustomTextFiled(
                           title: '',
                         )),
                         const Gap(10),
                         Utils.mediumHeadingText(text: '${UtilStrings.date}:*'),
                         const Gap(5),
-                        CustomSellTextFiled(
+                        const CustomSellTextFiled(
                           iconLeft: Icons.calendar_today_outlined,
                           title: '12/15/2021',
                           isRightVisible: true,
