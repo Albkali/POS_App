@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:pos/provider/auth_provider.dart';
-import 'package:pos/provider/sell_list_provider.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
-import 'package:pos/utils/constants/navigation_route_constants.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/custom_text_filed.dart';
 import 'package:provider/provider.dart';
+
+import 'login_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     } else {
                       context
-                          .read<AuthProvider>()
+                          .read<LoginViewModel>()
                           .login(emailController.text, passwordController.text)
                           .then((value) {
                         if (value.isSuccess) {

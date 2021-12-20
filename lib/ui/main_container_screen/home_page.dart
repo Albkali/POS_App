@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
-import 'package:pos/ui/sell/show_sell/lise_of_sell.dart';
+import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/utils.dart';

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pos/provider/sell_list_provider.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+import 'list_of_sell_view_model.dart';
+
 class ListOfSellPage extends StatefulWidget {
   const ListOfSellPage({Key? key}) : super(key: key);
 
@@ -20,7 +22,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
   }
 
   void loadData() async{
-    await Provider.of<SellListProvider>(context, listen: false).sellList();
+    await Provider.of<ListOfSellViewModel>(context, listen: false).sellList();
   }
   @override
   Widget build(BuildContext context) {
@@ -30,18 +32,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
       }),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
-        child: Consumer<SellListProvider>(
+        child: Consumer<ListOfSellViewModel>(
           builder: (BuildContext context, value, Widget? child) {
-            if(value.isLoading == true){
-              return const Center(child: CircularProgressIndicator(),);
+            if (value.isLoading == true) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
-          return ListView.builder(
-            itemCount: value.sellItemList.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (value.selllist != null) {
-                return Container(
-                decoration: BoxDecoration(
-                    color: AppColor.light_white,
+            return ListView.builder(
+              itemCount: value.sellItemList.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (value.selllist != null) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: AppColor.light_white,
                     borderRadius: BorderRadius.circular(10)
                 ),
                 padding: const EdgeInsets.all(10),

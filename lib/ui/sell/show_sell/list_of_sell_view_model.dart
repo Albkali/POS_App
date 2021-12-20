@@ -4,11 +4,10 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/show_sell/res_show_sell.dart';
 import 'package:pos/repository/sell_repo.dart';
 
-class SellListProvider with ChangeNotifier {
+class ListOfSellViewModel with ChangeNotifier {
   final SellRepo sellRepo;
 
-  SellListProvider({required this.sellRepo});
-
+  ListOfSellViewModel({required this.sellRepo});
 
   List<SellItem> sellItemList = [];
 
@@ -26,20 +25,17 @@ class SellListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
   Future<ResponseModel> sellList() async {
     _isLoading = true;
     notifyListeners();
 
     ApiResponse? apiResponse = await sellRepo.getListSell();
     ResponseModel responseModel;
-    if (apiResponse!.response != null && apiResponse.response!.statusCode == 200) {
-      ResShowSell data =  ResShowSell.fromJson(apiResponse.response!.data);
+    if (apiResponse!.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      ResShowSell data = ResShowSell.fromJson(apiResponse.response!.data);
       print('Your total data ${data.data.length}');
       for (var item in data.data) {
-
         sellItemList.add(item);
       }
       print('Your total sellitemlist ${sellItemList.length}');
@@ -59,9 +55,4 @@ class SellListProvider with ChangeNotifier {
     notifyListeners();
     return responseModel;
   }
-
-
-
-
-
 }

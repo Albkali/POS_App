@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:pos/di_container.dart';
-import 'package:pos/repository/auth_repo.dart';
-import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
-import 'package:pos/ui/auth/link/link_page.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
+import 'package:pos/ui/auth/login/login_view_model.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
-import 'package:pos/ui/sell/return_sell/return_sell_page.dart';
-import 'package:pos/ui/view_payment/view_payment_page.dart';
+import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'provider/sell_list_provider.dart';
-import 'ui/sell/show_sell/show_sell_page.dart';
-
 import 'package:provider/provider.dart';
 
-import 'provider/auth_provider.dart';
 import 'di_container.dart' as di;
 import 'utils/preference_utils.dart';
 
@@ -23,10 +15,10 @@ void main() async{
    await di.init();
   await inits();
   runApp(MultiProvider(
-    providers:[
-      ChangeNotifierProvider(create: (context) => di.sl<AuthProvider>()),
-      ChangeNotifierProvider(create: (context) => di.sl<SellListProvider>()),
-    ],
+    providers: [
+    ChangeNotifierProvider(create: (context) => di.sl<LoginViewModel>()),
+    ChangeNotifierProvider(create: (context) => di.sl<ListOfSellViewModel>()),
+  ],
     child: const MyApp()
   ));
 }
