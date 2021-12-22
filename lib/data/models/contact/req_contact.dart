@@ -31,7 +31,7 @@ class ReqContact {
     required this.zipCode,
     required this.customerGroupId,
     required this.contactId,
-    required this.dob,
+     this.dob,
     required this.customField1,
     required this.customField2,
     required this.customField3,
@@ -42,7 +42,7 @@ class ReqContact {
     required this.openingBalance,
     required this.sourceId,
     required this.lifeStageId,
-    required this.assignedTo,
+     this.assignedTo,
   });
 
   String type;
@@ -52,7 +52,7 @@ class ReqContact {
   String middleName;
   String lastName;
   String taxNumber;
-  int payTermNumber;
+  String payTermNumber;
   String payTermType;
   String mobile;
   String landline;
@@ -65,7 +65,7 @@ class ReqContact {
   String zipCode;
   String customerGroupId;
   String contactId;
-  DateTime dob;
+  DateTime? dob;
   String customField1;
   String customField2;
   String customField3;
@@ -73,43 +73,43 @@ class ReqContact {
   String email;
   String shippingAddress;
   String position;
-  int openingBalance;
-  int sourceId;
-  int lifeStageId;
-  List<dynamic> assignedTo;
+  String openingBalance;
+  String sourceId;
+  String lifeStageId;
+  List<dynamic>? assignedTo;
 
   factory ReqContact.fromJson(Map<String, dynamic> json) => ReqContact(
-    type: json["type"],
-    supplierBusinessName: json["supplier_business_name"],
-    prefix: json["prefix"],
-    firstName: json["first_name"],
-    middleName: json["middle_name"],
-    lastName: json["last_name"],
-    taxNumber: json["tax_number"],
-    payTermNumber: json["pay_term_number"],
-    payTermType: json["pay_term_type"],
-    mobile: json["mobile"],
-    landline: json["landline"],
-    alternateNumber: json["alternate_number"],
-    addressLine1: json["address_line_1"],
-    addressLine2: json["address_line_2"],
-    city: json["city"],
-    state: json["state"],
-    country: json["country"],
-    zipCode: json["zip_code"],
-    customerGroupId: json["customer_group_id"],
-    contactId: json["contact_id"],
+    type: json["type"].toString(),
+    supplierBusinessName: json["supplier_business_name"].toString(),
+    prefix: json["prefix"].toString(),
+    firstName: json["first_name"].toString(),
+    middleName: json["middle_name"].toString(),
+    lastName: json["last_name"].toString(),
+    taxNumber: json["tax_number"].toString(),
+    payTermNumber: json["pay_term_number"].toString().toString(),
+    payTermType: json["pay_term_type"].toString(),
+    mobile: json["mobile"].toString(),
+    landline: json["landline"].toString(),
+    alternateNumber: json["alternate_number"].toString(),
+    addressLine1: json["address_line_1"].toString(),
+    addressLine2: json["address_line_2"].toString(),
+    city: json["city"].toString(),
+    state: json["state"].toString(),
+    country: json["country"].toString(),
+    zipCode: json["zip_code"].toString(),
+    customerGroupId: json["customer_group_id"].toString(),
+    contactId: json["contact_id"].toString(),
     dob: DateTime.parse(json["dob"]),
-    customField1: json["custom_field1"],
-    customField2: json["custom_field2"],
-    customField3: json["custom_field3"],
-    customField4: json["custom_field4"],
-    email: json["email"],
-    shippingAddress: json["shipping_address"],
-    position: json["position"],
-    openingBalance: json["opening_balance"],
-    sourceId: json["source_id"],
-    lifeStageId: json["life_stage_id"],
+    customField1: json["custom_field1"].toString(),
+    customField2: json["custom_field2"].toString(),
+    customField3: json["custom_field3"].toString(),
+    customField4: json["custom_field4"].toString(),
+    email: json["email"].toString(),
+    shippingAddress: json["shipping_address"].toString(),
+    position: json["position"].toString(),
+    openingBalance: json["opening_balance"].toString(),
+    sourceId: json["source_id"].toString(),
+    lifeStageId: json["life_stage_id"].toString(),
     assignedTo: List<dynamic>.from(json["assigned_to"].map((x) => x)),
   );
 
@@ -134,7 +134,7 @@ class ReqContact {
     "zip_code": zipCode,
     "customer_group_id": customerGroupId,
     "contact_id": contactId,
-    "dob": "${dob.year.toString().padLeft(4, '0')}-${dob.month.toString().padLeft(2, '0')}-${dob.day.toString().padLeft(2, '0')}",
+    "dob": "${dob!.year.toString().padLeft(4, '0')}-${dob!.month.toString().padLeft(2, '0')}-${dob!.day.toString().padLeft(2, '0')}",
     "custom_field1": customField1,
     "custom_field2": customField2,
     "custom_field3": customField3,
@@ -145,6 +145,6 @@ class ReqContact {
     "opening_balance": openingBalance,
     "source_id": sourceId,
     "life_stage_id": lifeStageId,
-    "assigned_to": List<dynamic>.from(assignedTo.map((x) => x)),
+    "assigned_to": List<dynamic>.from(assignedTo!.map((x) => x)),
   };
 }

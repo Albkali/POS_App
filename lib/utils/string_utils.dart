@@ -40,4 +40,13 @@ class UtilStrings {
   static const discountType = 'Discount Type:';
   static const discountAmount = 'Discount Amount:';
   static const sellList = 'List of Sell';
+  static const firstName = 'First Name';
+  static const mobileNo = 'Mobile No';
+  static const tax = 'Tax';
+  static const discount = 'Discount';
+  static const totalPayable = 'Total Payable';
+  static const smart = 'Smart';
+  static const pos = 'POS';
+  static const walkInCustomer = 'Walk-in customer';
+  static const enterProductName = 'Enter Product Name/ SKU / Scan bar code';
 }

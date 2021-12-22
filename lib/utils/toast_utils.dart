@@ -45,7 +45,7 @@ class ToastUtils {
           const EdgeInsets.only(left: 10.0, right: 25.0, top: 7.0, bottom: 7.0),
           decoration: BoxDecoration(
               // boxShadow: [Utils.boxShadow()],
-              color: (type == 'warning')? AppColor.red:AppColor.accentColor,
+              color: (type == 'warning')? AppColor.red:AppColor.green,
               borderRadius: BorderRadius.circular(30)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
+import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
@@ -21,9 +22,14 @@ class _HomePageState extends State<HomePage> {
 
   double z = 0.0;
 
-  List textList = ['POS','Add Contact','Add Quotation','Setting'];
+  List textList = ['POS', 'Add Contact', 'Add Quotation', 'Setting'];
 
-  List iconList = [Icons.payment_outlined,Icons.contacts_outlined, Icons.description_outlined,  Icons.settings_outlined,];
+  List iconList = [
+    Icons.payment_outlined,
+    Icons.contacts_outlined,
+    Icons.description_outlined,
+    Icons.settings_outlined,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -111,20 +117,28 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
-                                  text: 'Home', icon:   Icons.phone_android_outlined,),
+                                text: 'Home',
+                                icon: Icons.phone_android_outlined,
+                              ),
                               commonCircleWithText(
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (BuildContext context) {
                                     return ListOfSellPage();
                                     // return ShowSellPage();
                                   }));
                                 },
-                                  text: 'Sale', icon:   Icons.paid_outlined,
+                                text: 'Sale',
+                                icon: Icons.paid_outlined,
                               ),
                               commonCircleWithText(
-                                  text: 'Customer', icon:   Icons.group_outlined,
+                                text: 'Customer',
+                                icon: Icons.group_outlined,
                               ),
-                              commonCircleWithText(text: '', icon:   Icons.local_atm_outlined,),
+                              commonCircleWithText(
+                                text: '',
+                                icon: Icons.local_atm_outlined,
+                              ),
                             ],
                           ),
                           Container(
@@ -182,35 +196,36 @@ class _HomePageState extends State<HomePage> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              childAspectRatio: 5.9/4.6,
+                              childAspectRatio: 5.9 / 4.6,
                               crossAxisSpacing: 20.0,
                               mainAxisSpacing: 30.0),
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
-                            onTap: (){
-                              if(index==0) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ViewPaymentPage(),),
-                                );
-                              }
-                              else if(index==1){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => AddNewContactPage(),),
-                                );
-                              }else if(index==2){
-                              }else if(index==3){
-                              }else if(index==4){
-                              }else if(index==5){
-                              }else if(index==6){
-                              }else if(index==7){
-                              }else if(index==8){
-                              }
-
-                            },
+                          onTap: () {
+                            if (index == 0) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PosPage(),
+                                ),
+                              );
+                            } else if (index == 1) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddNewContactPage(),
+                                ),
+                              );
+                            } else if (index == 2) {
+                            } else if (index == 3) {
+                            } else if (index == 4) {
+                            } else if (index == 5) {
+                            } else if (index == 6) {
+                            } else if (index == 7) {
+                            } else if (index == 8) {}
+                          },
                           child: Padding(
-                            padding:const EdgeInsets.only(left: 20,right: 5),
+                            padding: const EdgeInsets.only(left: 20, right: 5),
                             child: Container(
                               height: 100,
                               width: 100,
@@ -230,9 +245,13 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(iconList[index],size: 35,),
+                                  Icon(
+                                    iconList[index],
+                                    size: 35,
+                                  ),
                                   const Gap(4),
-                                  Utils.mediumHeadingText(text: textList[index],textSize: 15),
+                                  Utils.mediumHeadingText(
+                                      text: textList[index], textSize: 15),
                                 ],
                               ),
                             ),
@@ -250,13 +269,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget commonCircleWithText({
-    required String? text,
-    required IconData? icon,
-    void Function()? onTap
-  }) {
+  Widget commonCircleWithText(
+      {required String? text,
+      required IconData? icon,
+      void Function()? onTap}) {
     return InkWell(
-      onTap:onTap,
+      onTap: onTap,
       child: Column(
         children: [
           Container(

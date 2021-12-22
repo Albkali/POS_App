@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pos/ui/add_new_contact/add_new_contact_view_model.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
 import 'package:pos/ui/auth/login/login_view_model.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
+import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:provider/provider.dart';
 
-import 'di_container.dart' as di;
+import 'di/di_container.dart' as di;
 import 'utils/preference_utils.dart';
 
 void main() async{
@@ -18,10 +20,13 @@ void main() async{
     providers: [
     ChangeNotifierProvider(create: (context) => di.sl<LoginViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<ListOfSellViewModel>()),
+    ChangeNotifierProvider(create: (context) => di.sl<AddNewContactViewModel>()),
+    ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
   ],
     child: const MyApp()
   ));
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
