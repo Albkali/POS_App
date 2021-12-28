@@ -4,7 +4,7 @@ import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/utils.dart';
 
 class SmallCustomButtonWithIcon extends StatelessWidget {
-  String label;
+  String? label;
   Color? borderColor;
   Color? textColor;
   Function()? onTap;
@@ -13,7 +13,7 @@ class SmallCustomButtonWithIcon extends StatelessWidget {
   Color? iconColor;
   bool? isLeft;
   bool? isTagType;
-  SmallCustomButtonWithIcon({required this.label, this.borderColor, this.textColor,this.onTap, this.icon,this.bgcolor,this.iconColor,this.isLeft, this.isTagType = false});
+  SmallCustomButtonWithIcon({ this.label, this.borderColor, this.textColor,this.onTap, this.icon,this.bgcolor,this.iconColor,this.isLeft, this.isTagType = false});
 
   @override
   Widget build(BuildContext context) {

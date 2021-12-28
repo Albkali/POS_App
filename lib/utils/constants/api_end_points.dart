@@ -11,5 +11,8 @@ class  ApiEndPoints{
    static const String apiSellReturn = "connector/api/list-sell-return";
    static const String apiAddSellReturn = "connector/api/sell-return";
    static const String apiCashRegister = "connector/api/cash-register";
+   static const String apiCustomerList = "connector/api/contactapi";
+   static const String apiProductList = "connector/api/product";
+   static const String apiLocationList = "connector/api/business-location";
 }
 

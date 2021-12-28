@@ -45,6 +45,13 @@ dependencies:
   dio: ^4.0.0-prev2
   flutter_barcode_scanner: ^2.0.0
   flutter_typeahead: ^3.2.4
+  url_launcher: ^6.0.17
+  intl: ^0.17.0
+#  pdf_flutter:
+#  path_provider:
+#  syncfusion_flutter_pdfviewer: ^19.4.38-beta
+  webview_flutter: ^3.0.0
+  flutter_custom_tabs: ^1.0.3
 
 
 dev_dependencies:
@@ -69,6 +76,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/language/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

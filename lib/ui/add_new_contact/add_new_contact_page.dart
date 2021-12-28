@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/data/models/contact/req_contact.dart';
+import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -86,7 +87,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
         ),
       ),
       appBar: Utils.customAppBar(
-          text: UtilStrings.addNewContact,
+          text: getTranslated(context, UtilStrings.addNewContact),
           color: Colors.white,
           isCenter: true,
           icon: Icons.clear,
@@ -112,51 +113,50 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                       },
                       activeColor: Colors.green,
                     ),
-                    Utils.mediumHeadingText(text: 'Business'),
+                    Utils.mediumHeadingText(text: getTranslated(context, UtilStrings.business)),
                   ],
                 ),
                 customNewContactTextFiled(
-                    title: '${UtilStrings.contactId} : ',
+                    title: '${getTranslated(context, UtilStrings.contactId)} : ',
                     icon: Icons.person,
-                    subTitle: UtilStrings.contactId,
+                    subTitle: getTranslated(context, UtilStrings.contactId),
                     controller: contactIdController),
                 const Gap(10),
                 customNewContactTextFiled(
-                  title: '${UtilStrings.customerGroup} : ',
+                  title: '${getTranslated(context, UtilStrings.customerGroup)} : ',
                   icon: Icons.person,
-                  subTitle: 'None',
+                  subTitle: getTranslated(context, UtilStrings.none),
                   controller: customerGroupIdController
                 ),
                 const Gap(10),
                 customNewContactTextFiled(
                     controller: businessNameController,
-                    title: '${UtilStrings.businessName} : ',
+                    title: '${getTranslated(context, UtilStrings.businessName)} : ',
                     icon: Icons.person,
-                    subTitle: UtilStrings.businessName),
+                    subTitle: getTranslated(context, UtilStrings.businessName)),
                 const Gap(10),
                 customNewContactTextFiled(
                     controller: firstNameController,
-                    title: '${UtilStrings.firstName} : ',
+                    title: '${getTranslated(context, UtilStrings.firstName)} : ',
                     icon: Icons.person,
-                    subTitle: UtilStrings.firstName),
+                    subTitle: getTranslated(context, UtilStrings.firstName)),
                 const Gap(10),
                 customNewContactTextFiled(
                     controller: mobileController,
-                    title: '${UtilStrings.mobileNo} : ',
+                    title: '${getTranslated(context, UtilStrings.mobileNo)} : ',
                     icon: Icons.person,
-                    subTitle: UtilStrings.mobileNo),
+                    subTitle: getTranslated(context, UtilStrings.mobileNo)),
                 const Gap(10),
                 Center(
                     child: Container(
                         width: 190,
                         child: SmallCustomButtonWithIcon(
-                          label: 'More Information',
+                          label: getTranslated(context, UtilStrings.moreInfirmation),
                           bgcolor: AppColor.blue,
                           textColor: AppColor.white,
                           iconColor: AppColor.white,
                           icon: Icons.keyboard_arrow_down_outlined,
                           onTap: () {
-                            print('Check it... Button ${isSelected}');
                             setState(() {
                               isSelected = !isSelected;
                             });

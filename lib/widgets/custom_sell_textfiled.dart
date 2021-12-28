@@ -9,10 +9,13 @@ class CustomSellTextFiled extends StatelessWidget {
   final IconData? iconRight;
   final String? title;
   final bool? isRightVisible;
-  const CustomSellTextFiled({Key? key,this.title,this.iconLeft,this.iconRight,this.isRightVisible}) : super(key: key);
+  final TextEditingController controller;
+  const CustomSellTextFiled({Key? key,this.title,this.iconLeft,this.iconRight,this.isRightVisible,required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('our date is ${title}');
+    print('our date is ${controller.text}');
     return   Container(
       // margin: EdgeInsets.only(left: 10,right: 10),
       height: 35,

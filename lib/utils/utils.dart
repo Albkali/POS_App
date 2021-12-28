@@ -11,9 +11,9 @@ class Utils {
   }
 
   static Widget regularHeadingText(
-      {required String text, double? textSize, Color? color}) {
+      { String? text, double? textSize, Color? color}) {
     return Text(
-      text,
+      text??'',
       style: TextStyle(
         fontFamily: 'DMSans',
         fontSize: textSize ?? 18,
@@ -24,9 +24,9 @@ class Utils {
   }
 
   static Widget mediumHeadingText(
-      {required String text, double? textSize, Color? color}) {
+      { String? text, double? textSize, Color? color}) {
     return Text(
-      text,
+      text??'',
       style: TextStyle(
         fontFamily: 'DMSans',
         fontSize: textSize ?? 14,
@@ -68,11 +68,11 @@ class Utils {
 
 
 
-  static AppBar customAppBar({required String text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor,void Function()? onTap}) {
+  static AppBar customAppBar({ String? text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor,void Function()? onTap}) {
     return AppBar(
       elevation: isCenter == false ? 5 : 1,
       backgroundColor: color ?? Colors.teal,
-      title:  Text(text,style: TextStyle(color: textColor ?? Colors.white),),
+      title:  Text(text??"",style: TextStyle(color: textColor ?? Colors.white),),
       centerTitle: isCenter == false ? true : false,
       leading: isCenter == false ? InkWell(
         onTap: onTap,

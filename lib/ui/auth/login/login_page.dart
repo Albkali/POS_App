@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:pos/data/models/language_model.dart';
+import 'package:pos/localization/language_constrants.dart';
+import 'package:pos/main.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
@@ -22,6 +25,11 @@ class _LoginPageState extends State<LoginPage> {
   bool? checkBoxValue = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  void _changeLanguage(Language language) async {
+    Locale _locale = await setLocale(language.languageCode);
+    MyApp.setLocale(context, _locale);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,24 +40,51 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Gap(20),
-          Container(
-            margin: const EdgeInsets.only(left: 20),
-            height: 30,
-            width: 120,
-            color: Colors.white,
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Utils.regularHeadingText(text: 'English', textSize: 14),
-                  const Icon(
-                    Icons.unfold_more_outlined,
-                  ),
-                ],
-              ),
-            ),
+          // Container(
+          //   margin: const EdgeInsets.only(left: 20),
+          //   height: 30,
+          //   width: 120,
+          //   color: Colors.white,
+          //   alignment: Alignment.centerLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(left: 5, right: 5),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Utils.regularHeadingText(text: 'English', textSize: 14),
+          //         const Icon(
+          //           Icons.unfold_more_outlined,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          DropdownButton<Language>(
+            onChanged: (Language? language) {
+              _changeLanguage(language!);
+            },
+            underline: const SizedBox(),
+            // value: ,
+            items: Language.languageList()
+                .map<DropdownMenuItem<Language>>((value) {
+              return DropdownMenuItem<Language>(
+                value: value,
+                child: Row(
+                  children: [
+                    Text(
+                      value.flag,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      value.name,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
           ),
           const Gap(50),
           Padding(
@@ -57,17 +92,16 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Utils.regularHeadingText(
-                    text: UtilStrings.login, color: AppColor.white),
+                Utils.regularHeadingText(text: getTranslated(context, UtilStrings.login), color: AppColor.white),
                 const Gap(20),
                 CustomTextFiled(
-                  title: UtilStrings.userName,
+                  title:getTranslated(context, UtilStrings.userName) ,
                   icon: Icons.person_outlined,
                   textEditingController: emailController,
                 ),
                 const Gap(20),
                 CustomTextFiled(
-                  title: UtilStrings.password,
+                  title: getTranslated(context, UtilStrings.password),
                   icon: Icons.lock,
                   textEditingController: passwordController,
                 ),
@@ -83,17 +117,18 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         }),
                     Utils.mediumHeadingText(
-                        text: UtilStrings.rememberMe, color: AppColor.white),
+                        text: getTranslated(context, UtilStrings.rememberMe), color: AppColor.white),
                   ],
                 ),
                 const Gap(10),
                 InkWell(
                   onTap: () {
                     if (emailController.text.isEmpty) {
-                      ToastUtils.showCustomToast(context, 'Please Enter Email', 'warning');
+                      ToastUtils.showCustomToast(
+                          context, getTranslated(context, UtilStrings.enterEmail), 'warning');
                     } else if (passwordController.text.isEmpty) {
-                      ToastUtils.showCustomToast(context, 'Please Enter Password', 'warning');
-
+                      ToastUtils.showCustomToast(
+                          context, getTranslated(context, UtilStrings.enterPassword), 'warning');
                     } else {
                       context
                           .read<LoginViewModel>()
@@ -101,7 +136,9 @@ class _LoginPageState extends State<LoginPage> {
                           .then((value) {
                         if (value.isSuccess) {
                           // Navigator.pushNamedAndRemoveUntil(context, Routes.getHomeRoute(), (route) => false);
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){
+                          Navigator.pushAndRemoveUntil(context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) {
                             return HomePage();
                           }), (route) => false);
                         }
@@ -114,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: AppColor.blue,
                     alignment: Alignment.center,
                     child: Utils.mediumHeadingText(
-                        text: UtilStrings.login, color: AppColor.white),
+                        text: getTranslated(context, UtilStrings.login), color: AppColor.white),
                   ),
                 )
               ],

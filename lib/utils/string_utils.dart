@@ -3,22 +3,24 @@
 import 'package:flutter/cupertino.dart';
 
 class UtilStrings {
-  static const smartX = 'Smart X';
-  static const login = 'Login';
-  static const rememberMe = 'Remember Me';
-  static const password = 'Password';
-  static const userName = 'Username';
-  static const location = 'Location:';
+  static const smartX = 'smartX';
+  static const login = 'login';
+  static const rememberMe = 'rememberMe';
+  static const password = 'password';
+  static const userName = 'userName';
+  static const location = 'location';
+  static const addNewContact = 'addNewContact';
+  static const none = 'none';
+  static const firstName = 'firstName';
+
+
+
   static const product = 'Product';
   static const quantity = 'Quantity';
   static const subTotal = 'Subtotal';
   static const items = 'Items';
   static const total = 'Total';
-  static const addNewContact = 'Add New Contact';
-  static const contactId = 'Contact ID';
-  static const customerGroup = 'Customer Group';
-  static const none = 'None';
-  static const businessName = 'Business Name';
+  static const businessName = 'businessName';
   static const mobile = 'Mobile';
   static const taxNumber = 'Tax Number';
   static const openingBalance = 'Opening Balance';
@@ -28,8 +30,6 @@ class UtilStrings {
   static const keepBlankForNoLimit = 'Keep blank for no limit';
   static const addressLineNo1 = 'Address line 1';
   static const addressLineNo2 = 'Address line 2';
-  static const customer = 'Customer';
-  static const business = 'Business';
   static const restaurant = 'Restaurant';
   static const invoiceNumber = 'Invoice No.';
   static const date = 'Date';
@@ -40,13 +40,39 @@ class UtilStrings {
   static const discountType = 'Discount Type:';
   static const discountAmount = 'Discount Amount:';
   static const sellList = 'List of Sell';
-  static const firstName = 'First Name';
-  static const mobileNo = 'Mobile No';
+  static const mobileNo = 'mobileNo';
   static const tax = 'Tax';
   static const discount = 'Discount';
   static const totalPayable = 'Total Payable';
   static const smart = 'Smart';
-  static const pos = 'POS';
   static const walkInCustomer = 'Walk-in customer';
   static const enterProductName = 'Enter Product Name/ SKU / Scan bar code';
+  static const quotation = 'Quotation';
+  static const card = 'Card';
+  static const cash = 'Cash';
+  static const creditSale = 'Credit Sale';
+  static const multiplePay = 'Multiple Pay';
+
+
+
+
+  static const moreInfirmation = 'moreInfirmation';
+  static const customerGroup = 'customerGroup';
+  static const contactId = 'contactId';
+  static const business = 'business';
+  static const enterEmail = 'enterEmail';
+  static const enterPassword = 'enterPassword';
+  static const searchForService = 'searchForService';
+  static const home = 'home';
+  static const sale = 'sale';
+  static const customer = 'customer';
+  static const pos = 'pos';
+  static const addContact = 'addContact';
+  static const addQuotation = 'addQuotation';
+  static const setting = 'Setting';
+
+  static const submit = 'submit';
+
+
+
 }

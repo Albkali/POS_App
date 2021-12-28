@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
 import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,7 +24,6 @@ class _HomePageState extends State<HomePage> {
 
   double z = 0.0;
 
-  List textList = ['POS', 'Add Contact', 'Add Quotation', 'Setting'];
 
   List iconList = [
     Icons.payment_outlined,
@@ -33,6 +34,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List textList = [getTranslated(context, UtilStrings.pos), getTranslated(context, UtilStrings.addContact), getTranslated(context, UtilStrings.addQuotation), getTranslated(context, UtilStrings.setting)];
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -85,19 +88,19 @@ class _HomePageState extends State<HomePage> {
                               color: AppColor.white,
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            child: const TextField(
+                            child:  TextField(
                               // controller: nameController,
                               decoration: InputDecoration(
-                                prefixIcon: Icon(
+                                prefixIcon: const Icon(
                                   Icons.search,
                                   color: AppColor.grey,
                                 ),
                                 border: InputBorder.none,
                                 // labelText: 'User Name',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   color: AppColor.grey,
                                 ),
-                                hintText: 'Search for services',
+                                hintText: getTranslated(context, UtilStrings.searchForService),
                               ),
                             ),
                           ),
@@ -117,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
-                                text: 'Home',
+                                text: getTranslated(context, UtilStrings.home),
                                 icon: Icons.phone_android_outlined,
                               ),
                               commonCircleWithText(
@@ -128,11 +131,11 @@ class _HomePageState extends State<HomePage> {
                                     // return ShowSellPage();
                                   }));
                                 },
-                                text: 'Sale',
+                                text: getTranslated(context, UtilStrings.sale),
                                 icon: Icons.paid_outlined,
                               ),
                               commonCircleWithText(
-                                text: 'Customer',
+                                text: getTranslated(context, UtilStrings.customer),
                                 icon: Icons.group_outlined,
                               ),
                               commonCircleWithText(
@@ -186,6 +189,8 @@ class _HomePageState extends State<HomePage> {
               ),
               Positioned(
                 top: 280,
+                left: 20,
+                right: 20,
                 child: Container(
                   height: 400,
                   width: 350,

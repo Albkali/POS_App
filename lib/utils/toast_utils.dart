@@ -8,10 +8,10 @@ class ToastUtils {
   static OverlayEntry? _overlayEntry;
 
   static void showCustomToast(
-      BuildContext context, String message, String type) {
+      BuildContext context, String? message, String type) {
 
     if (toastTimer == null || !toastTimer!.isActive) {
-      _overlayEntry = createOverlayEntry(context, message, type);
+      _overlayEntry = createOverlayEntry(context, message??'', type);
       Overlay.of(context)!.insert(_overlayEntry!);
       toastTimer = Timer(const Duration(seconds: 3), () {
         if (_overlayEntry != null) {
@@ -45,7 +45,7 @@ class ToastUtils {
           const EdgeInsets.only(left: 10.0, right: 25.0, top: 7.0, bottom: 7.0),
           decoration: BoxDecoration(
               // boxShadow: [Utils.boxShadow()],
-              color: (type == 'warning')? AppColor.red:AppColor.green,
+              color: (type == 'warning')? AppColor.red:AppColor.accentColor,
               borderRadius: BorderRadius.circular(30)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
