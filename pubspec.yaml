@@ -39,19 +39,21 @@ dependencies:
   shared_preferences:
   flutter_localizations:
     sdk: flutter
-  fluttertoast: ^8.0.8
   get_it:
   provider: ^5.0.0
   dio: ^4.0.0-prev2
   flutter_barcode_scanner: ^2.0.0
   flutter_typeahead: ^3.2.4
-  url_launcher: ^6.0.17
   intl: ^0.17.0
+  flutter_inappwebview: ^5.3.2
+  flutter_swipe_action_cell: ^2.1.5
+
+  url_launcher: ^6.0.17
 #  pdf_flutter:
 #  path_provider:
 #  syncfusion_flutter_pdfviewer: ^19.4.38-beta
-  webview_flutter: ^3.0.0
-  flutter_custom_tabs: ^1.0.3
+#  webview_flutter: ^3.0.0
+#  flutter_custom_tabs: ^1.0.3
 
 
 dev_dependencies:

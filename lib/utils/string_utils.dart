@@ -52,6 +52,7 @@ class UtilStrings {
   static const cash = 'Cash';
   static const creditSale = 'Credit Sale';
   static const multiplePay = 'Multiple Pay';
+  static const pleaseEnterYourCash = 'Please enter your cash';
 
 
 

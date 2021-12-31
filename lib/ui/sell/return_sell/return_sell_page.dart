@@ -122,57 +122,57 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                             ),
                           ),
                           const Gap(20),
-                          Expanded(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: 5,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: AppColor.light_grey)
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(child:box(
-                                            title: 'Product Name',subTitle: 'ABC',
-                                          )),
-                                          Expanded(child:box(
-                                            title: 'Unit price',subTitle: '50',
-                                          )),
-                                        ],
-                                      ),
-                                      const Gap(10),
-                                      Row(
-                                        children: [
-                                          Expanded(child:box(
-                                            title: 'Sell Quantity',subTitle: 'ABC',
-                                          )),
-                                          Expanded(child:box(
-                                            title: 'Return Quantity',subTitle: 'ABC',
-                                          )),
-                                        ],
-                                      ),
-                                      const Gap(10),
-                                      Row(
-                                        children: [
-                                          Expanded(child:box(
-                                            title: 'Return SubTotal',subTitle: 'ABC',
-                                          )),
-                                        ],
-                                      ),
-
-                                    ],
-                                  ),
-                                );
-                              },),
-                          ),
+                          // Expanded(
+                          //   child: ListView.builder(
+                          //     shrinkWrap: true,
+                          //     scrollDirection: Axis.vertical,
+                          //     physics: NeverScrollableScrollPhysics(),
+                          //     itemCount: 5,
+                          //     itemBuilder: (BuildContext context, int index) {
+                          //       return Container(
+                          //         padding: const EdgeInsets.all(10),
+                          //         decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(10),
+                          //             border: Border.all(color: AppColor.light_grey)
+                          //         ),
+                          //         child: Column(
+                          //           crossAxisAlignment: CrossAxisAlignment.start,
+                          //           children: [
+                          //             Row(
+                          //               children: [
+                          //                 Expanded(child:box(
+                          //                   title: 'Product Name',subTitle: 'ABC',
+                          //                 )),
+                          //                 Expanded(child:box(
+                          //                   title: 'Unit price',subTitle: '50',
+                          //                 )),
+                          //               ],
+                          //             ),
+                          //             const Gap(10),
+                          //             Row(
+                          //               children: [
+                          //                 Expanded(child:box(
+                          //                   title: 'Sell Quantity',subTitle: 'ABC',
+                          //                 )),
+                          //                 Expanded(child:box(
+                          //                   title: 'Return Quantity',subTitle: 'ABC',
+                          //                 )),
+                          //               ],
+                          //             ),
+                          //             const Gap(10),
+                          //             Row(
+                          //               children: [
+                          //                 Expanded(child:box(
+                          //                   title: 'Return SubTotal',subTitle: 'ABC',
+                          //                 )),
+                          //               ],
+                          //             ),
+                          //
+                          //           ],
+                          //         ),
+                          //       );
+                          //     },),
+                          // ),
                           const Gap(10),
                           Utils.boldSubHeadingText(
                               text: UtilStrings.discountType, textSize: 14),

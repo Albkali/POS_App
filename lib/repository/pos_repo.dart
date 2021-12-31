@@ -28,7 +28,6 @@ class PosRepo {
                 "closing_amount": data.closingAmount,
                 "status": data.status
               },
-        // data: data
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -61,12 +60,31 @@ class PosRepo {
     }
   }
 
-
   Future<ApiResponse?> createSell(ReqCreateSell sell) async {
     try {
-      Response response = await dioClient.post(
-        ApiEndPoints.apiCreateSell,
-        data: {"sells":[{"location_id":1,"contact_id":1,"discount_amount":10,"discount_type":"fixed","products":[{"product_id":1,"quantity":1,"variation_id":1,"unit_price":437.5}],"payments":[{"amount":1200.13,"method":"cash"}]}]}
+      Response response =
+          await dioClient.post(ApiEndPoints.apiCreateSell, data:sell
+      //     {
+      //   "sells": [
+      //     {
+      //       "location_id": 1,
+      //       "contact_id": 1,
+      //       "discount_amount": 10,
+      //       "discount_type": "fixed",
+      //       "products": [
+      //         {
+      //           "product_id": 1,
+      //           "quantity": 1,
+      //           "variation_id": 1,
+      //           "unit_price": 437.5
+      //         }
+      //       ],
+      //       "payments": [
+      //         {"amount": 1200.13, "method": "cash"}
+      //       ]
+      //     }
+      //   ]
+      // }
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -86,6 +104,4 @@ class PosRepo {
       return ApiResponse.withError(e);
     }
   }
-
-
 }

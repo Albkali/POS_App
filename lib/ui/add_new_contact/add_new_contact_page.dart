@@ -37,184 +37,222 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        child: InkWell(
-          onTap: () async {
-            ReqContact m = ReqContact(
-              type: 'business',
-              supplierBusinessName: businessNameController.text.toString(),
-              prefix: '',
-              firstName: firstNameController.text.toString(),
-              middleName: '',
-              lastName: '',
-              taxNumber: taxNumberController.text.toString(),
-              payTermNumber: payTermNumberController.text.toString(),
-              payTermType: '',
-              mobile: mobileController.text.toString(),
-              landline: '',
-              alternateNumber: '',
-              addressLine1: addressLine1Controller.text.toString(),
-              addressLine2: addressLine2Controller.text.toString(),
-              city: '',
-              state: '',
-              country: '',
-              zipCode: '',
-              customerGroupId: '',
-              contactId: contactIdController.text.toString(),
-              // dob: '',
-              customField1: '',
-              customField2: '',
-              customField3: '',
-              customField4: '',
-              email: '',
-              shippingAddress: '',
-              position: '',
-              openingBalance: openingBalanceController.text.toString(),
-              sourceId: '',
-              lifeStageId: '',
-              // assignedTo: ''
-            );
-            showLoadingDialog(context: context);
-            Provider.of<AddNewContactViewModel>(context, listen: false)
-                .addContact(m, context);
-          },
-          child: Container(
-              height: 40,
-              color: AppColor.blue,
-              child: Center(
-                  child: Utils.boldSubHeadingText(
-                      text: 'Submit', color: AppColor.white))),
-        ),
-      ),
-      appBar: Utils.customAppBar(
-          text: getTranslated(context, UtilStrings.addNewContact),
-          color: Colors.white,
-          isCenter: true,
-          icon: Icons.clear,
-          textColor: Colors.black,
-          iconColor: AppColor.grey2),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(10),
-                Row(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: AppColor.sky_grey,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                  ),
+                ),
+                width: Utils.getHeight(context),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 5,
+                    left: 22,
+                    right: 16,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                            child: const Icon(
+                              Icons.arrow_back_ios_outlined,
+                              color: Color(0xff78909c),
+                            ),
+                          ),
+                          const Gap(90),
+                          Row(
+                            children: const [
+                              Text('Add New Contact',
+                                  style: TextStyle(
+                                      color: Color(0xff004d40),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const Gap(10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(
                   children: [
-                    Radio(
-                      value: 1,
-                      groupValue: val,
-                      onChanged: (value) {
-                        setState(() {
-                          val = value as int?;
-                        });
-                      },
-                      activeColor: Colors.green,
-                    ),
-                    Utils.mediumHeadingText(text: getTranslated(context, UtilStrings.business)),
-                  ],
-                ),
-                customNewContactTextFiled(
-                    title: '${getTranslated(context, UtilStrings.contactId)} : ',
-                    icon: Icons.person,
-                    subTitle: getTranslated(context, UtilStrings.contactId),
-                    controller: contactIdController),
-                const Gap(10),
-                customNewContactTextFiled(
-                  title: '${getTranslated(context, UtilStrings.customerGroup)} : ',
-                  icon: Icons.person,
-                  subTitle: getTranslated(context, UtilStrings.none),
-                  controller: customerGroupIdController
-                ),
-                const Gap(10),
-                customNewContactTextFiled(
-                    controller: businessNameController,
-                    title: '${getTranslated(context, UtilStrings.businessName)} : ',
-                    icon: Icons.person,
-                    subTitle: getTranslated(context, UtilStrings.businessName)),
-                const Gap(10),
-                customNewContactTextFiled(
-                    controller: firstNameController,
-                    title: '${getTranslated(context, UtilStrings.firstName)} : ',
-                    icon: Icons.person,
-                    subTitle: getTranslated(context, UtilStrings.firstName)),
-                const Gap(10),
-                customNewContactTextFiled(
-                    controller: mobileController,
-                    title: '${getTranslated(context, UtilStrings.mobileNo)} : ',
-                    icon: Icons.person,
-                    subTitle: getTranslated(context, UtilStrings.mobileNo)),
-                const Gap(10),
-                Center(
-                    child: Container(
-                        width: 190,
-                        child: SmallCustomButtonWithIcon(
-                          label: getTranslated(context, UtilStrings.moreInfirmation),
-                          bgcolor: AppColor.blue,
-                          textColor: AppColor.white,
-                          iconColor: AppColor.white,
-                          icon: Icons.keyboard_arrow_down_outlined,
-                          onTap: () {
+                    Row(
+                      children: [
+                        Radio(
+                          value: 1,
+                          groupValue: val,
+                          onChanged: (value) {
                             setState(() {
-                              isSelected = !isSelected;
+                              val = value as int?;
                             });
                           },
-                        ))),
-                const Gap(10),
-                isSelected == true
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          customNewContactTextFiled(
-                              title: '${UtilStrings.taxNumber} : ',
-                              icon: Icons.person,
-                              subTitle: UtilStrings.taxNumber,
-                          controller: taxNumberController),
-                          const Gap(10),
-                          customNewContactTextFiled(
-                              title: '${UtilStrings.openingBalance} : ',
-                              icon: Icons.person,
-                              subTitle: UtilStrings.openingBalance,
-                          controller: openingBalanceController),
-                          const Gap(10),
-                          customNewContactTextFiled(
-                              title: '${UtilStrings.payTerm} : ',
-                              icon: Icons.person,
-                              subTitle: UtilStrings.payTerm,
-                          controller: payTermNumberController),
-                          const Gap(10),
-                          customNewContactTextFiled(
-                              title: '${UtilStrings.creditLimit} : ',
-                              icon: Icons.person,
-                              subTitle: UtilStrings.creditLimit),
-                          const Gap(10),
-                          Utils.mediumHeadingText(
-                              text: '${UtilStrings.addressLineNo1} : '),
-                          const Gap(5),
-                          const ContainerBorder(
-                            child: CustomTextFiled(
-                              title: UtilStrings.addressLineNo1,
-                              isContentPedding: true,
-                            ),
+                          activeColor: Colors.green,
+                        ),
+                        Utils.mediumHeadingText(text: getTranslated(context, UtilStrings.business)),
+                      ],
+                    ),
+                    customNewContactTextFiled(
+                        title: '${getTranslated(context, UtilStrings.contactId)} : ',
+                        icon: Icons.person,
+                        subTitle: getTranslated(context, UtilStrings.contactId),
+                        controller: contactIdController),
+                    const Gap(10),
+                    customNewContactTextFiled(
+                        title: '${getTranslated(context, UtilStrings.customerGroup)} : ',
+                        icon: Icons.person,
+                        subTitle: getTranslated(context, UtilStrings.none),
+                        controller: customerGroupIdController
+                    ),
+                    const Gap(10),
+                    customNewContactTextFiled(
+                        controller: businessNameController,
+                        title: '${getTranslated(context, UtilStrings.businessName)} : ',
+                        icon: Icons.person,
+                        subTitle: getTranslated(context, UtilStrings.businessName)),
+                    const Gap(10),
+                    customNewContactTextFiled(
+                        controller: firstNameController,
+                        title: '${getTranslated(context, UtilStrings.firstName)} : ',
+                        icon: Icons.person,
+                        subTitle: getTranslated(context, UtilStrings.firstName)),
+                    const Gap(10),
+                    customNewContactTextFiled(
+                        controller: mobileController,
+                        title: '${getTranslated(context, UtilStrings.mobileNo)} : ',
+                        icon: Icons.person,
+                        subTitle: getTranslated(context, UtilStrings.mobileNo)),
+                    const Gap(15),
+                    Center(
+                        child: Container(
+                          height: 40,
+                          width: 170,
+                          // width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.amber,
                           ),
-                          const Gap(10),
-                          Utils.mediumHeadingText(
-                              text: '${UtilStrings.addressLineNo2} : '),
-                          const Gap(5),
-                          const ContainerBorder(
-                            child: CustomTextFiled(
-                              title: UtilStrings.addressLineNo2,
-                              isContentPedding: true,
-                            ),
+                          child: SmallCustomButtonWithIcon(
+                            isTagType: true,
+                            label: getTranslated(context, UtilStrings.moreInfirmation),
+                            textColor: AppColor.black,
+                            iconColor: AppColor.black,
+                            icon: Icons.keyboard_arrow_down_outlined,
+                            onTap: () {
+                              setState(() {
+                                isSelected = !isSelected;
+                              });
+                            },
                           ),
-                          const Gap(10),
-                        ],
-                      )
-                    : SizedBox(),
-              ],
-            ),
+                        )),
+                    const Gap(10),
+                    isSelected == true
+                        ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        customNewContactTextFiled(
+                            title: '${UtilStrings.taxNumber} : ',
+                            icon: Icons.person,
+                            subTitle: UtilStrings.taxNumber,
+                            controller: taxNumberController),
+                        const Gap(10),
+                        customNewContactTextFiled(
+                            title: '${UtilStrings.openingBalance} : ',
+                            icon: Icons.person,
+                            subTitle: UtilStrings.openingBalance,
+                            controller: openingBalanceController),
+                        const Gap(10),
+                        customNewContactTextFiled(
+                            title: '${UtilStrings.payTerm} : ',
+                            icon: Icons.person,
+                            subTitle: UtilStrings.payTerm,
+                            controller: payTermNumberController),
+                        const Gap(10),
+                        customNewContactTextFiled(
+                            title: '${UtilStrings.creditLimit} : ',
+                            icon: Icons.person,
+                            subTitle: UtilStrings.creditLimit),
+                        const Gap(10),
+                      ],
+                    )
+                        : SizedBox(),
+                    const Gap(10),
+                  ],
+                ),
+              ),
+
+              Container(
+                  height: 40,
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color(0xff0d47a1),
+                  ),
+                  child: InkWell(
+                    onTap: (){
+                      ReqContact m = ReqContact(
+                        type: 'business',
+                        supplierBusinessName: businessNameController.text.toString(),
+                        prefix: '',
+                        firstName: firstNameController.text.toString(),
+                        middleName: '',
+                        lastName: '',
+                        taxNumber: taxNumberController.text.toString(),
+                        payTermNumber: payTermNumberController.text.toString(),
+                        payTermType: '',
+                        mobile: mobileController.text.toString(),
+                        landline: '',
+                        alternateNumber: '',
+                        addressLine1: addressLine1Controller.text.toString(),
+                        addressLine2: addressLine2Controller.text.toString(),
+                        city: '',
+                        state: '',
+                        country: '',
+                        zipCode: '',
+                        customerGroupId: '',
+                        contactId: contactIdController.text.toString(),
+                        // dob: '',
+                        customField1: '',
+                        customField2: '',
+                        customField3: '',
+                        customField4: '',
+                        email: '',
+                        shippingAddress: '',
+                        position: '',
+                        openingBalance: openingBalanceController.text.toString(),
+                        sourceId: '',
+                        lifeStageId: '',
+                        // assignedTo: ''
+                      );
+                      showLoadingDialog(context: context);
+                      Provider.of<AddNewContactViewModel>(context, listen: false)
+                          .addContact(m, context);
+                    },
+                    child: SmallCustomButtonWithIcon(
+                      label: 'Add',
+                      bgcolor: const Color(0xff0d47a1),
+                      textColor: AppColor.white,
+                    ),
+                  )),
+
+            ],
           ),
         ),
       ),
@@ -226,49 +264,38 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
       required IconData? icon,
       required String? subTitle,
       TextEditingController? controller}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Utils.mediumHeadingText(text: title.toString()),
-        const Gap(5),
-        Container(
-          height: 35,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColor.grey2,
-            ),
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: AppColor.grey2,
+            blurRadius: 20.0,
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Row(
-              children: [
-                Icon(icon),
-                const Gap(5),
-                Utils.customVerticalDivider(),
-                const Gap(5),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: subTitle,
-                      hintStyle: const TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 14,
-                        // fontWeight: FontWeight.w900,
-                        color: AppColor.black_2,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 10),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        ],
+        color: AppColor.white,
+        border: Border.all(color: AppColor.grey, width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center,
+        textAlign: TextAlign.center,
+        // controller: controller,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon),
+          suffixIcon: const SizedBox(),
+          border: InputBorder.none,
+          hintText: subTitle,
+          hintStyle: const TextStyle(
+            fontFamily: 'DMSans',
+            fontSize: 15,
+            // fontWeight: FontWeight.w900,
+            color: AppColor.grey,
           ),
+          // contentPadding: const EdgeInsets.symmetric(
+          //     vertical: 12, horizontal: 12),
         ),
-      ],
+      ),
     );
   }
 }

@@ -18,6 +18,8 @@ class  PosPageViewModel with ChangeNotifier{
   PosPageViewModel({required this.posRepo});
 
 
+  bool isLoading = false;
+
   String selectrange = 'Fixed';
   String selectId = '1';
 
@@ -25,14 +27,12 @@ class  PosPageViewModel with ChangeNotifier{
   bool isShowMyAppartment = false;
   bool isShowWithinRadius = false;
   int isSelectedIndex = 0;
-  //dynamic scannedItems = [];
   List<User> usersList = [];
   List<Items> productsList = [];
   List<Items> cartItemList = [];
   List<Location> locationList = [];
 
 
-  // List<User>? get userList => sellItemList;
 
    void addCounter(Items item) {
      item.itemCounter++;
@@ -65,6 +65,7 @@ class  PosPageViewModel with ChangeNotifier{
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
       } else {
+        print('Your error is ${apiResponse.error}');
         errorMessage = apiResponse.error.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -101,6 +102,7 @@ class  PosPageViewModel with ChangeNotifier{
   }
 
   Future<ResponseModel> productList() async {
+
     notifyListeners();
 
     ApiResponse? apiResponse = await posRepo.fetchItem();
@@ -141,7 +143,7 @@ class  PosPageViewModel with ChangeNotifier{
       // for (var item in data.data) {
       //   productsList.add(item);
       // }
-      // print('Your total product  ${productsList.length}');
+      print('Your total product  ${data.invoiceUrl}');
 
       responseModel = ResponseModel(true, 'successful');
     } else {

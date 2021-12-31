@@ -37,7 +37,7 @@ class Sell {
 
   int locationId;
   int contactId;
-  int discountAmount;
+  String discountAmount;
   String discountType;
   List<Product> products;
   List<Payment> payments;
@@ -45,7 +45,7 @@ class Sell {
   factory Sell.fromJson(Map<String, dynamic> json) => Sell(
     locationId: json["location_id"],
     contactId: json["contact_id"],
-    discountAmount: json["discount_amount"],
+    discountAmount: json["discount_amount"].toString(),
     discountType: json["discount_type"],
     products: List<Product>.from(json["products"].map((x) => Product.fromJson(x))),
     payments: List<Payment>.from(json["payments"].map((x) => Payment.fromJson(x))),

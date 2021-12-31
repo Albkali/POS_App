@@ -24,13 +24,14 @@ class Utils {
   }
 
   static Widget mediumHeadingText(
-      { String? text, double? textSize, Color? color}) {
+      { String? text, double? textSize, Color? color,TextAlign? textAlign,FontWeight? fontWeight}) {
     return Text(
       text??'',
+      textAlign: textAlign ?? TextAlign.left,
       style: TextStyle(
         fontFamily: 'DMSans',
         fontSize: textSize ?? 14,
-        // fontWeight: FontWeight.w900,
+        fontWeight: fontWeight??FontWeight.w500,
         color: color ?? AppColor.black_2,
       ),
     );

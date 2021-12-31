@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
         }
         return supportedLocales.first;
       },
-      home: getString(PrefKeyConstants.TOKEN).isEmpty?const LoginPage() : HomePage(),
+      home: getString(PrefKeyConstants.TOKEN).isEmpty? LoginPage() : HomePage(),
       // home:   LoginPage(),
       // home:   LinkPage(),
     );
