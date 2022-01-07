@@ -1,7 +1,4 @@
-// // To parse this JSON data, do
-// //
-// //     final resProductPos = resProductPosFromJson(jsonString);
-//
+
 // import 'package:meta/meta.dart';
 // import 'dart:convert';
 //
@@ -97,9 +94,10 @@
 //   String subCategory;
 //   String productTax;
 //   List<ProductLocation> productLocations;
+//   int itemCounter = 1;
 //
 //   factory Items.fromJson(Map<String, dynamic> json) => Items(
-//     id: json["id"].toString(),
+//     id: json["id"].toString().toString(),
 //     name: json["name"].toString(),
 //     businessId: json["business_id"].toString(),
 //     type: json["type"].toString(),
@@ -516,6 +514,7 @@
 //     "updated_at": updatedAt.toIso8601String(),
 //   };
 // }
+
 // To parse this JSON data, do
 //
 //     final resProductPos = resProductPosFromJson(jsonString);
@@ -530,16 +529,24 @@ String resProductPosToJson(ResProductPos data) => json.encode(data.toJson());
 class ResProductPos {
   ResProductPos({
     required this.data,
+    required this.links,
+    required this.meta,
   });
 
   List<Items> data;
+  Links links;
+  Meta meta;
 
   factory ResProductPos.fromJson(Map<String, dynamic> json) => ResProductPos(
     data: List<Items>.from(json["data"].map((x) => Items.fromJson(x))),
+    links: Links.fromJson(json["links"]),
+    meta: Meta.fromJson(json["meta"]),
   );
 
   Map<String, dynamic> toJson() => {
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "links": links.toJson(),
+    "meta": meta.toJson(),
   };
 }
 
@@ -579,6 +586,7 @@ class Items {
     required this.subCategory,
     required this.productTax,
     required this.productLocations,
+
   });
 
   String id;
@@ -618,7 +626,7 @@ class Items {
   int itemCounter = 1;
 
   factory Items.fromJson(Map<String, dynamic> json) => Items(
-    id: json["id"].toString().toString(),
+    id: json["id"].toString(),
     name: json["name"].toString(),
     businessId: json["business_id"].toString(),
     type: json["type"].toString(),
@@ -661,7 +669,7 @@ class Items {
     "type": type,
     "sub_unit_ids": subUnitIds,
     "enable_stock": enableStock,
-    "alert_quantity": alertQuantity,
+    "alert_quantity": alertQuantity == null ? null : alertQuantity,
     "sku": sku,
     "barcode_type": barcodeType,
     "expiry_period": expiryPeriod,
@@ -727,8 +735,8 @@ class ProductLocation {
     required this.pivot,
   });
 
-  int id;
-  int businessId;
+  String id;
+  String businessId;
   String locationId;
   String name;
   String landmark;
@@ -736,60 +744,60 @@ class ProductLocation {
   String state;
   String city;
   String zipCode;
-  int invoiceSchemeId;
-  int invoiceLayoutId;
-  int saleInvoiceLayoutId;
-  dynamic sellingPriceGroupId;
-  int printReceiptOnInvoice;
+  String invoiceSchemeId;
+  String invoiceLayoutId;
+  String saleInvoiceLayoutId;
+  String sellingPriceGroupId;
+  String printReceiptOnInvoice;
   String receiptPrinterType;
-  dynamic printerId;
+  String printerId;
   String mobile;
   String alternateNumber;
   String email;
   String website;
-  dynamic featuredProducts;
-  int isActive;
+  String featuredProducts;
+  String isActive;
   String defaultPaymentAccounts;
-  dynamic customField1;
-  dynamic customField2;
-  dynamic customField3;
-  dynamic customField4;
-  dynamic deletedAt;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String customField1;
+  String customField2;
+  String customField3;
+  String customField4;
+  String deletedAt;
+  String createdAt;
+  String updatedAt;
   Pivot pivot;
 
   factory ProductLocation.fromJson(Map<String, dynamic> json) => ProductLocation(
-    id: json["id"],
-    businessId: json["business_id"],
-    locationId: json["location_id"],
-    name: json["name"],
-    landmark: json["landmark"],
-    country: json["country"],
-    state: json["state"],
-    city: json["city"],
-    zipCode: json["zip_code"],
-    invoiceSchemeId: json["invoice_scheme_id"],
-    invoiceLayoutId: json["invoice_layout_id"],
-    saleInvoiceLayoutId: json["sale_invoice_layout_id"],
-    sellingPriceGroupId: json["selling_price_group_id"],
-    printReceiptOnInvoice: json["print_receipt_on_invoice"],
-    receiptPrinterType: json["receipt_printer_type"],
-    printerId: json["printer_id"],
-    mobile: json["mobile"],
-    alternateNumber: json["alternate_number"],
-    email: json["email"],
-    website: json["website"],
-    featuredProducts: json["featured_products"],
-    isActive: json["is_active"],
-    defaultPaymentAccounts: json["default_payment_accounts"],
-    customField1: json["custom_field1"],
-    customField2: json["custom_field2"],
-    customField3: json["custom_field3"],
-    customField4: json["custom_field4"],
-    deletedAt: json["deleted_at"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"].toString(),
+    businessId: json["business_id"].toString(),
+    locationId: json["location_id"].toString(),
+    name: json["name"].toString(),
+    landmark: json["landmark"].toString(),
+    country: json["country"].toString(),
+    state: json["state"].toString(),
+    city: json["city"].toString(),
+    zipCode: json["zip_code"].toString(),
+    invoiceSchemeId: json["invoice_scheme_id"].toString(),
+    invoiceLayoutId: json["invoice_layout_id"].toString(),
+    saleInvoiceLayoutId: json["sale_invoice_layout_id"].toString(),
+    sellingPriceGroupId: json["selling_price_group_id"].toString(),
+    printReceiptOnInvoice: json["print_receipt_on_invoice"].toString(),
+    receiptPrinterType: json["receipt_printer_type"].toString(),
+    printerId: json["printer_id"].toString(),
+    mobile: json["mobile"].toString(),
+    alternateNumber: json["alternate_number"].toString(),
+    email: json["email"].toString(),
+    website: json["website"].toString(),
+    featuredProducts: json["featured_products"].toString(),
+    isActive: json["is_active"].toString(),
+    defaultPaymentAccounts: json["default_payment_accounts"].toString(),
+    customField1: json["custom_field1"].toString(),
+    customField2: json["custom_field2"].toString(),
+    customField3: json["custom_field3"].toString(),
+    customField4: json["custom_field4"].toString(),
+    deletedAt: json["deleted_at"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
     pivot: Pivot.fromJson(json["pivot"]),
   );
 
@@ -822,8 +830,8 @@ class ProductLocation {
     "custom_field3": customField3,
     "custom_field4": customField4,
     "deleted_at": deletedAt,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
     "pivot": pivot.toJson(),
   };
 }
@@ -834,12 +842,12 @@ class Pivot {
     required this.locationId,
   });
 
-  int productId;
-  int locationId;
+  String productId;
+  String locationId;
 
   factory Pivot.fromJson(Map<String, dynamic> json) => Pivot(
-    productId: json["product_id"],
-    locationId: json["location_id"],
+    productId: json["product_id"].toString(),
+    locationId: json["location_id"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -860,23 +868,23 @@ class ProductVariation {
     required this.variations,
   });
 
-  int id;
-  dynamic variationTemplateId;
+  String id;
+  String variationTemplateId;
   String name;
-  int productId;
-  int isDummy;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String productId;
+  String isDummy;
+  String createdAt;
+  String updatedAt;
   List<Variation> variations;
 
   factory ProductVariation.fromJson(Map<String, dynamic> json) => ProductVariation(
-    id: json["id"],
-    variationTemplateId: json["variation_template_id"],
-    name: json["name"],
-    productId: json["product_id"],
-    isDummy: json["is_dummy"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"].toString(),
+    variationTemplateId: json["variation_template_id"].toString(),
+    name: json["name"].toString(),
+    productId: json["product_id"].toString(),
+    isDummy: json["is_dummy"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
     variations: List<Variation>.from(json["variations"].map((x) => Variation.fromJson(x))),
   );
 
@@ -886,8 +894,8 @@ class ProductVariation {
     "name": name,
     "product_id": productId,
     "is_dummy": isDummy,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
     "variations": List<dynamic>.from(variations.map((x) => x.toJson())),
   };
 }
@@ -915,44 +923,44 @@ class Variation {
     required this.discounts,
   });
 
-  int id;
+  String id;
   String name;
-  int productId;
+  String productId;
   String subSku;
-  int productVariationId;
-  dynamic woocommerceVariationId;
-  dynamic variationValueId;
+  String productVariationId;
+  String woocommerceVariationId;
+  String variationValueId;
   String defaultPurchasePrice;
   String dppIncTax;
   String profitPercent;
   String defaultSellPrice;
   String sellPriceIncTax;
-  DateTime createdAt;
-  DateTime updatedAt;
-  dynamic deletedAt;
+  String createdAt;
+  String updatedAt;
+  String deletedAt;
   List<dynamic> comboVariations;
-  List<dynamic> variationLocationDetails;
+  List<VariationLocationDetail> variationLocationDetails;
   List<dynamic> media;
   List<dynamic> discounts;
 
   factory Variation.fromJson(Map<String, dynamic> json) => Variation(
-    id: json["id"],
-    name: json["name"],
-    productId: json["product_id"],
-    subSku: json["sub_sku"],
-    productVariationId: json["product_variation_id"],
-    woocommerceVariationId: json["woocommerce_variation_id"],
-    variationValueId: json["variation_value_id"],
-    defaultPurchasePrice: json["default_purchase_price"],
-    dppIncTax: json["dpp_inc_tax"],
-    profitPercent: json["profit_percent"],
-    defaultSellPrice: json["default_sell_price"],
-    sellPriceIncTax: json["sell_price_inc_tax"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-    deletedAt: json["deleted_at"],
+    id: json["id"].toString(),
+    name: json["name"].toString(),
+    productId: json["product_id"].toString(),
+    subSku: json["sub_sku"].toString(),
+    productVariationId: json["product_variation_id"].toString(),
+    woocommerceVariationId: json["woocommerce_variation_id"].toString(),
+    variationValueId: json["variation_value_id"].toString(),
+    defaultPurchasePrice: json["default_purchase_price"].toString(),
+    dppIncTax: json["dpp_inc_tax"].toString(),
+    profitPercent: json["profit_percent"].toString(),
+    defaultSellPrice: json["default_sell_price"].toString(),
+    sellPriceIncTax: json["sell_price_inc_tax"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
+    deletedAt: json["deleted_at"].toString(),
     comboVariations: List<dynamic>.from(json["combo_variations"].map((x) => x)),
-    variationLocationDetails: List<dynamic>.from(json["variation_location_details"].map((x) => x)),
+    variationLocationDetails: List<VariationLocationDetail>.from(json["variation_location_details"].map((x) => VariationLocationDetail.fromJson(x))),
     media: List<dynamic>.from(json["media"].map((x) => x)),
     discounts: List<dynamic>.from(json["discounts"].map((x) => x)),
   );
@@ -970,13 +978,57 @@ class Variation {
     "profit_percent": profitPercent,
     "default_sell_price": defaultSellPrice,
     "sell_price_inc_tax": sellPriceIncTax,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
     "deleted_at": deletedAt,
     "combo_variations": List<dynamic>.from(comboVariations.map((x) => x)),
-    "variation_location_details": List<dynamic>.from(variationLocationDetails.map((x) => x)),
+    "variation_location_details": List<dynamic>.from(variationLocationDetails.map((x) => x.toJson())),
     "media": List<dynamic>.from(media.map((x) => x)),
     "discounts": List<dynamic>.from(discounts.map((x) => x)),
+  };
+}
+
+class VariationLocationDetail {
+  VariationLocationDetail({
+    required this.id,
+    required this.productId,
+    required this.productVariationId,
+    required this.variationId,
+    required this.locationId,
+    required this.qtyAvailable,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  String id;
+  String productId;
+  String productVariationId;
+  String variationId;
+  String locationId;
+  String qtyAvailable;
+  String createdAt;
+  String updatedAt;
+
+  factory VariationLocationDetail.fromJson(Map<String, dynamic> json) => VariationLocationDetail(
+    id: json["id"].toString(),
+    productId: json["product_id"].toString(),
+    productVariationId: json["product_variation_id"].toString(),
+    variationId: json["variation_id"].toString(),
+    locationId: json["location_id"].toString(),
+    qtyAvailable: json["qty_available"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "product_id": productId,
+    "product_variation_id": productVariationId,
+    "variation_id": variationId,
+    "location_id": locationId,
+    "qty_available": qtyAvailable,
+    "created_at": createdAt,
+    "updated_at": updatedAt,
   };
 }
 
@@ -995,30 +1047,30 @@ class Unit {
     required this.updatedAt,
   });
 
-  int id;
-  int businessId;
+  String id;
+  String businessId;
   String actualName;
   String shortName;
-  int allowDecimal;
-  dynamic baseUnitId;
-  dynamic baseUnitMultiplier;
-  int createdBy;
-  dynamic deletedAt;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String allowDecimal;
+  String baseUnitId;
+  String baseUnitMultiplier;
+  String createdBy;
+  String deletedAt;
+  String createdAt;
+  String updatedAt;
 
   factory Unit.fromJson(Map<String, dynamic> json) => Unit(
-    id: json["id"],
-    businessId: json["business_id"],
-    actualName: json["actual_name"],
-    shortName: json["short_name"],
-    allowDecimal: json["allow_decimal"],
-    baseUnitId: json["base_unit_id"],
-    baseUnitMultiplier: json["base_unit_multiplier"],
-    createdBy: json["created_by"],
-    deletedAt: json["deleted_at"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"].toString(),
+    businessId: json["business_id"].toString(),
+    actualName: json["actual_name"].toString(),
+    shortName: json["short_name"].toString(),
+    allowDecimal: json["allow_decimal"].toString(),
+    baseUnitId: json["base_unit_id"].toString(),
+    baseUnitMultiplier: json["base_unit_multiplier"].toString(),
+    createdBy: json["created_by"].toString(),
+    deletedAt: json["deleted_at"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -1031,7 +1083,75 @@ class Unit {
     "base_unit_multiplier": baseUnitMultiplier,
     "created_by": createdBy,
     "deleted_at": deletedAt,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
+  };
+}
+
+class Links {
+  Links({
+    required this.first,
+    required this.last,
+    required this.prev,
+    required this.next,
+  });
+
+  String first;
+  String last;
+  String prev;
+  String next;
+
+  factory Links.fromJson(Map<String, dynamic> json) => Links(
+    first: json["first"].toString(),
+    last: json["last"].toString(),
+    prev: json["prev"].toString(),
+    next: json["next"].toString(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "first": first,
+    "last": last,
+    "prev": prev,
+    "next": next,
+  };
+}
+
+class Meta {
+  Meta({
+    required this.currentPage,
+    required this.from,
+    required this.lastPage,
+    required this.path,
+    required this.perPage,
+    required this.to,
+    required this.total,
+  });
+
+ String currentPage;
+ String from;
+ String lastPage;
+ String path;
+ String perPage;
+ String to;
+ String total;
+
+  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
+    currentPage: json["current_page"].toString(),
+    from: json["from"].toString(),
+    lastPage: json["last_page"].toString(),
+    path: json["path"].toString(),
+    perPage: json["per_page"].toString(),
+    to: json["to"].toString(),
+    total: json["total"].toString(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "current_page": currentPage,
+    "from": from,
+    "last_page": lastPage,
+    "path": path,
+    "per_page": perPage,
+    "to": to,
+    "total": total,
   };
 }

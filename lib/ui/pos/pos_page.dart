@@ -36,6 +36,7 @@ class _PosPageState extends State<PosPage> {
   late AnimationController animationController;
   late TextEditingController userController = TextEditingController();
   late TextEditingController productController = TextEditingController();
+  late TextEditingController locationController = TextEditingController();
   late TextEditingController taxController = TextEditingController();
   late TextEditingController discountController = TextEditingController();
   TextEditingController cashController = TextEditingController();
@@ -58,63 +59,175 @@ class _PosPageState extends State<PosPage> {
 
     Provider.of<PosPageViewModel>(context, listen: false).userList();
     Provider.of<PosPageViewModel>(context, listen: false).productList();
+    Provider.of<PosPageViewModel>(context, listen: false).UserDetails();
+    fetchData();
 
     super.initState();
-    if(getString(PrefKeyConstants.isOpen) != 'true'){
-      WidgetsBinding.instance!.addPostFrameCallback((_) async {
-        await showDialog<String>(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: const Text("Cash in hand"),
-            content: TextField(
-              controller: cashController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.teal)),
-                  hintText: 'Enter Cash',
-                  helperText: 'Enter Cash',
-                  prefixIcon: Icon(
-                    Icons.attach_money_outlined,
-                    color: Colors.green,
-                  ),
-                  suffixStyle: TextStyle(color: Colors.green)),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text("Cancel"),
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){
-                    return HomePage();
-                  }), (route) => false);
-                  // Navigator.pop(context);
-                  // Navigator.pop(context);
-                },
-              ),
-              FlatButton(
-                child: const Text("Open Register"),
-                onPressed: () {
-                  if(cashController.text.isNotEmpty){
-                    showLoadingDialog(context: context);
-                    ReqPos res = ReqPos(locationId: Provider.of<PosPageViewModel>(context, listen: false).selectId, status: 'open',initialAmount: cashController.text,createdAt: DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()).toString());
-                    Provider.of<PosPageViewModel>(context, listen: false).openRegister(res, context, false).then((value) {
-                      if(value.isSuccess){
-                        setString(PrefKeyConstants.isOpen, 'true');
-                        ToastUtils.showCustomToast(context, 'Register open successfully', 'success');
-                      }
-                    });
-                  }else{
-                    ToastUtils.showCustomToast(context, UtilStrings.pleaseEnterYourCash, 'warning');
-                    // ToastUtils.showCustomToast(context, getTranslated(context, UtilStrings.pleaseEnterYourCash), 'warning');
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      });
+  }
 
+  fetchData() async {
+    print("HHHH");
+    print("HHHH007${Provider.of<PosPageViewModel>(context, listen: false).registerDetails[0].status}");
+    if (Provider.of<PosPageViewModel>(context, listen: false).registerDetails[0].status == 'open')
+    {
+      print("HELLO IF PART");
+    }
+    else {
+      print("HELLO ELSE PART");
+      if (getString(PrefKeyConstants.isOpen) != 'true') {
+        WidgetsBinding.instance!.addPostFrameCallback((_) async {
+          await showDialog<String>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text("Cash in hand"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColor.grey, width: 1),
+                      color: AppColor.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppColor.grey2,
+                          offset: Offset(-1.0, 10),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: TextField(
+                      controller: cashController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        hintText: 'Enter Cash',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        prefixIcon: Icon(
+                          Icons.attach_money_outlined,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Gap(15),
+                  Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColor.grey, width: 1),
+                      color: AppColor.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppColor.grey2,
+                          offset: Offset(-1.0, 10),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TypeAheadField(
+                        suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            elevation: 5),
+                        textFieldConfiguration: TextFieldConfiguration(
+                          decoration: const InputDecoration(
+                            hintStyle: TextStyle(
+                              color: AppColor.grey,
+                              fontSize: 14,
+                            ),
+                            contentPadding: EdgeInsets.only(top: 4),
+                            border: InputBorder.none,
+                            hintText: "Select location ",
+                            prefixIcon: Icon(
+                              Icons.location_on,
+                              color: AppColor.grey,
+                            ),
+                          ),
+                          controller: locationController,
+                        ),
+                        suggestionsCallback: (pattern) async {
+                          return StateService.getLocationSuggestions(
+                              pattern, context);
+                        },
+                        transitionBuilder:
+                            (context, suggestionsBox, controller) {
+                          return suggestionsBox;
+                        },
+                        itemBuilder: (context, Location suggestion) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                    color: Colors.grey.withOpacity(0.1))),
+                            child: ListTile(
+                              title: Text(
+                                  '${suggestion.name} (${suggestion.locationId})'),
+                            ),
+                          );
+                        },
+                        onSuggestionSelected: (Location suggestion) {
+                          locationController.text =
+                              suggestion.locationId.toString();
+                          setString(PrefKeyConstants.locationId,
+                              '${suggestion.locationId}');
+                        }),
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text("Cancel"),
+                  onPressed: () {
+                    // setString(PrefKeyConstants.isOpen, 'true');
+                    Navigator.pushAndRemoveUntil(context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return HomePage();
+                    }), (route) => false);
+                    // Navigator.pop(context);
+                    // Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: const Text("Open Register"),
+                  onPressed: () {
+                    if (cashController.text.isNotEmpty) {
+                      showLoadingDialog(context: context);
+                      ReqPos res = ReqPos(
+                          locationId: Provider.of<PosPageViewModel>(context,
+                                  listen: false)
+                              .selectId,
+                          status: 'open',
+                          initialAmount: cashController.text,
+                          createdAt: DateFormat("yyyy-MM-dd hh:mm:ss")
+                              .format(DateTime.now())
+                              .toString());
+                      Provider.of<PosPageViewModel>(context, listen: false)
+                          .openRegister(res, context, false)
+                          .then((value) {
+                        if (value.isSuccess) {
+                          // setString(PrefKeyConstants.isOpen, 'true');
+                          ToastUtils.showCustomToast(
+                              context, 'Register open successfully', 'success');
+                        }
+                      });
+                    } else {
+                      ToastUtils.showCustomToast(
+                          context, UtilStrings.pleaseEnterYourCash, 'warning');
+                      // ToastUtils.showCustomToast(context, getTranslated(context, UtilStrings.pleaseEnterYourCash), 'warning');
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+      }
     }
   }
 
@@ -185,7 +298,7 @@ class _PosPageState extends State<PosPage> {
                             child: Row(
                               children: [
                                 InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     Navigator.pop(context);
                                   },
                                   child: const Icon(
@@ -226,14 +339,24 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   showLoadingDialog(context: context);
                                   ReqPos res = ReqPos(
-                                    locationId: Provider.of<PosPageViewModel>(context, listen: false).selectId,
+                                    locationId: Provider.of<PosPageViewModel>(
+                                            context,
+                                            listen: false)
+                                        .selectId,
                                     status: 'close',
                                     closingAmount: '100',
                                   );
-                                  Provider.of<PosPageViewModel>(context, listen: false).openRegister(res, context, true).then((value) {
-                                    if(value.isSuccess){
-                                      setString(PrefKeyConstants.isOpen, 'false');
-                                      ToastUtils.showCustomToast(context, 'Register close successfully', 'success');
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .openRegister(res, context, true)
+                                      .then((value) {
+                                    if (value.isSuccess) {
+                                      setString(
+                                          PrefKeyConstants.isOpen, 'false');
+                                      ToastUtils.showCustomToast(
+                                          context,
+                                          'Register close successfully',
+                                          'success');
                                     }
                                   });
                                 },
@@ -250,32 +373,40 @@ class _PosPageState extends State<PosPage> {
                               const Icon(
                                 Icons.location_on_outlined,
                               ),
-                              Utils.mediumHeadingText(text: 'Store - '),
-                              Consumer<PosPageViewModel>(
-                                builder: (BuildContext context, value,
-                                    Widget? child) {
-                                  return DropdownButton<String>(
-                                    value: value.selectId,
-                                    items: value.locationList
-                                        .map<DropdownMenuItem<String>>(
-                                            (Location value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.id,
-                                            child: Text(
-                                              value.id,
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          );
-                                        }).toList(),
-                                    onChanged: (String? val) async {
-                                      value.selectId = val ?? '';
-                                      value.notifyListeners();
-                                    },
-                                  );
-                                },
-                              ),
+                              Utils.mediumHeadingText(
+                                  text:
+                                      'Store - ${getString(PrefKeyConstants.locationId)}'),
+                              // Consumer<PosPageViewModel>(
+                              //   builder: (BuildContext context, value,
+                              //       Widget? child) {
+                              //     return DropdownButton<String>(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //       dropdownColor: AppColor.light_grey2,
+                              //       focusColor: AppColor.white,
+                              //       elevation: 10,
+                              //       value: value.selectId,
+                              //       items: value.locationList
+                              //           .map<DropdownMenuItem<String>>(
+                              //               (Location value) {
+                              //             return DropdownMenuItem<String>(
+                              //               value: value.id,
+                              //               child: Center(
+                              //                 child: Text(
+                              //                   value.id,
+                              //                   style: const TextStyle(
+                              //                       fontSize: 12,
+                              //                       fontWeight: FontWeight.w400),
+                              //                 ),
+                              //               ),
+                              //             );
+                              //           }).toList(),
+                              //       onChanged: (String? val) async {
+                              //         value.selectId = val ?? '';
+                              //         value.notifyListeners();
+                              //       },
+                              //     );
+                              //   },
+                              // ),
                               const Spacer(),
                               Utils.mediumHeadingText(
                                   text: '20-11-2021  19:41 PM'),
@@ -300,8 +431,8 @@ class _PosPageState extends State<PosPage> {
                             child: Container(
                               height: 40,
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: AppColor.grey, width: 1),
+                                border:
+                                    Border.all(color: AppColor.grey, width: 1),
                                 color: AppColor.white,
                                 boxShadow: const [
                                   BoxShadow(
@@ -315,12 +446,12 @@ class _PosPageState extends State<PosPage> {
                               ),
                               child: TypeAheadField(
                                   suggestionsBoxDecoration:
-                                  SuggestionsBoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(20),
-                                      elevation: 5),
+                                      SuggestionsBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          elevation: 5),
                                   textFieldConfiguration:
-                                  TextFieldConfiguration(
+                                      TextFieldConfiguration(
                                     decoration: const InputDecoration(
                                       hintStyle: TextStyle(
                                         color: AppColor.grey,
@@ -348,7 +479,7 @@ class _PosPageState extends State<PosPage> {
                                     return Container(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(15),
+                                              BorderRadius.circular(15),
                                           border: Border.all(
                                               color: Colors.grey
                                                   .withOpacity(0.1))),
@@ -379,8 +510,8 @@ class _PosPageState extends State<PosPage> {
                               height: 40,
                               decoration: BoxDecoration(
                                 color: AppColor.white,
-                                border: Border.all(
-                                    color: AppColor.grey, width: 1),
+                                border:
+                                    Border.all(color: AppColor.grey, width: 1),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: AppColor.grey2,
@@ -393,14 +524,14 @@ class _PosPageState extends State<PosPage> {
                               ),
                               child: TypeAheadField(
                                   suggestionsBoxDecoration:
-                                  SuggestionsBoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(20),
-                                      elevation: 5),
+                                      SuggestionsBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          elevation: 5),
                                   keepSuggestionsOnLoading: false,
                                   hideSuggestionsOnKeyboardHide: false,
                                   textFieldConfiguration:
-                                  TextFieldConfiguration(
+                                      TextFieldConfiguration(
                                     autofocus: false,
                                     decoration: const InputDecoration(
                                       hintStyle: TextStyle(
@@ -429,13 +560,12 @@ class _PosPageState extends State<PosPage> {
                                     return Container(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(15),
+                                              BorderRadius.circular(15),
                                           border: Border.all(
                                               color: Colors.grey
                                                   .withOpacity(0.1))),
                                       child: ListTile(
-                                        title:
-                                        Text(suggestion.name.toString()),
+                                        title: Text(suggestion.name.toString()),
                                       ),
                                     );
                                   },
@@ -444,8 +574,8 @@ class _PosPageState extends State<PosPage> {
                                         suggestion.name.toString();
                                     productController.clear();
                                     var poproviser =
-                                    Provider.of<PosPageViewModel>(context,
-                                        listen: false);
+                                        Provider.of<PosPageViewModel>(context,
+                                            listen: false);
                                     if (poproviser.cartItemList
                                         .contains(suggestion)) {
                                       suggestion.itemCounter++;
@@ -481,8 +611,7 @@ class _PosPageState extends State<PosPage> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Utils.boldSubHeadingText(
                                     text: 'Product', textSize: 12),
@@ -510,8 +639,8 @@ class _PosPageState extends State<PosPage> {
                                       itemBuilder: (context, index) {
                                         return productContainer(
                                             context: context,
-                                            title: value
-                                                .cartItemList[index].name,
+                                            title:
+                                                value.cartItemList[index].name,
                                             price: value
                                                 .cartItemList[index]
                                                 .productVariations[0]
@@ -542,71 +671,121 @@ class _PosPageState extends State<PosPage> {
   Consumer<PosPageViewModel> bottomNavigationBar(BuildContext context) {
     return Consumer<PosPageViewModel>(
         builder: (BuildContext context, value, Widget? child) {
-          List<Product> items = [];
-          var subTotal = 0.0;
-          for (var i = 0; i < value.cartItemList.length; i++) {
-            items.add(Product(
-                productId: value.cartItemList[i].id,
-                quantity: value.cartItemList[i].itemCounter.toString(),
-                variationId:
+      List<Product> items = [];
+      var subTotal = 0.0;
+      for (var i = 0; i < value.cartItemList.length; i++) {
+        items.add(Product(
+            productId: value.cartItemList[i].id,
+            quantity: value.cartItemList[i].itemCounter.toString(),
+            variationId:
                 value.cartItemList[i].productVariations[0].id.toString(),
-                unitPrice: value.cartItemList[i].productVariations[0].variations[0]
-                    .defaultSellPrice));
-            subTotal = subTotal +
-                (value.cartItemList[i].itemCounter *
-                    double.parse(value.cartItemList[i].productVariations[0]
-                        .variations[0].defaultSellPrice));
-          }
+            unitPrice: value.cartItemList[i].productVariations[0].variations[0]
+                .defaultSellPrice));
+        subTotal = subTotal +
+            (value.cartItemList[i].itemCounter *
+                double.parse(value.cartItemList[i].productVariations[0]
+                    .variations[0].defaultSellPrice));
+      }
 
-          var discountAmountForFix = double.parse(discountController.text);
-          var discountAmountForPercantage =
-              subTotal * double.parse(discountController.text) / 100;
+      var discountAmountForFix = double.parse(discountController.text);
+      var discountAmountForPercantage =
+          subTotal * double.parse(discountController.text) / 100;
 
-          var discountPrice = value.selectrange == 'Fixed'
-              ? discountAmountForFix
-              : discountAmountForPercantage;
+      var discountPrice = value.selectrange == 'Fixed'
+          ? discountAmountForFix
+          : discountAmountForPercantage;
 
-          var totalAmount = (value.selectrange == 'Fixed'
-              ? subTotal - discountAmountForFix
-              : subTotal - discountAmountForPercantage);
-              // - double.parse(cashController.text);
+      var totalAmount = (value.selectrange == 'Fixed'
+          ? subTotal - discountAmountForFix
+          : subTotal - discountAmountForPercantage);
+      // - double.parse(cashController.text);
 
-          return Container(
-            margin: const EdgeInsets.only(left: 2, right: 2),
-            height: 210,
-            decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColor.grey,
-                  offset: Offset(5.0, 10),
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                ),
-              ],
-              color: AppColor.white,
-              border: Border.all(color: AppColor.grey2, width: 1),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(15),
-                topLeft: Radius.circular(15),
-              ),
+      return Container(
+        margin: const EdgeInsets.only(left: 2, right: 2),
+        height: 210,
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: AppColor.grey,
+              offset: Offset(5.0, 10),
+              blurRadius: 15,
+              spreadRadius: 1,
             ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 12, right: 12, top: 15, bottom: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+          color: AppColor.white,
+          border: Border.all(color: AppColor.grey2, width: 1),
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(15),
+            topLeft: Radius.circular(15),
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 12, right: 12, top: 15, bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                              child: commonText(
-                                  title: UtilStrings.subTotal,
-                                  subTitle: "$subTotal")),
-                          const Gap(10),
-                          Expanded(
-                            child: InkWell(
+                      Expanded(
+                          child: commonText(
+                              title: UtilStrings.subTotal,
+                              subTitle: "$subTotal")),
+                      const Gap(10),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) {
+                            //     return AlertDialog(
+                            //       title: Column(
+                            //         children: [
+                            //           const Text("Add Tax"),
+                            //           const Gap(20),
+                            //           ContainerBorder(
+                            //             child: CustomTextFiled(
+                            //               textEditingController: taxController,
+                            //               title: '0.00',
+                            //               isContentPedding: true,
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       actions: [
+                            //         FlatButton(
+                            //           child: const Text('Clear'),
+                            //           onPressed: () {
+                            //             value.notifyListeners();
+                            //             taxController.text = '0';
+                            //             Navigator.pop(context);
+                            //           },
+                            //         ),
+                            //         FlatButton(
+                            //           child: const Text('Add'),
+                            //           onPressed: () {
+                            //             Navigator.pop(context);
+                            //           },
+                            //         ),
+                            //       ],
+                            //     );
+                            //   },
+                            // );
+                          },
+                          child: commonText(
+                              title: UtilStrings.tax,
+                              subTitle: taxController.text),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(10),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: InkWell(
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -614,26 +793,59 @@ class _PosPageState extends State<PosPage> {
                                     return AlertDialog(
                                       title: Column(
                                         children: [
-                                          const Text("Add Tax"),
+                                          const Text("Add Discount"),
+                                          const Gap(20),
+                                          Utils.boldSubHeadingText(
+                                              text: UtilStrings.discountType,
+                                              textSize: 14),
+                                          Consumer<PosPageViewModel>(
+                                            builder: (BuildContext context,
+                                                value, Widget? child) {
+                                              return DropdownButton<String>(
+                                                value: value.selectrange,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                dropdownColor:
+                                                    AppColor.light_grey2,
+                                                items: <String>[
+                                                  'Fixed',
+                                                  'Percentage',
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(
+                                                      value,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? val) async {
+                                                  value.selectrange = val ?? '';
+                                                  value.notifyListeners();
+                                                },
+                                              );
+                                            },
+                                          ),
                                           const Gap(20),
                                           ContainerBorder(
-                                            child: CustomTextFiled(
-                                              textEditingController: taxController,
-                                              title: '0.00',
-                                              isContentPedding: true,
+                                            height: 50,
+                                            child: Center(
+                                              child: CustomTextFiled(
+                                                textEditingController:
+                                                    discountController,
+                                                title: '0.00',
+                                                isContentPedding: true,
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
                                       actions: [
-                                        FlatButton(
-                                          child: const Text('Clear'),
-                                          onPressed: () {
-                                            value.notifyListeners();
-                                            taxController.text = '0';
-                                            Navigator.pop(context);
-                                          },
-                                        ),
                                         FlatButton(
                                           child: const Text('Add'),
                                           onPressed: () {
@@ -646,269 +858,211 @@ class _PosPageState extends State<PosPage> {
                                 );
                               },
                               child: commonText(
-                                  title: UtilStrings.tax,
-                                  subTitle: taxController.text),
-                            ),
-                          ),
-                        ],
-                      ),
+                                  title: UtilStrings.discount,
+                                  subTitle: discountPrice.toString()))),
                       const Gap(10),
-                      Row(
-                        children: [
-                          Expanded(
-                              child: InkWell(
-                                  onTap: (){
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return  AlertDialog(
-                                          title:  Column(
-                                            children: [
-                                              const Text("Add Discount"),
-                                              const Gap(20),
-                                              Utils.boldSubHeadingText(
-                                                  text: UtilStrings.discountType, textSize: 14),
-                                              Consumer<PosPageViewModel>(
-                                                builder: (BuildContext context, value, Widget? child) {
-                                                  return DropdownButton<String>(
-                                                    value: value.selectrange,
-                                                    items: <String>[
-                                                      'Fixed',
-                                                      'Percentage',
-                                                    ].map<DropdownMenuItem<String>>(
-                                                            (String value) {
-                                                          return DropdownMenuItem<String>(
-                                                            value: value,
-                                                            child: Text(
-                                                              value,
-                                                              style: const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight: FontWeight.w400),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                    onChanged: (String? val) async {
-                                                      value.selectrange = val ?? '';
-                                                      value.notifyListeners();
-                                                    },
-                                                  );
-                                                },),
-                                              const Gap(20),
-                                              ContainerBorder(
-                                                child: CustomTextFiled(
-                                                  textEditingController: discountController,
-                                                  title: '0.00',
-                                                  isContentPedding: true,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            FlatButton(
-                                              child: const Text('Add'),
-                                              onPressed: (){
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },);
-                                  },
-                                  child: commonText(
-                                      title: UtilStrings.discount,
-                                      subTitle: discountPrice.toString()))),
-                          const Gap(10),
-                          Expanded(
-                            child: commonText(
-                                title: UtilStrings.totalPayable, subTitle: '$totalAmount'),
-                          ),
-                        ],
+                      Expanded(
+                        child: commonText(
+                            title: UtilStrings.totalPayable,
+                            subTitle: '$totalAmount'),
                       ),
                     ],
                   ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FittedBox(
-                          child: Row(
-                            children: [
-                              Row(
-                                children: [
-                                  commonContainer(
-                                    title: 'Quot',
-                                    color: const Color(0xffb0bec5),
-                                    icon: Icons.description_outlined,
-                                    iconColor: AppColor.white,
-                                  ),
-                                  const Gap(10),
-                                  commonContainer(
-                                    title: 'Draft',
-                                    color: const Color(0xffffb74d),
-                                    icon: Icons.notes_outlined,
-                                    iconColor: AppColor.white,
-                                  ),
-                                ],
-                              ),
-                              const Gap(10),
-                              Row(
-                                children: [
-                                  InkWell(
-                                    onTap: (){
-                                      Sell s = Sell(
-                                        contactId: 1,
-                                        discountAmount: value.selectrange == 'Fixed'? discountAmountForFix.toString() :discountAmountForPercantage.toString(),
-                                        discountType:  value.selectrange,
-                                        locationId: int.parse(value.selectId),
-                                        payments:[ Payment(amount: '$totalAmount',method: UtilStrings.card)],
-                                        products: items,
-                                      );
-                                      ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                      // print('Your s is ${s.toJson()}');
-                                      print('Your s is ${se.toJson()}');
-                                      showLoadingDialog(context: context);
-                                      Provider.of<PosPageViewModel>(context,listen: false).createSell(se,context).then((value) {
-                                       // if(value.isSuccess){
-                                       //   showDialog(
-                                       //     context: context,
-                                       //     builder: (BuildContext context) {
-                                       //       return AlertDialog(
-                                       //         title: Text("My title"),
-                                       //         content: Text("This is my message."),
-                                       //         actions: [
-                                       //       TextButton(
-                                       //       child: Text("Print"),
-                                       //       onPressed: () async{
-                                       //         if (await canLaunch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96')) {
-                                       //           await launch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96');
-                                       //         } else
-                                       //         throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                       //       },
-                                       //       )
-                                       //         ],
-                                       //       );
-                                       //     },
-                                       //   );
-                                       // }
-                                      });
-                                    },
-                                    child: commonContainer(
-                                      title: UtilStrings.card,
-                                      color: const Color(0xff7986cb),
-                                      icon: Icons.credit_card_outlined,
-                                      iconColor: AppColor.white,
-                                    ),
-                                  ),
-                                  const Gap(10),
-                                  commonContainer(
-                                    title: 'Cash',
-                                    color: const Color(0xff81c784),
-                                    icon: Icons.monetization_on_outlined,
-                                    iconColor: AppColor.white,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(15),
-                        FittedBox(
-                          child: Row(
-                            children: [
-                              Row(
-                                children: [
-                                  commonContainer(
-                                    title: 'Cancel',
-                                    color: const Color(0xfff06292),
-                                    icon: Icons.cancel,
-                                    iconColor: AppColor.white,
-                                  ),
-                                  const Gap(10),
-                                  commonContainer(
-                                    title: 'Susend',
-                                    color: const Color(0xff64b5f6),
-                                    icon: Icons.notes_outlined,
-                                    iconColor: AppColor.white,
-                                  ),
-                                ],
-                              ),
-                              const Gap(10),
-                              Row(
-                                children: [
-                                  commonContainer(
-                                    title: 'Other',
-                                    color: const Color(0xffaed581),
-                                    icon: Icons.notes_outlined,
-                                    iconColor: AppColor.white,
-                                  ),
-                                  const Gap(10),
-                                  commonContainer(
-                                    title: 'Credit',
-                                    color: const Color(0xff9575cd),
-                                    icon: Icons.check,
-                                    iconColor: AppColor.white,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-            // Column(
-            //   children: [
-            //     Row(
-            //       children: [
-            //         Column(
-            //           children: [
-            //                     commonText(title: UtilStrings.subTotal, subTitle: '6.00'),
-            //                     const Gap(5),
-            //                     commonText(title: UtilStrings.discount, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //         Utils.customVerticalDivider(),
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //     Utils.customDivider(),
-            //     Row(
-            //       children: [
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //         Utils.customVerticalDivider(),
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //   ],
-            // ),
-          );
-        });
+            const Divider(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 10, bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Row(
+                        children: [
+                          Row(
+                            children: [
+                              commonContainer(
+                                title: 'Quot',
+                                color: const Color(0xffb0bec5),
+                                icon: Icons.description_outlined,
+                                iconColor: AppColor.white,
+                              ),
+                              const Gap(10),
+                              commonContainer(
+                                title: 'Draft',
+                                color: const Color(0xffffb74d),
+                                icon: Icons.notes_outlined,
+                                iconColor: AppColor.white,
+                              ),
+                            ],
+                          ),
+                          const Gap(10),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Sell s = Sell(
+                                    contactId: 1,
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage
+                                            .toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    payments: [
+                                      Payment(
+                                          amount: '$totalAmount',
+                                          method: UtilStrings.card)
+                                    ],
+                                    products: items,
+                                  );
+                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
+                                  // print('Your s is ${s.toJson()}');
+                                  print('Your s is ${se.toJson()}');
+                                  showLoadingDialog(context: context);
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .createSell(se, context)
+                                      .then((value) {
+                                    // if(value.isSuccess){
+                                    //   showDialog(
+                                    //     context: context,
+                                    //     builder: (BuildContext context) {
+                                    //       return AlertDialog(
+                                    //         title: Text("My title"),
+                                    //         content: Text("This is my message."),
+                                    //         actions: [
+                                    //       TextButton(
+                                    //       child: Text("Print"),
+                                    //       onPressed: () async{
+                                    //         if (await canLaunch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96')) {
+                                    //           await launch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96');
+                                    //         } else
+                                    //         throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                    //       },
+                                    //       )
+                                    //         ],
+                                    //       );
+                                    //     },
+                                    //   );
+                                    // }
+                                  });
+                                },
+                                child: commonContainer(
+                                  title: UtilStrings.card,
+                                  color: const Color(0xff7986cb),
+                                  icon: Icons.credit_card_outlined,
+                                  iconColor: AppColor.white,
+                                ),
+                              ),
+                              const Gap(10),
+                              commonContainer(
+                                title: 'Cash',
+                                color: const Color(0xff81c784),
+                                icon: Icons.monetization_on_outlined,
+                                iconColor: AppColor.white,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(15),
+                    FittedBox(
+                      child: Row(
+                        children: [
+                          Row(
+                            children: [
+                              commonContainer(
+                                title: 'Cancel',
+                                color: const Color(0xfff06292),
+                                icon: Icons.cancel,
+                                iconColor: AppColor.white,
+                              ),
+                              const Gap(10),
+                              commonContainer(
+                                title: 'Susend',
+                                color: const Color(0xff64b5f6),
+                                icon: Icons.notes_outlined,
+                                iconColor: AppColor.white,
+                              ),
+                            ],
+                          ),
+                          const Gap(10),
+                          Row(
+                            children: [
+                              commonContainer(
+                                title: 'Other',
+                                color: const Color(0xffaed581),
+                                icon: Icons.notes_outlined,
+                                iconColor: AppColor.white,
+                              ),
+                              const Gap(10),
+                              commonContainer(
+                                title: 'Credit',
+                                color: const Color(0xff9575cd),
+                                icon: Icons.check,
+                                iconColor: AppColor.white,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Column(
+        //   children: [
+        //     Row(
+        //       children: [
+        //         Column(
+        //           children: [
+        //                     commonText(title: UtilStrings.subTotal, subTitle: '6.00'),
+        //                     const Gap(5),
+        //                     commonText(title: UtilStrings.discount, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //         Utils.customVerticalDivider(),
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
+        //     Utils.customDivider(),
+        //     Row(
+        //       children: [
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //         Utils.customVerticalDivider(),
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
+        //   ],
+        // ),
+      );
+    });
 
     ///..................///
 
@@ -1017,7 +1171,7 @@ class _PosPageState extends State<PosPage> {
           builder: (BuildContext context, value, Widget? child) {
             return Padding(
               padding:
-              const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+                  const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1126,9 +1280,9 @@ class _PosPageState extends State<PosPage> {
 
   Widget commonContainer(
       {required title,
-        required Color? color,
-        required IconData? icon,
-        Color? iconColor}) {
+      required Color? color,
+      required IconData? icon,
+      Color? iconColor}) {
     return Container(
       height: 30,
       width: 90,
@@ -1179,10 +1333,13 @@ class _PosPageState extends State<PosPage> {
     );
   }
 }
+
 class StateService {
-  static Future<List<User>> getSuggestions(String query, BuildContext context) async {
+  static Future<List<User>> getSuggestions(
+      String query, BuildContext context) async {
     List<User> searchedUser = [];
-    searchedUser.addAll(Provider.of<PosPageViewModel>(context, listen: false).usersList);
+    searchedUser.addAll(
+        Provider.of<PosPageViewModel>(context, listen: false).usersList);
     searchedUser.retainWhere((s) {
       return s.id.toLowerCase().contains(query.toLowerCase());
     });
@@ -1193,12 +1350,24 @@ class StateService {
   static Future<List<Items>> getProductSuggestions(
       String query, BuildContext context) async {
     List<Items> products = [];
-    products.addAll(Provider.of<PosPageViewModel>(context, listen: false).productsList);
+    products.addAll(
+        Provider.of<PosPageViewModel>(context, listen: false).productsList);
     // Provider.of<PosPageViewModel>(context, listen: false).productsList;
     products.retainWhere((s) {
       return s.name.toLowerCase().contains(query.toLowerCase());
     });
-
     return products;
+  }
+
+  static Future<List<Location>> getLocationSuggestions(
+      String query, BuildContext context) async {
+    List<Location> locatations = [];
+    locatations.addAll(Provider.of<PosPageViewModel>(context, listen: false).locationList);
+    // Provider.of<PosPageViewModel>(context, listen: false).productsList;
+    locatations.removeAt(1);
+    locatations.retainWhere((s) {
+      return s.locationId.toLowerCase().contains(query.toLowerCase());
+    });
+    return locatations;
   }
 }

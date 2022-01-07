@@ -111,13 +111,13 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                     ),
                     customNewContactTextFiled(
                         title: '${getTranslated(context, UtilStrings.contactId)} : ',
-                        icon: Icons.person,
+                        icon: Icons.account_circle,
                         subTitle: getTranslated(context, UtilStrings.contactId),
                         controller: contactIdController),
                     const Gap(10),
                     customNewContactTextFiled(
                         title: '${getTranslated(context, UtilStrings.customerGroup)} : ',
-                        icon: Icons.person,
+                        icon: Icons.people,
                         subTitle: getTranslated(context, UtilStrings.none),
                         controller: customerGroupIdController
                     ),
@@ -125,7 +125,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                     customNewContactTextFiled(
                         controller: businessNameController,
                         title: '${getTranslated(context, UtilStrings.businessName)} : ',
-                        icon: Icons.person,
+                        icon: Icons.work,
                         subTitle: getTranslated(context, UtilStrings.businessName)),
                     const Gap(10),
                     customNewContactTextFiled(
@@ -137,7 +137,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                     customNewContactTextFiled(
                         controller: mobileController,
                         title: '${getTranslated(context, UtilStrings.mobileNo)} : ',
-                        icon: Icons.person,
+                        icon: Icons.settings_phone,
                         subTitle: getTranslated(context, UtilStrings.mobileNo)),
                     const Gap(15),
                     Center(
@@ -169,25 +169,26 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                       children: [
                         customNewContactTextFiled(
                             title: '${UtilStrings.taxNumber} : ',
-                            icon: Icons.person,
+                            icon: Icons.timer_10,
                             subTitle: UtilStrings.taxNumber,
                             controller: taxNumberController),
                         const Gap(10),
                         customNewContactTextFiled(
                             title: '${UtilStrings.openingBalance} : ',
-                            icon: Icons.person,
+                            icon: Icons.payments,
                             subTitle: UtilStrings.openingBalance,
                             controller: openingBalanceController),
                         const Gap(10),
                         customNewContactTextFiled(
                             title: '${UtilStrings.payTerm} : ',
-                            icon: Icons.person,
+                            icon: Icons.paid,
                             subTitle: UtilStrings.payTerm,
-                            controller: payTermNumberController),
+                            controller: payTermNumberController,
+                        ),
                         const Gap(10),
                         customNewContactTextFiled(
                             title: '${UtilStrings.creditLimit} : ',
-                            icon: Icons.person,
+                            icon: Icons.credit_card,
                             subTitle: UtilStrings.creditLimit),
                         const Gap(10),
                       ],
@@ -200,13 +201,16 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
 
               Container(
                   height: 40,
-                  margin: EdgeInsets.only(left: 15, right: 15),
+                  margin: const EdgeInsets.only(left: 15, right: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xff0d47a1),
+                    color: const Color(0xff0d47a1),
                   ),
                   child: InkWell(
                     onTap: (){
+                      print("DATA IS ${mobileController.text.toString()}");
+                      print("DATA IS ${businessNameController.text.toString()}");
+                      print("DATA IS ${firstNameController.text.toString()}");
                       ReqContact m = ReqContact(
                         type: 'business',
                         supplierBusinessName: businessNameController.text.toString(),
@@ -241,6 +245,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                         lifeStageId: '',
                         // assignedTo: ''
                       );
+
                       showLoadingDialog(context: context);
                       Provider.of<AddNewContactViewModel>(context, listen: false)
                           .addContact(m, context);
@@ -251,7 +256,6 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                       textColor: AppColor.white,
                     ),
                   )),
-
             ],
           ),
         ),
@@ -280,7 +284,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
       child: TextField(
         textAlignVertical: TextAlignVertical.center,
         textAlign: TextAlign.center,
-        // controller: controller,
+        controller: controller,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           suffixIcon: const SizedBox(),

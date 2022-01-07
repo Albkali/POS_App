@@ -10,25 +10,30 @@ import 'package:flutter/services.dart';
 class CustomTextFiled extends StatelessWidget {
   final String? title;
   final IconData? icon;
+  final bool? isPreffixIcon;
   final bool? isContentPedding;
   final TextEditingController? textEditingController;
-  const CustomTextFiled({Key? key,this.title,this.icon,this.isContentPedding = false, this.textEditingController}) : super(key: key);
+  const CustomTextFiled({Key? key,this.title,this.icon,this.isContentPedding = false, this.textEditingController,this.isPreffixIcon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
+      height: isPreffixIcon == true ? 55 : 45,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: AppColor.white,
+        // color:
+      ),
       // width: 35,
-      color: AppColor.white,
       child:  TextField(
         controller: textEditingController,
         decoration: InputDecoration(
-          contentPadding: isContentPedding == false ?  EdgeInsets.only(top: 5,left: 20,right: 20,bottom: 10) : EdgeInsets.only(top: 0,left: 10,right: 0,bottom: 15),
+          contentPadding: isContentPedding == false ?  EdgeInsets.only(top: 5,left: 20,right: 20,bottom: 10) : EdgeInsets.only(top: 0,left: 12,right: 0,bottom: 0),
           border: InputBorder.none,
-          suffixIcon: Icon(
+          suffixIcon:isContentPedding == false ? Icon(
             icon,
-            color: Colors.teal,
-          ),
+            color: AppColor.light_grey,
+          ) : null,
           hintStyle: const TextStyle(
             fontSize: 14,
           ),

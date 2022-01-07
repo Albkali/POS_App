@@ -6,9 +6,11 @@ import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/main.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/custom_button.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
+import 'package:pos/widgets/custom_app_bar.dart';
 import 'package:pos/widgets/custom_text_filed.dart';
 import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   bool? checkBoxValue = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   void _changeLanguage(Language language) async {
     Locale _locale = await setLocale(language.languageCode);
     MyApp.setLocale(context, _locale);
@@ -34,112 +37,142 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal,
-      appBar: Utils.customAppBar(
-          text: UtilStrings.smartX, icon: Icons.info_outlined),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Gap(20),
-          DropdownButton<Language>(
-            onChanged: (Language? language) {
-              _changeLanguage(language!);
-            },
-            underline: const SizedBox(),
-            items: Language.languageList()
-                .map<DropdownMenuItem<Language>>((value) {
-              return DropdownMenuItem<Language>(
-                value: value,
-                child: Row(
-                  children: [
-                    Text(
-                      value.flag,
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w400),
-                    ),
-                    Text(
-                      value.name,
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-          const Gap(50),
-          Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      // appBar: Utils.customAppBar(text: UtilStrings.smartX,icon: Icons.info_outlined),
+      backgroundColor: AppColor.light_white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Utils.regularHeadingText(text: getTranslated(context, UtilStrings.login), color: AppColor.white),
+                // Utils.customAppBarNew(context: context),
                 const Gap(20),
-                CustomTextFiled(
-                  title:getTranslated(context, UtilStrings.userName) ,
-                  icon: Icons.person_outlined,
-                  textEditingController: emailController,
-                ),
-                const Gap(20),
-                CustomTextFiled(
-                  title: getTranslated(context, UtilStrings.password),
-                  icon: Icons.lock,
-                  textEditingController: passwordController,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Checkbox(
-                        value: checkBoxValue,
-                        activeColor: Colors.green,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            checkBoxValue = newValue;
-                          });
-                        }),
-                    Utils.mediumHeadingText(
-                        text: getTranslated(context, UtilStrings.rememberMe), color: AppColor.white),
-                  ],
-                ),
-                const Gap(10),
-                InkWell(
-                  onTap: () {
-                    if (emailController.text.isEmpty) {
-                      ToastUtils.showCustomToast(
-                          context, getTranslated(context, UtilStrings.enterEmail), 'warning');
-                    } else if (passwordController.text.isEmpty) {
-                      ToastUtils.showCustomToast(
-                          context, getTranslated(context, UtilStrings.enterPassword), 'warning');
-                    } else {
-                      showLoadingDialog(context: context);
-                      context.read<LoginViewModel>().login(emailController.text, passwordController.text,context).then((value) {
-                        if (value.isSuccess) {
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context) {
-                            return HomePage();
-                          }), (route) => false);
-                        }
-                      });
-                    }
-                  },
-                  child: Container(
-                    height: 35,
-                    width: 150,
-                    color: AppColor.blue,
-                    alignment: Alignment.center,
-                    child: Utils.mediumHeadingText(
-                        text: getTranslated(context, UtilStrings.login), color: AppColor.white),
+                // DropdownButton<Language>(
+                //   onChanged: (Language? language) {
+                //     _changeLanguage(language!);
+                //   },
+                //   underline: const SizedBox(),
+                //   items: Language.languageList()
+                //       .map<DropdownMenuItem<Language>>((value) {
+                //     return DropdownMenuItem<Language>(
+                //       value: value,
+                //       child: Row(
+                //         children: [
+                //           Text(
+                //             value.flag,
+                //             style: const TextStyle(
+                //                 fontSize: 12, fontWeight: FontWeight.w400),
+                //           ),
+                //           Text(
+                //             value.name,
+                //             style: const TextStyle(
+                //                 fontSize: 12, fontWeight: FontWeight.w400),
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
+                const Gap(50),
+                Utils.boldSubHeadingText(
+                    text: getTranslated(context, UtilStrings.login).toString(),
+                    textAlign: TextAlign.center,
+                    textSize: 30),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Gap(20),
+                      CustomTextFiled(
+                        title: 'User name',
+                        // title:getTranslated(context, UtilStrings.userName) ,
+                        icon: Icons.person_outlined,
+                        textEditingController: emailController,
+                      ),
+                      const Gap(20),
+                      CustomTextFiled(
+                        title: getTranslated(context, UtilStrings.password),
+                        icon: Icons.lock,
+                        textEditingController: passwordController,
+                      ),
+                      const Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                              value: checkBoxValue,
+                              activeColor: Colors.green,
+                              onChanged: (bool? newValue) {
+                                setState(() {
+                                  checkBoxValue = newValue;
+                                });
+                              }),
+                          Utils.mediumHeadingText(
+                            text: 'Remember me',
+                              // text: getTranslated(
+                              //   context,
+                              //   UtilStrings.rememberMe,
+                              // ),
+                              color: AppColor.black),
+                        ],
+                      ),
+                    ],
                   ),
-                )
+                ),
+
               ],
             ),
-          ),
-        ],
+            InkWell(
+              onTap: () {
+                if (emailController.text.isEmpty) {
+                  ToastUtils.showCustomToast(
+                      context,
+                      getTranslated(context, UtilStrings.enterEmail),
+                      'warning');
+                } else if (passwordController.text.isEmpty) {
+                  ToastUtils.showCustomToast(
+                      context,
+                      getTranslated(context, UtilStrings.enterPassword),
+                      'warning');
+                } else {
+                  showLoadingDialog(context: context);
+                  context
+                      .read<LoginViewModel>()
+                      .login(emailController.text, passwordController.text,
+                      context)
+                      .then((value) {
+                    if (value.isSuccess) {
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return HomePage();
+                              }), (route) => false);
+                    }
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10,left: 10,right: 10),
+                child: CustomButton(
+                  title: getTranslated(context, UtilStrings.login).toString(),
+                ),
+              ),
+              // Container(
+              //   height: 35,
+              //   width: 150,
+              //   color: AppColor.blue,
+              //   alignment: Alignment.center,
+              //   child: Utils.mediumHeadingText(
+              //       text: getTranslated(context, UtilStrings.login), color: AppColor.white),
+              // ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:pos/helper/responsive_helper.dart';

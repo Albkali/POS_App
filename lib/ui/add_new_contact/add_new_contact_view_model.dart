@@ -15,8 +15,6 @@ class AddNewContactViewModel with ChangeNotifier {
 
   AddNewContactViewModel({required this.contactRepo});
 
-
-
   Future<ResponseModel> addContact(ReqContact contact,BuildContext context) async {
     print('Enter your name is --->2 ');
     notifyListeners();
@@ -45,7 +43,6 @@ class AddNewContactViewModel with ChangeNotifier {
       print('Enter your name is --->7 ${errorMessage}');
       responseModel = ResponseModel(false, errorMessage);
     }
-
     notifyListeners();
     return responseModel;
   }

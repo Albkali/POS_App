@@ -104,4 +104,16 @@ class PosRepo {
       return ApiResponse.withError(e);
     }
   }
+
+  Future<ApiResponse?> fetchRegister({required String registerId}) async {
+    try {
+      Response response = await dioClient.get(
+        ApiEndPoints.apiLUserList + '/' ,queryParameters: {'cash_register': '$registerId'}
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print(e.toString());
+      return ApiResponse.withError(e);
+    }
+  }
 }

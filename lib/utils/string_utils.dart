@@ -12,6 +12,11 @@ class UtilStrings {
   static const addNewContact = 'addNewContact';
   static const none = 'none';
   static const firstName = 'firstName';
+  static const sources = 'Sources';
+  static const shippingStatus = 'Shipping Status';
+  static const subScription = 'Subscription';
+  static const user = 'User';
+  static const dateRange = 'Date Range';
 
 
 
@@ -66,11 +71,12 @@ class UtilStrings {
   static const searchForService = 'searchForService';
   static const home = 'home';
   static const sale = 'sale';
-  static const customer = 'customer';
+  static const customer = 'Customer';
   static const pos = 'pos';
   static const addContact = 'addContact';
   static const addQuotation = 'addQuotation';
   static const setting = 'Setting';
+  static const save = 'Save';
 
   static const submit = 'submit';
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/string_utils.dart';
+import 'package:pos/widgets/custom_app_bar.dart';
 
 class Utils {
   static double getHeight(BuildContext context) {
@@ -69,9 +72,8 @@ class Utils {
 
 
 
-  static AppBar customAppBar({ String? text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor,void Function()? onTap}) {
+  static AppBar customAppBar({String? text,Color? color,bool? isCenter = false,IconData? icon,Color? textColor,Color? iconColor,void Function()? onTap}) {
     return AppBar(
-      elevation: isCenter == false ? 5 : 1,
       backgroundColor: color ?? Colors.teal,
       title:  Text(text??"",style: TextStyle(color: textColor ?? Colors.white),),
       centerTitle: isCenter == false ? true : false,
@@ -90,6 +92,45 @@ class Utils {
           ),
         ),
       ],
+    );
+  }
+
+  static Widget customAppBarNew({required BuildContext context}){
+    return CustomAppBar(
+      child: Padding(
+        padding: const EdgeInsets.only(
+            top: 30, left: 20, right: 16, bottom: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const Gap(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:  [
+                InkWell(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child
+                      : const Icon(
+                    Icons.arrow_back_ios_outlined,
+                    color: AppColor.white,
+                  ),
+                ),
+                const Text(UtilStrings.smartX,
+                    style: TextStyle(
+                        color: Colors.yellowAccent,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold)),
+                const Icon(
+                  Icons.info_outlined,
+                  color: AppColor.white,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

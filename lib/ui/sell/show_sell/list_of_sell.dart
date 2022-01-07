@@ -709,16 +709,23 @@
 // //
 // // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
+import 'package:pos/data/models/pos/res_business_location.dart';
+import 'package:pos/data/models/pos/res_users_pos.dart';
+import 'package:pos/ui/pos/pos_page.dart';
+import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/custom_button.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
-import 'package:pos/widgets/small_custom_button_with_icon.dart';
 import 'package:provider/provider.dart';
+// import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'list_of_sell_view_model.dart';
 
 class ListOfSellPage extends StatefulWidget {
@@ -729,7 +736,15 @@ class ListOfSellPage extends StatefulWidget {
 }
 
 class _ListOfSellPageState extends State<ListOfSellPage> {
-    @override
+  bool isSubcribed = false;
+
+  late TextEditingController locationController = TextEditingController();
+  late TextEditingController customerController = TextEditingController();
+  late TextEditingController paymentStatusController = TextEditingController();
+  late TextEditingController userController = TextEditingController();
+  late TextEditingController shippingStatusController = TextEditingController();
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -738,7 +753,15 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
   void loadData() async {
     await Provider.of<ListOfSellViewModel>(context, listen: false).sellList();
+    await Provider.of<PosPageViewModel>(context, listen: false).businessList();
+    await Provider.of<PosPageViewModel>(context, listen: false).userList();
   }
+
+  late ListOfSellViewModel listOfSellViewModel;
+  int index = 0;
+  String dropdownValue = 'One';
+  DateTime startDate = DateTime(2021);
+  DateTime endDate = DateTime(2025);
 
   @override
   Widget build(BuildContext context) {
@@ -769,7 +792,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                       Row(
                         children: [
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               Navigator.pop(context);
                             },
                             child: const Icon(
@@ -797,7 +820,27 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Gap(20),
+                  const Gap(15),
+
+                  /// Filter Button...
+                  InkWell(
+                    onTap: () {
+                      print('Check it...');
+                      showDialogBox();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.filter_list_outlined,
+                          ),
+                          Utils.mediumHeadingText(text: 'Flters', textSize: 15),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Gap(10),
                   Container(
                     margin: const EdgeInsets.only(left: 10, right: 10),
                     height: 45,
@@ -816,27 +859,37 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                         Expanded(
                             child: Utils.mediumHeadingText(
                                 text: 'Invoice No.',
-                                color: AppColor.dark_green,textAlign: TextAlign.center,fontWeight: FontWeight.w700)),
+                                color: AppColor.dark_green,
+                                textAlign: TextAlign.center,
+                                fontWeight: FontWeight.w700)),
                         Utils.customVerticalDivider(),
                         Expanded(
                             child: Utils.mediumHeadingText(
                                 text: 'Payment status',
-                                color: AppColor.dark_green,textAlign: TextAlign.center,fontWeight: FontWeight.w700)),
+                                color: AppColor.dark_green,
+                                textAlign: TextAlign.center,
+                                fontWeight: FontWeight.w700)),
                         Utils.customVerticalDivider(),
                         Expanded(
                             child: Utils.mediumHeadingText(
                                 text: 'Payment method',
-                                color: AppColor.dark_green,textAlign: TextAlign.center,fontWeight: FontWeight.w700)),
+                                color: AppColor.dark_green,
+                                textAlign: TextAlign.center,
+                                fontWeight: FontWeight.w700)),
                         Utils.customVerticalDivider(),
                         Expanded(
                             child: Utils.mediumHeadingText(
                                 text: 'Total amount',
-                                color: AppColor.dark_green,textAlign: TextAlign.center,fontWeight: FontWeight.w700)),
+                                color: AppColor.dark_green,
+                                textAlign: TextAlign.center,
+                                fontWeight: FontWeight.w700)),
                         Utils.customVerticalDivider(),
                         Expanded(
                             child: Utils.mediumHeadingText(
                                 text: 'Customer name',
-                                color: AppColor.dark_green,textAlign: TextAlign.center,fontWeight: FontWeight.w700)),
+                                color: AppColor.dark_green,
+                                textAlign: TextAlign.center,
+                                fontWeight: FontWeight.w700)),
                       ],
                     ),
                   ),
@@ -855,19 +908,169 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                 ///this key is necessary
                                 trailingActions: <SwipeAction>[
                                   SwipeAction(
-                                      title: "Print",
-                                      onTap: (CompletionHandler handler) async {
-                                        _launchURL(value.sellItemList[index].invoiceUrl);
-                                      },
-                                      color: Colors.red),
-                                  SwipeAction(
                                       title: "Add",
-                                      onTap: (CompletionHandler handler) async {
-                                      },
+                                      onTap:
+                                          (CompletionHandler handler) async {
+                                        if(value.sellItemList[index].paymentStatus == 'due ')
+                                        {
+                                          print("HELLO");
+                                        }
+                                        else
+                                          {
+                                            showDialog
+                                              (context: context,
+                                                builder: (BuildContext context)
+                                                {
+                                                  return AlertDialog(
+                                                    title: Utils.boldSubHeadingText(text: "Add Payment",),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                      MainAxisSize.min,
+                                                      children: [
+                                                        commonTile(
+                                                            text: 'Customer',
+                                                            subText: value
+                                                                .sellItemList[index]
+                                                                .customerGroupId),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Business',
+                                                            subText: value
+                                                                .sellItemList[index]
+                                                                .orderAddresses),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Invoice No.',
+                                                            subText:
+                                                            '#${value.sellItemList[index].invoiceNo}'),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Date',
+                                                            subText: DateFormat(
+                                                                'dd/MM/yyyy')
+                                                                .format(value
+                                                                .sellItemList[
+                                                            index]
+                                                                .transactionDate)),
+                                                        commonTile(
+                                                            text: 'Advance Balance' ,
+                                                            subText: value.sellItemList[index].rpRedeemedAmount),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Amount' ,
+                                                            subText: value.sellItemList[index].totalAmountRecovered),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Payment Method',
+                                                            subText: value.sellItemList[index].preferPaymentMethod),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Payment Account',
+                                                            subText: value.sellItemList[index].preferPaymentAccount),
+
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      FlatButton(
+                                                        child: const Text('Close'),
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                      ),
+                                                      FlatButton(
+                                                        child: const Text('Save'),
+                                                        onPressed: () {
+                                                          // Navigator.pop(context);
+                                                          // _launchURL(value
+                                                          //     .sellItemList[index]
+                                                          //     .invoiceUrl);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  );
+                                                }
+                                            );
+                                          }
+                                          },
                                       color: Colors.blue),
                                   SwipeAction(
                                       title: "View",
                                       onTap: (CompletionHandler handler) async {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "View Payments (${value.sellItemList[index].invoiceNo})"),
+                                                content: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    commonTile(
+                                                        text: 'Customer',
+                                                        subText: value
+                                                            .sellItemList[index]
+                                                            .customerGroupId),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Business',
+                                                        subText: value
+                                                            .sellItemList[index]
+                                                            .orderAddresses),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Invoice No.',
+                                                        subText:
+                                                            '#${value.sellItemList[index].invoiceNo}'),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Date',
+                                                        subText: DateFormat(
+                                                                'dd/MM/yyyy')
+                                                            .format(value
+                                                                .sellItemList[
+                                                                    index]
+                                                                .transactionDate)),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Payment Status',
+                                                        subText: value
+                                                            .sellItemList[index]
+                                                            .paymentStatus),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Reference Number',
+                                                        subText: value.sellItemList[index].refNo),
+                                                    const Gap(5),
+                                                    commonTile(
+                                                        text: 'Amount',
+                                                        subText: value.sellItemList[index].roundOffAmount),
+                                                    const Gap(5),
+                                                    commonTile
+                                                      (
+                                                        text: 'Payment Method',
+                                                        subText: value.sellItemList[index].preferPaymentMethod)
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  FlatButton(
+                                                    child: const Text('Close'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  FlatButton(
+                                                    child: const Text('Print'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      _launchURL(value
+                                                          .sellItemList[index]
+                                                          .invoiceUrl);
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
                                       },
                                       color: Colors.pink),
                                 ],
@@ -875,39 +1078,41 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                   SwipeAction(
                                       title: "Print",
                                       onTap: (CompletionHandler handler) async {
-                                        _launchURL(value.sellItemList[index].invoiceUrl);
+                                        _launchURL(value
+                                            .sellItemList[index].invoiceUrl);
                                       },
                                       color: Colors.red),
                                   SwipeAction(
-                                      title: "Add",
-                                      onTap: (CompletionHandler handler) async {
-                                      },
-                                      color: Colors.blue),
-                                  SwipeAction(
-                                      title: "View",
-                                      onTap: (CompletionHandler handler) async {
-                                      },
-                                      color: Colors.pink),
+                                      title: "Return",
+                                      onTap:
+                                          (CompletionHandler handler) async {
+
+                                          },
+                                      color: Colors.amber),
+
                                 ],
                                 child: Container(
-                                  margin: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                                  margin: const EdgeInsets.only(
+                                      left: 10, right: 10, top: 5),
                                   height: 50,
                                   width: Utils.getWidth(context),
                                   decoration: BoxDecoration(
                                     color: AppColor.grey2,
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                    Border.all(width: 1, color: AppColor.grey2),
+                                    border: Border.all(
+                                        width: 1, color: AppColor.grey2),
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Expanded(
                                           flex: 2,
                                           child: Center(
                                             child: Utils.mediumHeadingText(
-                                                text: value.sellItemList[index].id,
+                                                text: value
+                                                    .sellItemList[index].id,
                                                 color: AppColor.dark_green),
                                           )),
                                       Utils.customVerticalDivider(),
@@ -915,22 +1120,36 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         flex: 2,
                                         child: Container(
                                             margin: const EdgeInsets.all(6),
-                                            padding: const EdgeInsets.symmetric(vertical: 1,horizontal: 8),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 1, horizontal: 8),
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(20),
-                                              color: value.sellItemList[index].paymentStatus == 'paid'? AppColor.orange.withOpacity(0.4) : AppColor.green.withOpacity(0.4),
+                                                  BorderRadius.circular(20),
+                                              color: value.sellItemList[index]
+                                                          .paymentStatus ==
+                                                      'paid'
+                                                  ? AppColor.green
+                                                      .withOpacity(0.4)
+                                                  : AppColor.orange
+                                                      .withOpacity(0.4),
                                             ),
-                                            child: Utils.mediumHeadingText(
-                                                text: value.sellItemList[index].paymentStatus == 'paid'? 'Paid' :'Unpaid',
-                                                color: AppColor.black)),
+                                            child: Center(
+                                              child: Utils.mediumHeadingText(
+                                                  text: value.sellItemList[index]
+                                                              .paymentStatus ==
+                                                          'paid'
+                                                      ? 'Paid'
+                                                      : 'Due',
+                                                  color: AppColor.black),
+                                            )),
                                       ),
                                       Utils.customVerticalDivider(),
                                       Expanded(
                                           flex: 2,
                                           child: Center(
                                             child: Utils.mediumHeadingText(
-                                                text: value.sellItemList[index].payTermType,
+                                                text: value.sellItemList[index]
+                                                    .payTermType,
                                                 color: AppColor.dark_green),
                                           )),
                                       Utils.customVerticalDivider(),
@@ -938,7 +1157,8 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           flex: 2,
                                           child: Center(
                                             child: Utils.mediumHeadingText(
-                                                text: value.sellItemList[index].finalTotal,
+                                                text: value.sellItemList[index]
+                                                    .finalTotal,
                                                 color: AppColor.dark_green),
                                           )),
                                       Utils.customVerticalDivider(),
@@ -946,7 +1166,8 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           flex: 2,
                                           child: Center(
                                             child: Utils.mediumHeadingText(
-                                                text: value.sellItemList[index].customerGroupId,
+                                                text: value.sellItemList[index]
+                                                    .contactId,
                                                 color: AppColor.dark_green),
                                           )),
                                     ],
@@ -956,9 +1177,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                             }),
                       );
                     },
-
                   ),
-
                 ],
               ),
             ],
@@ -967,11 +1186,635 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
       ),
     );
   }
+
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  commonTile({required String text, required String subText}) {
+    return Row(
+      children: [
+        Utils.mediumHeadingText(text: "${text}:"),
+        Utils.regularHeadingText(text: subText)
+      ],
+    );
+  }
+
+  showDialogBox() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Consumer<PosPageViewModel>(
+            builder: (BuildContext context, value, Widget? child) {
+              return Dialog(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                insetPadding: const EdgeInsets.only(left: 10, right: 10),
+                //this right here
+                child: Container(
+                  height: 500,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: AppColor.light_white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16, right: 16, top: 10, bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Gap(10),
+                        Utils.boldSubHeadingText(text: 'View Payment'),
+                        const Gap(10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(
+                                      text: UtilStrings.businessLocation),
+                                  const Gap(5),
+                                  Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.grey, width: 1),
+                                      color: AppColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: AppColor.grey2,
+                                          offset: Offset(-1.0, 10),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: TypeAheadField(
+                                        suggestionsBoxDecoration:
+                                            SuggestionsBoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                elevation: 5),
+                                        textFieldConfiguration:
+                                            TextFieldConfiguration(
+                                          decoration: const InputDecoration(
+                                            hintStyle: TextStyle(
+                                              color: AppColor.grey,
+                                              fontSize: 14,
+                                            ),
+                                            contentPadding:
+                                                EdgeInsets.only(top: 4),
+                                            border: InputBorder.none,
+                                            hintText: " ",
+                                          ),
+                                          controller: locationController,
+                                        ),
+                                        suggestionsCallback: (pattern) async {
+                                          return StateService
+                                              .getLocationSuggestions(
+                                                  pattern, context);
+                                        },
+                                        transitionBuilder: (context,
+                                            suggestionsBox, controller) {
+                                          return suggestionsBox;
+                                        },
+                                        itemBuilder:
+                                            (context, Location suggestion) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.1))),
+                                            child: ListTile(
+                                              title: Text(
+                                                  '${suggestion.name} (${suggestion.locationId})'),
+                                            ),
+                                          );
+                                        },
+                                        onSuggestionSelected:
+                                            (Location suggestion) {
+                                          locationController.text =
+                                              suggestion.locationId.toString();
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.paymentStatus),
+                                  const Gap(5),
+                                  Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.grey, width: 1),
+                                      color: AppColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: AppColor.grey2,
+                                          offset: Offset(-1.0, 10),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: TypeAheadField(
+                                          textFieldConfiguration:
+                                              TextFieldConfiguration(
+                                            decoration:  const InputDecoration.collapsed(
+                                                     hintText: ''),
+                                            controller: paymentStatusController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getPaymentSuggestion(pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return ListTile(
+                                              title:
+                                                  Text(suggestion.toString()),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            paymentStatusController.text =
+                                                suggestion.toString();
+                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.customer),
+                                  const Gap(5),
+                                  Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.grey, width: 1),
+                                      color: AppColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: AppColor.grey2,
+                                          offset: Offset(-1.0, 10),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: TypeAheadField(
+                                        suggestionsBoxDecoration:
+                                            SuggestionsBoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                elevation: 5),
+                                        textFieldConfiguration:
+                                            TextFieldConfiguration(
+                                          decoration: const InputDecoration(
+                                            hintStyle: TextStyle(
+                                              color: AppColor.grey,
+                                              fontSize: 14,
+                                            ),
+                                            contentPadding:
+                                                EdgeInsets.only(top: 4),
+                                            border: InputBorder.none,
+                                            hintText:'',
+                                          ),
+                                          controller: customerController,
+                                        ),
+                                        suggestionsCallback: (pattern) async {
+                                          return StateService.getSuggestions(
+                                              pattern, context);
+                                        },
+                                        transitionBuilder: (context,
+                                            suggestionsBox, controller) {
+                                          return suggestionsBox;
+                                        },
+                                        itemBuilder:
+                                            (context, User suggestion) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.1))),
+                                            child: ListTile(
+                                              title: Text(
+                                                  '${suggestion.supplierBusinessName} (${suggestion.id})'),
+                                            ),
+                                          );
+                                        },
+                                        onSuggestionSelected:
+                                            (User suggestion) {
+                                          customerController.text =
+                                              suggestion.id.toString();
+                                        }),
+                                  ),
+                                  // commonDropDown(),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.dateRange),
+                                  const Gap(5),
+                                  InkWell(
+                                    onTap: () async {
+                                      final picked = await showDateRangePicker(
+                                        context: context,
+                                        lastDate: endDate,
+                                        firstDate: startDate,
+                                      );
+                                      if (picked != null && picked != null) {
+                                        print('Picked --> $startDate');
+                                        print('Picked --> $endDate');
+                                        setState(() {
+                                          endDate = picked.end;
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      height: 40,
+                                      width: 170,
+                                      decoration: BoxDecoration(
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: AppColor.grey2,
+                                            offset: Offset(-1.0, 10),
+                                            blurRadius: 15,
+                                            spreadRadius: 1,
+                                          ),
+                                        ],
+                                        color: AppColor.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            color: AppColor.grey, width: 1),
+                                      ),
+                                      child: Utils.mediumHeadingText(
+                                          text: '${startDate} - ${endDate}',
+                                          color: AppColor.grey),
+                                    ),
+                                  ),
+                                  // commonDropDown(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.user),
+                                  const Gap(5),
+                                  Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.grey, width: 1),
+                                      color: AppColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: AppColor.grey2,
+                                          offset: Offset(-1.0, 10),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: TypeAheadField(
+                                          textFieldConfiguration:
+                                              TextFieldConfiguration(
+                                            decoration:
+                                                const InputDecoration.collapsed(
+                                                    hintText: ''),
+                                            controller: userController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getUserSuggestion(
+                                                    pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return ListTile(
+                                              title:
+                                                  Text(suggestion.toString()),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            userController.text =
+                                                suggestion.toString();
+                                            userController.clear();
+                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.sources),
+                                  const Gap(5),
+                                  commonDropDown(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  commonText(text: UtilStrings.shippingStatus),
+                                  const Gap(5),
+                                  Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: AppColor.grey, width: 1),
+                                      color: AppColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: AppColor.grey2,
+                                          offset: Offset(-1.0, 10),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: TypeAheadField(
+                                          textFieldConfiguration:
+                                              TextFieldConfiguration(
+                                            decoration:
+                                                const InputDecoration.collapsed(
+                                                    hintText: ''),
+                                            controller: shippingStatusController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getShippingStatusSuggestion(
+                                                    pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return ListTile(
+                                              title:
+                                                  Text(suggestion.toString()),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            shippingStatusController.text =
+                                                suggestion.toString();
+                                            shippingStatusController.clear();
+                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(10),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Gap(20),
+                                  Row(
+                                    children: <Widget>[
+                                      Checkbox(
+                                          value: isSubcribed,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              isSubcribed = value!;
+                                            });
+                                          }),
+                                      commonText(
+                                          text: UtilStrings.subScription),
+                                      const Gap(10),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(20),
+                        InkWell(
+                          onTap: () {
+                            // Provider.of<ListOfSellViewModel>(context, listen: false).sellList();
+                            Navigator.pop(context);
+                          },
+                          child: const CustomButton(title: 'Apply'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        });
+  }
+
+  Widget commonText({required text}) {
+    return Utils.mediumHeadingText(
+        text: '${text}:',
+        color: const Color(0xff1a237e),
+        fontWeight: FontWeight.bold);
+  }
+
+  Widget commonDropDown() {
+    return Container(
+      height: 30,
+      width: 120,
+      decoration: BoxDecoration(
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: AppColor.grey, width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 5,
+          right: 5,
+        ),
+        child: DropdownButton<String>(
+          value: dropdownValue,
+          isExpanded: true,
+          icon: const Icon(
+            Icons.expand_more_outlined,
+            size: 20,
+          ),
+          elevation: 16,
+          style: const TextStyle(color: AppColor.grey),
+          underline: Container(
+            height: 0,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue = newValue!;
+            });
+          },
+          items: <String>['One', 'Two', 'Free', 'Four']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Utils.mediumHeadingText(text: value, color: AppColor.grey),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget dialogContent(BuildContext context) {
+    return Container(
+      height: 400,
+      color: AppColor.green,
+      width: double.infinity,
+      padding: const EdgeInsets.only(
+        top: 66.0 + 16.0 * 12,
+        bottom: 16.0,
+        left: 16.0,
+        right: 16.0,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // To make the card compact
+        children: <Widget>[
+          const Text(
+            'ttttttt',
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          const Text(
+            'description',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 24.0),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FlatButton(
+              color: Colors.amber,
+              onPressed: () {
+                Navigator.of(context).pop(); // To close the dialog
+              },
+              child: const Text(
+                'buttonText',
+                style: TextStyle(
+                  color: Colors.purple,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FilterServices {
+  static final List<String> paymentStatus = [
+    'All',
+    'Paid',
+    'Due',
+    'partial',
+    'OverDue'
+  ];
+  static final List<String> shippingStatusList = [
+    'All',
+    'Ordered',
+    'Packed',
+    'Shipped',
+    'Delivered',
+    'Cancelled'
+  ];
+  static final List<String> userList = [
+    'All',
+    'Mr Admin user',
+    'demo',
+    'mr demo test'
+  ];
+
+  static List<String> getPaymentSuggestion(String query) {
+    List<String> paymetstatuses = [];
+    paymetstatuses.addAll(paymentStatus);
+    paymetstatuses
+        .retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return paymetstatuses;
+  }
+
+  static List<String> getUserSuggestion(String query) {
+    List<String> userlists = [];
+    userlists.addAll(userList);
+    userlists.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return userlists;
+  }
+
+  static List<String> getShippingStatusSuggestion(String query) {
+    List<String> shippingstatuses = [];
+    shippingstatuses.addAll(shippingStatusList);
+    shippingstatuses
+        .retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return shippingstatuses;
   }
 }

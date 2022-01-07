@@ -5,6 +5,7 @@ import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
 import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
+import 'package:pos/ui/setting_page/setting_page.dart';
 import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List textList = [getTranslated(context, UtilStrings.pos), getTranslated(context, UtilStrings.addContact), getTranslated(context, UtilStrings.addQuotation), getTranslated(context, UtilStrings.setting)];
+    List textList = [getTranslated(context, UtilStrings.pos), getTranslated(context, UtilStrings.addContact), getTranslated(context, UtilStrings.addQuotation),'Setting'];
 
     return Scaffold(
       body: SafeArea(
@@ -224,6 +225,12 @@ class _HomePageState extends State<HomePage> {
                               );
                             } else if (index == 2) {
                             } else if (index == 3) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingPage(),
+                                ),
+                              );
                             } else if (index == 4) {
                             } else if (index == 5) {
                             } else if (index == 6) {

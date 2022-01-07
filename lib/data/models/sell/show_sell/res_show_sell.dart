@@ -12,24 +12,24 @@ String resShowSellToJson(ResShowSell data) => json.encode(data.toJson());
 class ResShowSell {
   ResShowSell({
     required this.data,
-    required this.links,
-    required this.meta,
+     // this.links,
+    // required this.meta,
   });
 
   List<SellItem> data;
-  Links links;
-  Meta meta;
+  // Links? links;
+  // Meta meta;
 
   factory ResShowSell.fromJson(Map<String, dynamic> json) => ResShowSell(
     data: List<SellItem>.from(json["data"].map((x) => SellItem.fromJson(x))),
-    links: Links.fromJson(json["links"]),
-    meta: Meta.fromJson(json["meta"]),
+    // links: Links.fromJson(json["links"]),
+    // meta: Meta.fromJson(json["meta"]),
   );
 
   Map<String, dynamic> toJson() => {
     "data": List<dynamic>.from(data.map((x) => x.toJson())),
-    "links": links.toJson(),
-    "meta": meta.toJson(),
+    // "links": links?.toJson(),
+    // "meta": meta.toJson(),
   };
 }
 
@@ -526,66 +526,66 @@ class PaymentLine {
     required this.updatedAt,
   });
 
-  int id;
-  int transactionId;
-  int businessId;
-  int isReturn;
+  String id;
+  String transactionId;
+  String businessId;
+  String isReturn;
   String amount;
   String method;
-  dynamic transactionNo;
-  dynamic cardTransactionNumber;
-  dynamic cardNumber;
+  String transactionNo;
+  String cardTransactionNumber;
+  String cardNumber;
   String cardType;
-  dynamic cardHolderName;
-  dynamic cardMonth;
-  dynamic cardYear;
-  dynamic cardSecurity;
-  dynamic chequeNumber;
-  dynamic bankAccountNumber;
-  DateTime paidOn;
-  int createdBy;
-  int paidThroughLink;
-  dynamic gateway;
-  int isAdvance;
-  int paymentFor;
-  dynamic parentId;
-  dynamic note;
-  dynamic document;
+  String cardHolderName;
+  String cardMonth;
+  String cardYear;
+  String cardSecurity;
+  String chequeNumber;
+  String bankAccountNumber;
+  String paidOn;
+  String createdBy;
+  String paidThroughLink;
+  String gateway;
+  String isAdvance;
+  String paymentFor;
+  String parentId;
+  String note;
+  String document;
   String paymentRefNo;
-  dynamic accountId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String accountId;
+  String createdAt;
+  String updatedAt;
 
   factory PaymentLine.fromJson(Map<String, dynamic> json) => PaymentLine(
-    id: json["id"],
-    transactionId: json["transaction_id"],
-    businessId: json["business_id"],
-    isReturn: json["is_return"],
-    amount: json["amount"],
-    method: json["method"],
-    transactionNo: json["transaction_no"],
-    cardTransactionNumber: json["card_transaction_number"],
-    cardNumber: json["card_number"],
-    cardType: json["card_type"],
-    cardHolderName: json["card_holder_name"],
-    cardMonth: json["card_month"],
-    cardYear: json["card_year"],
-    cardSecurity: json["card_security"],
-    chequeNumber: json["cheque_number"],
-    bankAccountNumber: json["bank_account_number"],
-    paidOn: DateTime.parse(json["paid_on"]),
-    createdBy: json["created_by"],
-    paidThroughLink: json["paid_through_link"],
-    gateway: json["gateway"],
-    isAdvance: json["is_advance"],
-    paymentFor: json["payment_for"],
-    parentId: json["parent_id"],
-    note: json["note"],
-    document: json["document"],
-    paymentRefNo: json["payment_ref_no"],
-    accountId: json["account_id"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"].toString(),
+    transactionId: json["transaction_id"].toString(),
+    businessId: json["business_id"].toString(),
+    isReturn: json["is_return"].toString(),
+    amount: json["amount"].toString(),
+    method: json["method"].toString(),
+    transactionNo: json["transaction_no"].toString(),
+    cardTransactionNumber: json["card_transaction_number"].toString(),
+    cardNumber: json["card_number"].toString(),
+    cardType: json["card_type"].toString(),
+    cardHolderName: json["card_holder_name"].toString(),
+    cardMonth: json["card_month"].toString(),
+    cardYear: json["card_year"].toString(),
+    cardSecurity: json["card_security"].toString(),
+    chequeNumber: json["cheque_number"].toString(),
+    bankAccountNumber: json["bank_account_number"].toString(),
+    paidOn: json["paid_on"].toString(),
+    createdBy: json["created_by"].toString(),
+    paidThroughLink: json["paid_through_link"].toString(),
+    gateway: json["gateway"].toString(),
+    isAdvance: json["is_advance"].toString(),
+    paymentFor: json["payment_for"].toString(),
+    parentId: json["parent_id"].toString(),
+    note: json["note"].toString(),
+    document: json["document"].toString(),
+    paymentRefNo: json["payment_ref_no"].toString(),
+    accountId: json["account_id"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -605,7 +605,7 @@ class PaymentLine {
     "card_security": cardSecurity,
     "cheque_number": chequeNumber,
     "bank_account_number": bankAccountNumber,
-    "paid_on": paidOn.toIso8601String(),
+    "paid_on": paidOn,
     "created_by": createdBy,
     "paid_through_link": paidThroughLink,
     "gateway": gateway,
@@ -616,8 +616,8 @@ class PaymentLine {
     "document": document,
     "payment_ref_no": paymentRefNo,
     "account_id": accountId,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
   };
 }
 
@@ -652,11 +652,11 @@ class SellLine {
     required this.updatedAt,
   });
 
-  int id;
-  int transactionId;
-  int productId;
-  int variationId;
-  int quantity;
+  String id;
+  String transactionId;
+  String productId;
+  String variationId;
+  String quantity;
   String mfgWastePercent;
   String quantityReturned;
   String unitPriceBeforeDiscount;
@@ -665,49 +665,49 @@ class SellLine {
   String lineDiscountAmount;
   String unitPriceIncTax;
   String itemTax;
-  dynamic taxId;
-  dynamic discountId;
-  dynamic lotNoLineId;
+  String taxId;
+  String discountId;
+  String lotNoLineId;
   String sellLineNote;
-  dynamic woocommerceLineItemsId;
-  dynamic soLineId;
+  String woocommerceLineItemsId;
+  String soLineId;
   String soQuantityInvoiced;
-  dynamic resServiceStaffId;
-  dynamic resLineOrderStatus;
-  dynamic parentSellLineId;
+  String resServiceStaffId;
+  String resLineOrderStatus;
+  String parentSellLineId;
   String childrenType;
-  dynamic subUnitId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String subUnitId;
+  String createdAt;
+  String updatedAt;
 
   factory SellLine.fromJson(Map<String, dynamic> json) => SellLine(
-    id: json["id"],
-    transactionId: json["transaction_id"],
-    productId: json["product_id"],
-    variationId: json["variation_id"],
-    quantity: json["quantity"],
-    mfgWastePercent: json["mfg_waste_percent"],
-    quantityReturned: json["quantity_returned"],
-    unitPriceBeforeDiscount: json["unit_price_before_discount"],
-    unitPrice: json["unit_price"],
-    lineDiscountType: json["line_discount_type"],
-    lineDiscountAmount: json["line_discount_amount"],
-    unitPriceIncTax: json["unit_price_inc_tax"],
-    itemTax: json["item_tax"],
-    taxId: json["tax_id"],
-    discountId: json["discount_id"],
-    lotNoLineId: json["lot_no_line_id"],
-    sellLineNote: json["sell_line_note"],
-    woocommerceLineItemsId: json["woocommerce_line_items_id"],
-    soLineId: json["so_line_id"],
-    soQuantityInvoiced: json["so_quantity_invoiced"],
-    resServiceStaffId: json["res_service_staff_id"],
-    resLineOrderStatus: json["res_line_order_status"],
-    parentSellLineId: json["parent_sell_line_id"],
-    childrenType: json["children_type"],
-    subUnitId: json["sub_unit_id"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
+    id: json["id"].toString(),
+    transactionId: json["transaction_id"].toString(),
+    productId: json["product_id"].toString(),
+    variationId: json["variation_id"].toString(),
+    quantity: json["quantity"].toString(),
+    mfgWastePercent: json["mfg_waste_percent"].toString(),
+    quantityReturned: json["quantity_returned"].toString(),
+    unitPriceBeforeDiscount: json["unit_price_before_discount"].toString(),
+    unitPrice: json["unit_price"].toString(),
+    lineDiscountType: json["line_discount_type"].toString(),
+    lineDiscountAmount: json["line_discount_amount"].toString(),
+    unitPriceIncTax: json["unit_price_inc_tax"].toString(),
+    itemTax: json["item_tax"].toString(),
+    taxId: json["tax_id"].toString(),
+    discountId: json["discount_id"].toString(),
+    lotNoLineId: json["lot_no_line_id"].toString(),
+    sellLineNote: json["sell_line_note"].toString(),
+    woocommerceLineItemsId: json["woocommerce_line_items_id"].toString(),
+    soLineId: json["so_line_id"].toString(),
+    soQuantityInvoiced: json["so_quantity_invoiced"].toString(),
+    resServiceStaffId: json["res_service_staff_id"].toString(),
+    resLineOrderStatus: json["res_line_order_status"].toString(),
+    parentSellLineId: json["parent_sell_line_id"].toString(),
+    childrenType: json["children_type"].toString(),
+    subUnitId: json["sub_unit_id"].toString(),
+    createdAt: json["created_at"].toString(),
+    updatedAt: json["updated_at"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -736,38 +736,38 @@ class SellLine {
     "parent_sell_line_id": parentSellLineId,
     "children_type": childrenType,
     "sub_unit_id": subUnitId,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
+    "created_at": createdAt,
+    "updated_at": updatedAt,
   };
 }
 
-class Links {
-  Links({
-    required this.first,
-    required this.last,
-    required this.prev,
-    required this.next,
-  });
-
-  String first;
-  String last;
-  dynamic prev;
-  String next;
-
-  factory Links.fromJson(Map<String, dynamic> json) => Links(
-    first: json["first"],
-    last: json["last"],
-    prev: json["prev"],
-    next: json["next"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "first": first,
-    "last": last,
-    "prev": prev,
-    "next": next,
-  };
-}
+// class Links {
+//   Links({
+//      this.first,
+//      this.last,
+//      this.prev,
+//      this.next,
+//   });
+//
+//   String? first;
+//   String? last;
+//   String? prev;
+//   String? next;
+//
+//   factory Links.fromJson(Map<String, dynamic> json) => Links(
+//     first: json["first"].toString(),
+//     last: json["last"].toString(),
+//     prev: json["prev"].toString(),
+//     next: json["next"].toString(),
+//   );
+//
+//   Map<String, dynamic> toJson() => {
+//     "first": first,
+//     "last": last,
+//     "prev": prev,
+//     "next": next,
+//   };
+// }
 
 class Meta {
   Meta({
@@ -780,22 +780,22 @@ class Meta {
     required this.total,
   });
 
-  int currentPage;
-  int from;
-  int lastPage;
+  String currentPage;
+  String from;
+  String lastPage;
   String path;
-  int perPage;
-  int to;
-  int total;
+  String perPage;
+  String to;
+  String total;
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    currentPage: json["current_page"],
-    from: json["from"],
-    lastPage: json["last_page"],
-    path: json["path"],
-    perPage: json["per_page"],
-    to: json["to"],
-    total: json["total"],
+    currentPage: json["current_page"].toString(),
+    from: json["from"].toString(),
+    lastPage: json["last_page"].toString(),
+    path: json["path"].toString(),
+    perPage: json["per_page"].toString(),
+    to: json["to"].toString(),
+    total: json["total"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
