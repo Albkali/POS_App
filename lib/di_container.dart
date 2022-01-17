@@ -24,14 +24,18 @@ Future<void> init() async {
         loggingInterceptor: sl(),
       ));
 
-  sl.registerLazySingleton(() => AuthRepo(dioClient: sl(),));
+  sl.registerLazySingleton(() => AuthRepo(
+        dioClient: sl(),
+      ));
   sl.registerLazySingleton(() => LoginViewModel(authRepo: sl()));
-  sl.registerLazySingleton(() => SellRepo(dioClient: sl(),));
+  sl.registerLazySingleton(() => SellRepo(
+        dioClient: sl(),
+      ));
   sl.registerLazySingleton(() => ListOfSellViewModel(sellRepo: sl()));
   sl.registerLazySingleton(() => ContactRepo(dioClient: sl()));
   sl.registerLazySingleton(() => AddNewContactViewModel(contactRepo: sl()));
   sl.registerLazySingleton(() => PosPageViewModel(posRepo: sl()));
-  sl.registerLazySingleton(() => ReturnSellViewModel());
+  sl.registerLazySingleton(() => ReturnSellViewModel(sellRepo: sl()));
   sl.registerLazySingleton(() => PosRepo(dioClient: sl()));
 
   final sharedPreferences = await SharedPreferences.getInstance();

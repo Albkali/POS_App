@@ -7,4 +7,6 @@ class PrefKeyConstants{
   static const String isOpen = 'isOpen';
   static const String locationId = 'locationId';
   static const String customerID = 'customerId';
+  static const String statusId = 'status';
+  static const String discountPrice = 'discountPrice';
 }

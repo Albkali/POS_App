@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/localization/app_localization.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_view_model.dart';
-import 'package:pos/ui/auth/link/add_secret_key_page.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
 import 'package:pos/ui/auth/login/login_view_model.dart';
-import 'package:pos/ui/choose_language/choose_language_page.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
-import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
-import 'package:pos/ui/setting_page/setting_page.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:provider/provider.dart';
 
@@ -21,18 +17,16 @@ import 'utils/preference_utils.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-   await di.init();
+  await di.init();
   await inits();
-  runApp(MultiProvider(
-    providers: [
+  runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => di.sl<LoginViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<ListOfSellViewModel>()),
-    ChangeNotifierProvider(create: (context) => di.sl<AddNewContactViewModel>()),
+    ChangeNotifierProvider(
+        create: (context) => di.sl<AddNewContactViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<ReturnSellViewModel>()),
-  ],
-    child: const MyApp()
-  ));
+  ], child: const MyApp()));
 }
 
 

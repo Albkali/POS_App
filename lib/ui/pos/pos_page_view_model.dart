@@ -7,9 +7,11 @@ import 'package:pos/data/models/pos/res_product_pos.dart';
 import 'package:pos/data/models/pos/res_users_pos.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/response_model.dart';
+import 'package:pos/data/models/sell/closesell/res_before_close.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/data/models/sell/create_sell/res_create_sell.dart';
 import 'package:pos/repository/pos_repo.dart';
+import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
@@ -24,6 +26,8 @@ class PosPageViewModel with ChangeNotifier {
 
   String selectrange = 'Fixed';
   String selectId = '1';
+  String invoiceUrl = '';
+  ResBeforeClose? userData;
 
   bool isShowMyAppartment = false;
   bool isShowWithinRadius = false;
@@ -48,6 +52,8 @@ class PosPageViewModel with ChangeNotifier {
 
   Future<ResponseModel> openRegister(
       ReqPos data, BuildContext context, bool isClosed) async {
+    print("DATA IS${data.toJson()}");
+
     notifyListeners();
     isLoading = true;
 
@@ -56,7 +62,8 @@ class PosPageViewModel with ChangeNotifier {
 
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
-        apiResponse.response!.statusCode == 201) {
+            apiResponse.response!.statusCode == 201 ||
+        apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
       ResPos data = ResPos.fromJson(apiResponse.response!.data);
       setString(PrefKeyConstants.customerID, data.data.id.toString());
@@ -91,7 +98,6 @@ class PosPageViewModel with ChangeNotifier {
       for (var item in data.data) {
         usersList.add(item);
       }
-
       responseModel = ResponseModel(true, 'successful');
     } else {
       String errorMessage;
@@ -143,16 +149,26 @@ class PosPageViewModel with ChangeNotifier {
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      ResCreateSell data =
-          ResCreateSell.fromJson(apiResponse.response!.data[0]);
-      print('Your total data ${data.invoiceUrl}');
-      ToastUtils.showCustomToast(
-          context, 'Sell create successfully', 'success');
+      if (apiResponse.response?.data[0]['original'] == null) {
+        ResCreateSell data =
+            ResCreateSell.fromJson(apiResponse.response!.data[0]);
+        invoiceUrl = data.invoiceUrl;
+        print('Your total data ${data.invoiceUrl}');
+        ToastUtils.showCustomToast(
+            context, 'Sell added successfully', 'success');
+        responseModel = ResponseModel(true, 'successful');
+      } else {
+        ToastUtils.showCustomToast(
+            context,
+            apiResponse.response?.data[0]['original']['error']['message'],
+            'warning');
+        responseModel = ResponseModel(false, 'successful');
+      }
       // for (var item in data.data) {
       //   productsList.add(item);
       // }
-      print('Your total product  ${data.invoiceUrl}');
-      responseModel = ResponseModel(true, 'successful');
+      // print('Your total product  ${data.invoiceUrl}');
+
       isLoading = false;
     } else {
       hideLoadingDialog(context: context);
@@ -169,8 +185,8 @@ class PosPageViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<List<ItemDetails>> UserDetails() async {
-    notifyListeners();
+  Future<ResponseModel> UserDetails() async {
+    // notifyListeners();
     ApiResponse? apiResponse = await posRepo.fetchRegister(
         registerId: '${getString(PrefKeyConstants.customerID)}');
     ResponseModel responseModel;
@@ -178,12 +194,10 @@ class PosPageViewModel with ChangeNotifier {
         apiResponse.response!.statusCode == 200) {
       registerDetails.clear();
       ResLogedUserDetils data =
-          ResLogedUserDetils.fromJson(apiResponse.response!.data);
-      registerDetails = data.data;
-      print("HELLO HELLO${registerDetails[0].status}");
-      print("HELLO HELLO${registerDetails[0].id}");
-      print("HELLO HELLO${registerDetails[0].userId}");
-      print("HELLO HELLO${registerDetails[0].totalCheques}");
+          await ResLogedUserDetils.fromJson(apiResponse.response!.data);
+      registerDetails = await data.data;
+      AppConstant.status = registerDetails[0].status;
+      print("HELLO STAUS${registerDetails[0].status}");
       responseModel = ResponseModel(true, 'successful');
     } else {
       String errorMessage;
@@ -196,7 +210,7 @@ class PosPageViewModel with ChangeNotifier {
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
-    return registerDetails;
+    return responseModel;
   }
 
   Future<ResponseModel> businessList() async {
@@ -222,6 +236,38 @@ class PosPageViewModel with ChangeNotifier {
       }
       print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
+    }
+    notifyListeners();
+    return responseModel;
+  }
+
+  Future<ResponseModel> beforeClose(
+      String cashId, String locationId, BuildContext context) async {
+    notifyListeners();
+    isLoading = true;
+
+    ApiResponse? apiResponse = await posRepo.beforeCloseRegister(
+        locationId: locationId, cashId: cashId);
+
+    ResponseModel responseModel;
+    if (apiResponse!.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      hideLoadingDialog(context: context);
+      ResBeforeClose data = ResBeforeClose.fromJson(apiResponse.response?.data);
+      userData = data;
+      responseModel = ResponseModel(true, 'successful');
+      isLoading = false;
+    } else {
+      hideLoadingDialog(context: context);
+      String errorMessage;
+      if (apiResponse.error is String) {
+        errorMessage = apiResponse.error.toString();
+      } else {
+        print('Your error is ${apiResponse.error}');
+        errorMessage = apiResponse.error.errors[0].message;
+      }
+      responseModel = ResponseModel(false, errorMessage);
+      isLoading = false;
     }
     notifyListeners();
     return responseModel;

@@ -10,9 +10,9 @@ import 'package:pos/data/models/pos/res_product_pos.dart';
 import 'package:pos/data/models/pos/res_users_pos.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
-import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
@@ -40,7 +40,10 @@ class _PosPageState extends State<PosPage> {
   late TextEditingController taxController = TextEditingController();
   late TextEditingController discountController = TextEditingController();
   TextEditingController cashController = TextEditingController();
+  TextEditingController totalPayableController = TextEditingController();
   late double SubTotal = 0;
+  double balance = 0;
+
   @override
   void initState() {
     print('Your page value is ${getString(PrefKeyConstants.isOpen)}');
@@ -56,10 +59,8 @@ class _PosPageState extends State<PosPage> {
 
     discountController.text = '0';
     taxController.text = '0';
-
     Provider.of<PosPageViewModel>(context, listen: false).userList();
     Provider.of<PosPageViewModel>(context, listen: false).productList();
-    Provider.of<PosPageViewModel>(context, listen: false).UserDetails();
     fetchData();
 
     super.initState();
@@ -67,12 +68,10 @@ class _PosPageState extends State<PosPage> {
 
   fetchData() async {
     print("HHHH");
-    print("HHHH007${Provider.of<PosPageViewModel>(context, listen: false).registerDetails[0].status}");
-    if (Provider.of<PosPageViewModel>(context, listen: false).registerDetails[0].status == 'open')
-    {
+    print("VALUE OF POS STATUS IS ${getString(PrefKeyConstants.statusId)}");
+    if (AppConstant.status == 'open') {
       print("HELLO IF PART");
-    }
-    else {
+    } else {
       print("HELLO ELSE PART");
       if (getString(PrefKeyConstants.isOpen) != 'true') {
         WidgetsBinding.instance!.addPostFrameCallback((_) async {
@@ -166,16 +165,14 @@ class _PosPageState extends State<PosPage> {
                                 border: Border.all(
                                     color: Colors.grey.withOpacity(0.1))),
                             child: ListTile(
-                              title: Text(
-                                  '${suggestion.name} (${suggestion.locationId})'),
+                              title:
+                                  Text('${suggestion.name} (${suggestion.id})'),
                             ),
                           );
                         },
                         onSuggestionSelected: (Location suggestion) {
-                          locationController.text =
-                              suggestion.locationId.toString();
-                          setString(PrefKeyConstants.locationId,
-                              '${suggestion.locationId}');
+                          locationController.text = suggestion.id.toString();
+                          setString(PrefKeyConstants.locationId, suggestion.id);
                         }),
                   ),
                 ],
@@ -197,11 +194,11 @@ class _PosPageState extends State<PosPage> {
                   child: const Text("Open Register"),
                   onPressed: () {
                     if (cashController.text.isNotEmpty) {
+                      print(
+                          "Location ID is${getString(PrefKeyConstants.locationId)}");
                       showLoadingDialog(context: context);
                       ReqPos res = ReqPos(
-                          locationId: Provider.of<PosPageViewModel>(context,
-                                  listen: false)
-                              .selectId,
+                          locationId: getString(PrefKeyConstants.locationId),
                           status: 'open',
                           initialAmount: cashController.text,
                           createdAt: DateFormat("yyyy-MM-dd hh:mm:ss")
@@ -254,7 +251,12 @@ class _PosPageState extends State<PosPage> {
                 posprovider.productsList[i].itemCounter++;
               } else {
                 print("hello else part");
-                posprovider.cartItemList.add(posprovider.productsList[i]);
+                if (posprovider.productsList[i].enableStock == '0') {
+                  ToastUtils.showCustomToast(
+                      context, "PRODUCT NOT AVAILABLE", "warning");
+                } else {
+                  posprovider.cartItemList.add(posprovider.productsList[i]);
+                }
               }
             }
           }
@@ -337,26 +339,126 @@ class _PosPageState extends State<PosPage> {
                               ),
                               InkWell(
                                 onTap: () {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  print(
+                                      "Location Id Is${getString(PrefKeyConstants.locationId)}");
+                                  print(
+                                      "Cash register iD IS${getString(PrefKeyConstants.customerID)}");
                                   showLoadingDialog(context: context);
-                                  ReqPos res = ReqPos(
-                                    locationId: Provider.of<PosPageViewModel>(
-                                            context,
-                                            listen: false)
-                                        .selectId,
-                                    status: 'close',
-                                    closingAmount: '100',
-                                  );
                                   Provider.of<PosPageViewModel>(context,
                                           listen: false)
-                                      .openRegister(res, context, true)
+                                      .beforeClose(
+                                          getString(
+                                              PrefKeyConstants.customerID),
+                                          getString(
+                                              PrefKeyConstants.locationId),
+                                          context)
                                       .then((value) {
                                     if (value.isSuccess) {
-                                      setString(
-                                          PrefKeyConstants.isOpen, 'false');
-                                      ToastUtils.showCustomToast(
-                                          context,
-                                          'Register close successfully',
-                                          'success');
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Utils.mediumHeadingText(
+                                                  text:
+                                                      "Current Register (${path.userData!.data.currentRegister})"),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Divider(),
+                                                  commonText(
+                                                      title: "Total",
+                                                      subTitle: path.userData!
+                                                          .data.closingAmount),
+                                                  const Gap(5),
+                                                  commonText(
+                                                      title: "Total Card Slips",
+                                                      subTitle: path.userData!
+                                                          .data.totalCardSlips),
+                                                  const Gap(5),
+                                                  commonText(
+                                                      title: "Total Cheques",
+                                                      subTitle: path.userData!
+                                                          .data.totalCheques),
+                                                ],
+                                              ),
+                                              actions: [
+                                                FlatButton(
+                                                  child: const Text('Cancel'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: const Text(
+                                                      'Close Register'),
+                                                  onPressed: () {
+                                                    print(
+                                                        "location Id is${getString(PrefKeyConstants.locationId)}");
+                                                    print(
+                                                        "clsosed At is ${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()).toString()}");
+                                                    print(
+                                                        "Cash Register Id Is${getString(PrefKeyConstants.customerID)}");
+                                                    print(
+                                                        "Closing Amount is${path.userData!.data.closingAmount}");
+                                                    print(
+                                                        "Total Card slip is${path.userData!.data.totalCardSlips}");
+                                                    print(
+                                                        "Total Chequeis ${path.userData!.data.totalCheques}");
+                                                    showLoadingDialog(
+                                                        context: context);
+                                                    ReqPos res = ReqPos(
+                                                      locationId: getString(
+                                                          PrefKeyConstants
+                                                              .locationId),
+                                                      status: 'close',
+                                                      closedAt: DateFormat(
+                                                              "yyyy-MM-dd hh:mm:ss")
+                                                          .format(
+                                                              DateTime.now())
+                                                          .toString(),
+                                                      cashRegisterId: getString(
+                                                          PrefKeyConstants
+                                                              .customerID),
+                                                      closingAmount: path
+                                                          .userData!
+                                                          .data
+                                                          .closingAmount,
+                                                      totalCardSlips: path
+                                                          .userData!
+                                                          .data
+                                                          .totalCardSlips,
+                                                      totalCheques: path
+                                                          .userData!
+                                                          .data
+                                                          .totalCheques,
+                                                      closingNote: 'doloram',
+                                                      transactionIds: '1',
+                                                    );
+                                                    Provider.of<PosPageViewModel>(
+                                                            context,
+                                                            listen: false)
+                                                        .openRegister(
+                                                            res, context, true)
+                                                        .then((value) {
+                                                      if (value.isSuccess) {
+                                                        setString(
+                                                            PrefKeyConstants
+                                                                .isOpen,
+                                                            'false');
+                                                        ToastUtils.showCustomToast(
+                                                            context,
+                                                            'Register close successfully',
+                                                            'success');
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
                                     }
                                   });
                                 },
@@ -576,7 +678,10 @@ class _PosPageState extends State<PosPage> {
                                     var poproviser =
                                         Provider.of<PosPageViewModel>(context,
                                             listen: false);
-                                    if (poproviser.cartItemList
+                                    if (suggestion.enableStock == '0') {
+                                      ToastUtils.showCustomToast(context,
+                                          "PRODUCT NOT AVAILABLE", "warning");
+                                    } else if (poproviser.cartItemList
                                         .contains(suggestion)) {
                                       suggestion.itemCounter++;
                                     } else {
@@ -836,6 +941,8 @@ class _PosPageState extends State<PosPage> {
                                             height: 50,
                                             child: Center(
                                               child: CustomTextFiled(
+                                                textInputType:
+                                                    TextInputType.number,
                                                 textEditingController:
                                                     discountController,
                                                 title: '0.00',
@@ -861,10 +968,15 @@ class _PosPageState extends State<PosPage> {
                                   title: UtilStrings.discount,
                                   subTitle: discountPrice.toString()))),
                       const Gap(10),
+                      // Expanded(
+                      //   child: commonText2(
+                      //       title: UtilStrings.totalPayable,
+                      //       cntrl: totalPayableController),
+                      // ),
                       Expanded(
                         child: commonText(
                             title: UtilStrings.totalPayable,
-                            subTitle: '$totalAmount'),
+                            subTitle: totalAmount.toString()),
                       ),
                     ],
                   ),
@@ -882,90 +994,329 @@ class _PosPageState extends State<PosPage> {
                     FittedBox(
                       child: Row(
                         children: [
-                          Row(
-                            children: [
-                              commonContainer(
-                                title: 'Quot',
-                                color: const Color(0xffb0bec5),
-                                icon: Icons.description_outlined,
-                                iconColor: AppColor.white,
-                              ),
-                              const Gap(10),
-                              commonContainer(
-                                title: 'Draft',
-                                color: const Color(0xffffb74d),
-                                icon: Icons.notes_outlined,
-                                iconColor: AppColor.white,
-                              ),
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: 1,
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.quotation)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              print('Your s is ${se.toJson()}');
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: 'Quote',
+                              color: const Color(0xffb0bec5),
+                              icon: Icons.description_outlined,
+                              iconColor: AppColor.white,
+                            ),
                           ),
                           const Gap(10),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: 1,
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage
-                                            .toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    payments: [
-                                      Payment(
-                                          amount: '$totalAmount',
-                                          method: UtilStrings.card)
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Utils.boldSubHeadingText(
+                                            text: "Payment", textSize: 14),
+                                        const Divider(),
+                                        const Gap(10),
+                                        commonText(
+                                            title: "Total Items",
+                                            subTitle: items[0].quantity),
+                                        const Gap(10),
+                                        commonText(
+                                            title: "Total Payable",
+                                            subTitle: totalAmount.toString()),
+                                        const Gap(10),
+                                        commonText2(
+                                            title: "Total Paying",
+                                            cntrl: totalPayableController,
+                                            onChanged: (String) {
+                                              setState(() {
+                                                balance = totalAmount -
+                                                    double.parse(
+                                                        totalPayableController
+                                                            .text);
+                                                print("HHH$balance");
+                                              });
+                                            }),
+                                        const Gap(10),
+                                        commonText(
+                                            title: "Balance",
+                                            subTitle: balance.toString()),
+                                      ],
+                                    ),
+                                    actions: [
+                                      FlatButton(
+                                        child: const Text('Finalize Payment'),
+                                        onPressed: () {
+                                          Sell s = Sell(
+                                            contactId: 1,
+                                            discountAmount: value.selectrange ==
+                                                    'Fixed'
+                                                ? discountAmountForFix
+                                                    .toString()
+                                                : discountAmountForPercantage
+                                                    .toString(),
+                                            discountType: value.selectrange,
+                                            locationId:
+                                                int.parse(value.selectId),
+                                            payments: [
+                                              Payment(
+                                                  amount: '${balance}',
+                                                  method: UtilStrings.card)
+                                            ],
+                                            products: items,
+                                          );
+                                          ReqCreateSell se =
+                                              ReqCreateSell(sells: [s]);
+                                          print('Your s is ${se.toJson()}');
+                                          showLoadingDialog(context: context);
+                                          Provider.of<PosPageViewModel>(context,
+                                                  listen: false)
+                                              .createSell(se, context)
+                                              .then((value) {
+                                            if (value.isSuccess) {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        "My Invoice"),
+                                                    content: const Text(
+                                                        "Do you want to see invoice."),
+                                                    actions: [
+                                                      TextButton(
+                                                        child:
+                                                            const Text("YES"),
+                                                        onPressed: () async {
+                                                          if (await canLaunch(
+                                                              Provider.of<PosPageViewModel>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .invoiceUrl)) {
+                                                            await launch(Provider.of<
+                                                                        PosPageViewModel>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .invoiceUrl);
+                                                          } else {
+                                                            throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                                          }
+                                                        },
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: const Text('close'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                     ],
-                                    products: items,
                                   );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  // print('Your s is ${s.toJson()}');
-                                  print('Your s is ${se.toJson()}');
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                          listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    // if(value.isSuccess){
-                                    //   showDialog(
-                                    //     context: context,
-                                    //     builder: (BuildContext context) {
-                                    //       return AlertDialog(
-                                    //         title: Text("My title"),
-                                    //         content: Text("This is my message."),
-                                    //         actions: [
-                                    //       TextButton(
-                                    //       child: Text("Print"),
-                                    //       onPressed: () async{
-                                    //         if (await canLaunch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96')) {
-                                    //           await launch('https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96');
-                                    //         } else
-                                    //         throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                    //       },
-                                    //       )
-                                    //         ],
-                                    //       );
-                                    //     },
-                                    //   );
-                                    // }
-                                  });
                                 },
-                                child: commonContainer(
-                                  title: UtilStrings.card,
-                                  color: const Color(0xff7986cb),
-                                  icon: Icons.credit_card_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              commonContainer(
-                                title: 'Cash',
-                                color: const Color(0xff81c784),
-                                icon: Icons.monetization_on_outlined,
-                                iconColor: AppColor.white,
-                              ),
-                            ],
+                              );
+                            },
+                            child: commonContainer(
+                              title: 'Draft',
+                              color: const Color(0xffffb74d),
+                              icon: Icons.notes_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: 1,
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '${totalAmount}',
+                                      method: UtilStrings.card)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              print('Your s is ${se.toJson()}');
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.card,
+                              color: const Color(0xff7986cb),
+                              icon: Icons.credit_card_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: 1,
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.cash)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+
+                              print('Your s is ${se.toJson()}');
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.cash,
+                              color: const Color(0xff81c784),
+                              icon: Icons.monetization_on_outlined,
+                              iconColor: AppColor.white,
+                            ),
                           ),
                         ],
                       ),
@@ -974,40 +1325,150 @@ class _PosPageState extends State<PosPage> {
                     FittedBox(
                       child: Row(
                         children: [
-                          Row(
-                            children: [
-                              commonContainer(
-                                title: 'Cancel',
-                                color: const Color(0xfff06292),
-                                icon: Icons.cancel,
-                                iconColor: AppColor.white,
-                              ),
-                              const Gap(10),
-                              commonContainer(
-                                title: 'Susend',
-                                color: const Color(0xff64b5f6),
-                                icon: Icons.notes_outlined,
-                                iconColor: AppColor.white,
-                              ),
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: 1,
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: 'creditSell')
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              print('Your s is ${se.toJson()}');
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: 'Credit',
+                              color: const Color(0xff9575cd),
+                              icon: Icons.check,
+                              iconColor: AppColor.white,
+                            ),
                           ),
                           const Gap(10),
-                          Row(
-                            children: [
-                              commonContainer(
-                                title: 'Other',
-                                color: const Color(0xffaed581),
-                                icon: Icons.notes_outlined,
-                                iconColor: AppColor.white,
-                              ),
-                              const Gap(10),
-                              commonContainer(
-                                title: 'Credit',
-                                color: const Color(0xff9575cd),
-                                icon: Icons.check,
-                                iconColor: AppColor.white,
-                              ),
-                            ],
+                          commonContainer(
+                            title: 'Cancel',
+                            color: const Color(0xfff06292),
+                            icon: Icons.cancel,
+                            iconColor: AppColor.white,
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            child: commonContainer(
+                              title: 'Pay',
+                              color: const Color(0xff64b5f6),
+                              icon: Icons.notes_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: 1,
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.other)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              print('Your s is ${se.toJson()}');
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.other,
+                              color: const Color(0xffaed581),
+                              icon: Icons.notes_outlined,
+                              iconColor: AppColor.white,
+                            ),
                           ),
                         ],
                       ),
@@ -1149,6 +1610,16 @@ class _PosPageState extends State<PosPage> {
     //     ),
     //   ),
     // );
+  }
+
+  commonTile({required String text, required String subText}) {
+    return Row(
+      children: [
+        Utils.mediumHeadingText(text: "${text}:"),
+        const Gap(5),
+        Utils.regularHeadingText(text: subText)
+      ],
+    );
   }
 
   Widget productContainer({
@@ -1332,6 +1803,35 @@ class _PosPageState extends State<PosPage> {
       ],
     );
   }
+
+  Widget commonText2(
+      {required String title,
+      Color? color,
+      TextEditingController? cntrl,
+      void Function(String)? onChanged}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Utils.mediumHeadingText(text: title, color: color ?? AppColor.black),
+        //
+        const Spacer(),
+        Container(
+          height: 30,
+          width: 80,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColor.blue.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: TextField(
+            style: const TextStyle(color: AppColor.blue, fontSize: 15),
+            onChanged: onChanged,
+            controller: cntrl,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class StateService {
@@ -1362,9 +1862,9 @@ class StateService {
   static Future<List<Location>> getLocationSuggestions(
       String query, BuildContext context) async {
     List<Location> locatations = [];
-    locatations.addAll(Provider.of<PosPageViewModel>(context, listen: false).locationList);
+    locatations.addAll(
+        Provider.of<PosPageViewModel>(context, listen: false).locationList);
     // Provider.of<PosPageViewModel>(context, listen: false).productsList;
-    locatations.removeAt(1);
     locatations.retainWhere((s) {
       return s.locationId.toLowerCase().contains(query.toLowerCase());
     });

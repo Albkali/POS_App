@@ -4,12 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
 import 'package:pos/ui/pos/pos_page.dart';
+import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/setting_page/setting_page.dart';
-import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -208,8 +209,11 @@ class _HomePageState extends State<HomePage> {
                               mainAxisSpacing: 30.0),
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (index == 0) {
+                              await Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .UserDetails();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
