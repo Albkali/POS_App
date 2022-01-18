@@ -72,12 +72,13 @@ class ListOfSellViewModel with ChangeNotifier {
       {String? locationId,
       String? paymentStatus,
       String? contactId,
-      String? ShippingStatus}) async {
+      String? ShippingStatus,
+      String? IsSubscribed}) async {
     _isLoading = true;
     notifyListeners();
 
     ApiResponse? apiResponse = await sellRepo.getFilterListSell(
-        locationId, paymentStatus, contactId, ShippingStatus);
+        locationId, paymentStatus, contactId, ShippingStatus, IsSubscribed);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {

@@ -4,7 +4,6 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/returnsell/req_add_return_sell.dart';
 import 'package:pos/data/models/sell/returnsell/res_add_return_sell.dart';
 import 'package:pos/repository/sell_repo.dart';
-
 class ReturnSellViewModel extends ChangeNotifier {
   final SellRepo sellRepo;
 

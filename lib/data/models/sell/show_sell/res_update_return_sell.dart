@@ -2,7 +2,6 @@
 //
 //     final resUpdateReturnSell = resUpdateReturnSellFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResUpdateReturnSell resUpdateReturnSellFromJson(String str) =>

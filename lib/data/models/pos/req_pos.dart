@@ -49,8 +49,7 @@ class ReqPos {
         transactionIds: json["transaction_ids"].toString(),
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "location_id": locationId,
         "initial_amount": initialAmount,
         "created_at": createdAt,

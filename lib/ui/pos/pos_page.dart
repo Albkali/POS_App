@@ -60,7 +60,7 @@ class _PosPageState extends State<PosPage> {
     discountController.text = '0';
     taxController.text = '0';
     Provider.of<PosPageViewModel>(context, listen: false).userList();
-    Provider.of<PosPageViewModel>(context, listen: false).productList();
+    // Provider.of<PosPageViewModel>(context, listen: false).productList();
     fetchData();
 
     super.initState();
@@ -165,13 +165,13 @@ class _PosPageState extends State<PosPage> {
                                 border: Border.all(
                                     color: Colors.grey.withOpacity(0.1))),
                             child: ListTile(
-                              title:
-                                  Text('${suggestion.name} (${suggestion.id})'),
+                              title: Text(
+                                  '${suggestion.locationId} (${suggestion.name})'),
                             ),
                           );
                         },
                         onSuggestionSelected: (Location suggestion) {
-                          locationController.text = suggestion.id.toString();
+                          locationController.text = suggestion.name.toString();
                           setString(PrefKeyConstants.locationId, suggestion.id);
                         }),
                   ),
@@ -238,7 +238,7 @@ class _PosPageState extends State<PosPage> {
       var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
       try {
         barcodeScanResList = (await FlutterBarcodeScanner.scanBarcode(
-            '#ff6666', 'Cancel', true, ScanMode.BARCODE));
+            '#ff6666', 'close', true, ScanMode.BARCODE));
         print("barcode list ${barcodeScanResList.runtimeType} ");
         if (barcodeScanResList == '-1') {
           print("in if part");
@@ -249,13 +249,16 @@ class _PosPageState extends State<PosPage> {
                   .contains(posprovider.productsList[i])) {
                 print("remaining part");
                 posprovider.productsList[i].itemCounter++;
+                HapticFeedback.heavyImpact();
               } else {
                 print("hello else part");
                 if (posprovider.productsList[i].enableStock == '0') {
                   ToastUtils.showCustomToast(
                       context, "PRODUCT NOT AVAILABLE", "warning");
+                  HapticFeedback.heavyImpact();
                 } else {
                   posprovider.cartItemList.add(posprovider.productsList[i]);
+                  HapticFeedback.heavyImpact();
                 }
               }
             }
@@ -395,18 +398,6 @@ class _PosPageState extends State<PosPage> {
                                                   child: const Text(
                                                       'Close Register'),
                                                   onPressed: () {
-                                                    print(
-                                                        "location Id is${getString(PrefKeyConstants.locationId)}");
-                                                    print(
-                                                        "clsosed At is ${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()).toString()}");
-                                                    print(
-                                                        "Cash Register Id Is${getString(PrefKeyConstants.customerID)}");
-                                                    print(
-                                                        "Closing Amount is${path.userData!.data.closingAmount}");
-                                                    print(
-                                                        "Total Card slip is${path.userData!.data.totalCardSlips}");
-                                                    print(
-                                                        "Total Chequeis ${path.userData!.data.totalCheques}");
                                                     showLoadingDialog(
                                                         context: context);
                                                     ReqPos res = ReqPos(
@@ -444,10 +435,16 @@ class _PosPageState extends State<PosPage> {
                                                             res, context, true)
                                                         .then((value) {
                                                       if (value.isSuccess) {
+                                                        Provider.of<PosPageViewModel>(
+                                                                context,
+                                                                listen: false)
+                                                            .cartItemList
+                                                            .clear();
                                                         setString(
                                                             PrefKeyConstants
                                                                 .isOpen,
                                                             'false');
+                                                        Navigator.pop(context);
                                                         ToastUtils.showCustomToast(
                                                             context,
                                                             'Register close successfully',
@@ -593,7 +590,7 @@ class _PosPageState extends State<PosPage> {
                                   },
                                   onSuggestionSelected: (User suggestion) {
                                     userController.text =
-                                        suggestion.id.toString();
+                                        suggestion.name.toString();
                                   }),
                             ),
                           ),
@@ -608,91 +605,105 @@ class _PosPageState extends State<PosPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColor.white,
-                                border:
-                                    Border.all(color: AppColor.grey, width: 1),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: AppColor.grey2,
-                                    offset: Offset(-1.0, 10),
-                                    blurRadius: 15,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: TypeAheadField(
-                                  suggestionsBoxDecoration:
-                                      SuggestionsBoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          elevation: 5),
-                                  keepSuggestionsOnLoading: false,
-                                  hideSuggestionsOnKeyboardHide: false,
-                                  textFieldConfiguration:
-                                      TextFieldConfiguration(
-                                    autofocus: false,
-                                    decoration: const InputDecoration(
-                                      hintStyle: TextStyle(
-                                        color: AppColor.grey,
-                                        fontSize: 14,
-                                      ),
-                                      contentPadding: EdgeInsets.only(top: 4),
-                                      border: InputBorder.none,
-                                      hintText: UtilStrings.enterProductName,
-                                      prefixIcon: Icon(
-                                        Icons.zoom_in_outlined,
-                                        color: AppColor.grey,
-                                      ),
+                            child: InkWell(
+                              onTap: () async {
+                                showLoadingDialog(context: context);
+                                await Provider.of<PosPageViewModel>(context,
+                                        listen: false)
+                                    .productList(context: context);
+                              },
+                              child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: AppColor.white,
+                                  border: Border.all(
+                                      color: AppColor.grey, width: 1),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: AppColor.grey2,
+                                      offset: Offset(-1.0, 10),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
                                     ),
-                                    controller: productController,
-                                  ),
-                                  suggestionsCallback: (pattern) async {
-                                    return StateService.getProductSuggestions(
-                                        pattern, context);
-                                  },
-                                  transitionBuilder:
-                                      (context, suggestionsBox, controller) {
-                                    return suggestionsBox;
-                                  },
-                                  itemBuilder: (context, Items suggestion) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          border: Border.all(
-                                              color: Colors.grey
-                                                  .withOpacity(0.1))),
-                                      child: ListTile(
-                                        title: Text(suggestion.name.toString()),
+                                  ],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: TypeAheadField(
+                                    suggestionsBoxDecoration:
+                                        SuggestionsBoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            elevation: 5),
+                                    keepSuggestionsOnLoading: false,
+                                    hideSuggestionsOnKeyboardHide: false,
+                                    textFieldConfiguration:
+                                        TextFieldConfiguration(
+                                      autofocus: false,
+                                      decoration: const InputDecoration(
+                                        hintStyle: TextStyle(
+                                          color: AppColor.grey,
+                                          fontSize: 14,
+                                        ),
+                                        contentPadding: EdgeInsets.only(top: 4),
+                                        border: InputBorder.none,
+                                        hintText: UtilStrings.enterProductName,
+                                        prefixIcon: Icon(
+                                          Icons.zoom_in_outlined,
+                                          color: AppColor.grey,
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  onSuggestionSelected: (Items suggestion) {
-                                    productController.text =
-                                        suggestion.name.toString();
-                                    productController.clear();
-                                    var poproviser =
-                                        Provider.of<PosPageViewModel>(context,
-                                            listen: false);
-                                    if (suggestion.enableStock == '0') {
-                                      ToastUtils.showCustomToast(context,
-                                          "PRODUCT NOT AVAILABLE", "warning");
-                                    } else if (poproviser.cartItemList
-                                        .contains(suggestion)) {
-                                      suggestion.itemCounter++;
-                                    } else {
-                                      poproviser.cartItemList.add(suggestion);
-                                    }
-                                  }),
+                                      controller: productController,
+                                    ),
+                                    suggestionsCallback: (pattern) async {
+                                      return StateService.getProductSuggestions(
+                                          pattern, context);
+                                    },
+                                    transitionBuilder:
+                                        (context, suggestionsBox, controller) {
+                                      return suggestionsBox;
+                                    },
+                                    itemBuilder: (context, Items suggestion) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border: Border.all(
+                                                color: Colors.grey
+                                                    .withOpacity(0.1))),
+                                        child: ListTile(
+                                          title:
+                                              Text(suggestion.name.toString()),
+                                        ),
+                                      );
+                                    },
+                                    onSuggestionSelected: (Items suggestion) {
+                                      productController.text =
+                                          suggestion.name.toString();
+                                      HapticFeedback.heavyImpact();
+                                      productController.clear();
+                                      var poproviser =
+                                          Provider.of<PosPageViewModel>(context,
+                                              listen: false);
+                                      if (suggestion.enableStock == '0') {
+                                        ToastUtils.showCustomToast(context,
+                                            "PRODUCT NOT AVAILABLE", "warning");
+                                      } else if (poproviser.cartItemList
+                                          .contains(suggestion)) {
+                                        suggestion.itemCounter++;
+                                      } else {
+                                        poproviser.cartItemList.add(suggestion);
+                                      }
+                                    }),
+                              ),
                             ),
                           ),
                           const Gap(5),
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
+                              showLoadingDialog(context: context);
+                              await Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .productList(context: context);
                               scanBarcodeNormal();
                             },
                             child: const Icon(
@@ -795,14 +806,15 @@ class _PosPageState extends State<PosPage> {
       var discountAmountForFix = double.parse(discountController.text);
       var discountAmountForPercantage =
           subTotal * double.parse(discountController.text) / 100;
+      var tax = subTotal * 15 / 100;
 
       var discountPrice = value.selectrange == 'Fixed'
           ? discountAmountForFix
           : discountAmountForPercantage;
 
       var totalAmount = (value.selectrange == 'Fixed'
-          ? subTotal - discountAmountForFix
-          : subTotal - discountAmountForPercantage);
+          ? subTotal - discountAmountForFix + tax
+          : subTotal - discountAmountForPercantage + tax);
       // - double.parse(cashController.text);
 
       return Container(
@@ -880,8 +892,7 @@ class _PosPageState extends State<PosPage> {
                             // );
                           },
                           child: commonText(
-                              title: UtilStrings.tax,
-                              subTitle: taxController.text),
+                              title: UtilStrings.tax, subTitle: '$tax'),
                         ),
                       ),
                     ],
@@ -968,11 +979,6 @@ class _PosPageState extends State<PosPage> {
                                   title: UtilStrings.discount,
                                   subTitle: discountPrice.toString()))),
                       const Gap(10),
-                      // Expanded(
-                      //   child: commonText2(
-                      //       title: UtilStrings.totalPayable,
-                      //       cntrl: totalPayableController),
-                      // ),
                       Expanded(
                         child: commonText(
                             title: UtilStrings.totalPayable,
@@ -1003,6 +1009,9 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+                                status: 'draft',
+                                subStatus: 'quotation',
+                                isQuotation: 'true',
                                 payments: [
                                   Payment(
                                       amount: '$totalAmount',
@@ -1181,7 +1190,7 @@ class _PosPageState extends State<PosPage> {
                               );
                             },
                             child: commonContainer(
-                              title: 'Draft',
+                              title: 'Multi',
                               color: const Color(0xffffb74d),
                               icon: Icons.notes_outlined,
                               iconColor: AppColor.white,
@@ -1270,7 +1279,6 @@ class _PosPageState extends State<PosPage> {
                                 products: items,
                               );
                               ReqCreateSell se = ReqCreateSell(sells: [s]);
-
                               print('Your s is ${se.toJson()}');
                               showLoadingDialog(context: context);
                               Provider.of<PosPageViewModel>(context,
@@ -1335,9 +1343,7 @@ class _PosPageState extends State<PosPage> {
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
                                 payments: [
-                                  Payment(
-                                      amount: '$totalAmount',
-                                      method: 'creditSell')
+                                  Payment(amount: '0', method: UtilStrings.cash)
                                 ],
                                 products: items,
                               );
@@ -1389,22 +1395,15 @@ class _PosPageState extends State<PosPage> {
                               iconColor: AppColor.white,
                             ),
                           ),
-                          const Gap(10),
-                          commonContainer(
-                            title: 'Cancel',
-                            color: const Color(0xfff06292),
-                            icon: Icons.cancel,
-                            iconColor: AppColor.white,
-                          ),
-                          const Gap(10),
-                          InkWell(
-                            child: commonContainer(
-                              title: 'Pay',
-                              color: const Color(0xff64b5f6),
-                              icon: Icons.notes_outlined,
-                              iconColor: AppColor.white,
-                            ),
-                          ),
+                          // const Gap(10),
+                          // InkWell(
+                          //   child: commonContainer(
+                          //     title: 'Pay',
+                          //     color: const Color(0xff64b5f6),
+                          //     icon: Icons.notes_outlined,
+                          //     iconColor: AppColor.white,
+                          //   ),
+                          // ),
                           const Gap(10),
                           InkWell(
                             onTap: () {
@@ -1469,6 +1468,13 @@ class _PosPageState extends State<PosPage> {
                               icon: Icons.notes_outlined,
                               iconColor: AppColor.white,
                             ),
+                          ),
+                          const Gap(10),
+                          commonContainer(
+                            title: 'Cancel',
+                            color: const Color(0xfff06292),
+                            icon: Icons.cancel,
+                            iconColor: AppColor.white,
                           ),
                         ],
                       ),
@@ -1611,7 +1617,6 @@ class _PosPageState extends State<PosPage> {
     //   ),
     // );
   }
-
   commonTile({required String text, required String subText}) {
     return Row(
       children: [
@@ -1631,6 +1636,7 @@ class _PosPageState extends State<PosPage> {
     required Items item,
   }) {
     return Container(
+        height: 60,
         margin: const EdgeInsets.only(bottom: 2),
         decoration: BoxDecoration(
           color: AppColor.white,
@@ -1642,7 +1648,7 @@ class _PosPageState extends State<PosPage> {
           builder: (BuildContext context, value, Widget? child) {
             return Padding(
               padding:
-                  const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+              const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1663,7 +1669,7 @@ class _PosPageState extends State<PosPage> {
                           ),
                         ),
                         const Gap(5),
-                        FittedBox(child: Utils.mediumHeadingText(text: title)),
+                        Expanded(child: Utils.mediumHeadingText(text: title)),
                       ],
                     ),
                   ),
@@ -1672,6 +1678,7 @@ class _PosPageState extends State<PosPage> {
                   Expanded(
                     child: Column(
                       children: [
+                        const Gap(15),
                         Container(
                           height: 22,
                           width: 110,
@@ -1771,9 +1778,11 @@ class _PosPageState extends State<PosPage> {
               size: 22,
             ),
             const Gap(3),
-            FittedBox(
-              child: Utils.mediumHeadingText(
-                  text: title, textSize: 12, color: AppColor.white),
+            Expanded(
+              child: FittedBox(
+                child: Utils.mediumHeadingText(
+                    text: title, textSize: 12, color: AppColor.white),
+              ),
             ),
           ],
         ),
@@ -1852,7 +1861,6 @@ class StateService {
     List<Items> products = [];
     products.addAll(
         Provider.of<PosPageViewModel>(context, listen: false).productsList);
-    // Provider.of<PosPageViewModel>(context, listen: false).productsList;
     products.retainWhere((s) {
       return s.name.toLowerCase().contains(query.toLowerCase());
     });
@@ -1861,13 +1869,12 @@ class StateService {
 
   static Future<List<Location>> getLocationSuggestions(
       String query, BuildContext context) async {
-    List<Location> locatations = [];
-    locatations.addAll(
+    List<Location> locations = [];
+    locations.addAll(
         Provider.of<PosPageViewModel>(context, listen: false).locationList);
-    // Provider.of<PosPageViewModel>(context, listen: false).productsList;
-    locatations.retainWhere((s) {
+    locations.retainWhere((s) {
       return s.locationId.toLowerCase().contains(query.toLowerCase());
     });
-    return locatations;
+    return locations;
   }
 }

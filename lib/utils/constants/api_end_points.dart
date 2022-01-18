@@ -1,15 +1,13 @@
 /* API End Points Constants*/
 
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
-
 class  ApiEndPoints{
-    static String BASE_URL = "https://erpx.shajan-sa.com/" ;
-    // static String BASE_URL = "https://${getString(PrefKeyConstants.BASE_URL)}/" ;
-         // ?'https://erpx.shajan-sa.com/';
+  static String BASE_URL = "https://erpx.shajan-sa.com/";
 
-   static const String apiLogin = "oauth/token";
-   static const String apiCreateSell = "connector/api/sell";
+  // static String BASE_URL = "https://${getString(PrefKeyConstants.BASE_URL)}/" ;
+  // ?'https://erpx.shajan-sa.com/';
+
+  static const String apiLogin = "oauth/token";
+  static const String apiCreateSell = "connector/api/sell";
   static const String apiListOfSell = "connector/api/sell";
   static const String apiContact = "connector/api/contactapi";
   static const String apiCreateContact = "connector/api/contactapi";

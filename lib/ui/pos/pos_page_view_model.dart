@@ -113,13 +113,14 @@ class PosPageViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> productList() async {
+  Future<ResponseModel> productList({required BuildContext context}) async {
     notifyListeners();
 
     ApiResponse? apiResponse = await posRepo.fetchItem();
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
+      hideLoadingDialog(context: context);
       productsList.clear();
       ResProductPos data = ResProductPos.fromJson(apiResponse.response!.data);
       for (var item in data.data) {
@@ -127,6 +128,7 @@ class PosPageViewModel with ChangeNotifier {
       }
       responseModel = ResponseModel(true, 'successful');
     } else {
+      hideLoadingDialog(context: context);
       String errorMessage;
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
@@ -185,13 +187,14 @@ class PosPageViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> UserDetails() async {
+  Future<ResponseModel> UserDetails({required BuildContext context}) async {
     // notifyListeners();
     ApiResponse? apiResponse = await posRepo.fetchRegister(
         registerId: '${getString(PrefKeyConstants.customerID)}');
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
+      hideLoadingDialog(context: context);
       registerDetails.clear();
       ResLogedUserDetils data =
           await ResLogedUserDetils.fromJson(apiResponse.response!.data);
@@ -200,6 +203,7 @@ class PosPageViewModel with ChangeNotifier {
       print("HELLO STAUS${registerDetails[0].status}");
       responseModel = ResponseModel(true, 'successful');
     } else {
+      hideLoadingDialog(context: context);
       String errorMessage;
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
@@ -10,6 +11,7 @@ import 'package:pos/ui/setting_page/setting_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
+import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,13 +32,18 @@ class _HomePageState extends State<HomePage> {
   List iconList = [
     Icons.payment_outlined,
     Icons.contacts_outlined,
-    Icons.description_outlined,
+    Icons.paid_outlined,
     Icons.settings_outlined,
   ];
 
   @override
   Widget build(BuildContext context) {
-    List textList = [getTranslated(context, UtilStrings.pos), getTranslated(context, UtilStrings.addContact), getTranslated(context, UtilStrings.addQuotation),'Setting'];
+    List textList = [
+      getTranslated(context, UtilStrings.pos),
+      getTranslated(context, UtilStrings.addContact),
+      getTranslated(context, UtilStrings.sale),
+      'Setting'
+    ];
 
     return Scaffold(
       body: SafeArea(
@@ -69,13 +76,13 @@ class _HomePageState extends State<HomePage> {
                               const Gap(10),
                               Row(
                                 children: const [
-                                  Text('Smart',
+                                  Text('Divllo',
                                       style: TextStyle(
                                           color: Colors.yellowAccent,
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold)),
                                   Gap(5),
-                                  Text('x',
+                                  Text('',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 18,
@@ -122,20 +129,17 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
+                                onTap: () {
+                                  print("HH");
+                                  HapticFeedback.heavyImpact();
+                                },
                                 text: getTranslated(context, UtilStrings.home),
                                 icon: Icons.phone_android_outlined,
                               ),
                               commonCircleWithText(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                    // return InAppWebViewExampleScreen();
-                                    return ListOfSellPage();
-                                    // return ShowSellPage();
-                                  }));
-                                },
-                                text: getTranslated(context, UtilStrings.sale),
-                                icon: Icons.paid_outlined,
+                                text: getTranslated(
+                                    context, UtilStrings.quotation),
+                                icon: Icons.description_outlined,
                               ),
                               commonCircleWithText(
                                 text: getTranslated(context, UtilStrings.customer),
@@ -211,9 +215,10 @@ class _HomePageState extends State<HomePage> {
                         return InkWell(
                           onTap: () async {
                             if (index == 0) {
+                              showLoadingDialog(context: context);
                               await Provider.of<PosPageViewModel>(context,
                                       listen: false)
-                                  .UserDetails();
+                                  .UserDetails(context: context);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -228,6 +233,10 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               );
                             } else if (index == 2) {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return ListOfSellPage();
+                              }));
                             } else if (index == 3) {
                               Navigator.push(
                                 context,

@@ -4,9 +4,12 @@ import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/utils/constants/api_end_points.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 
 class PosRepo {
   final DioClient dioClient;
+
   PosRepo({
     required this.dioClient,
   });
@@ -25,8 +28,14 @@ class PosRepo {
               }
             : {
                 "location_id": data.locationId,
+                "closed_at": data.closedAt,
+                "status": data.status,
+                "cash_register_id": data.cashRegisterId,
                 "closing_amount": data.closingAmount,
-                "status": data.status
+                "total_card_slips": data.totalCardSlips,
+                "total_cheques": data.totalCheques,
+                "closing_note": data.closingNote,
+                "transaction_ids": data.transactionIds
               },
       );
       return ApiResponse.withSuccess(response);
@@ -52,7 +61,9 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiProductList,
-      );
+          queryParameters: {
+            "location_id": getString(PrefKeyConstants.locationId)
+          });
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
@@ -67,16 +78,16 @@ class PosRepo {
       //     {
       //   "sells": [
       //     {
-      //       "location_id": 1,
-      //       "contact_id": 1,
-      //       "discount_amount": 10,
-      //       "discount_type": "fixed",
-      //       "products": [
-      //         {
-      //           "product_id": 1,
-      //           "quantity": 1,
-      //           "variation_id": 1,
-      //           "unit_price": 437.5
+              //       "location_id": 1,
+              //       "contact_id": 1,
+              //       "discount_amount": 10,
+              //       "discount_type": "fixed",
+              //       "products": [
+              //         {
+              //           "product_id": 1,
+              //           "quantity": 1,
+              //           "variation_id": 1,
+              //           "unit_price": 437.5
               //         }
               //       ],
               //       "payments": [
@@ -92,7 +103,6 @@ class PosRepo {
       return ApiResponse.withError(e);
     }
   }
-
   Future<ApiResponse?> createSellError(ReqCreateSell sell) async {
     try {
       Response response =

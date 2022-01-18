@@ -19,7 +19,6 @@ import 'package:provider/provider.dart';
 class ReturnSellPage extends StatefulWidget {
   final SellItem item;
   final String payline;
-
   const ReturnSellPage({Key? key, required this.item, required this.payline})
       : super(key: key);
 

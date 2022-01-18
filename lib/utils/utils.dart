@@ -36,6 +36,7 @@ class Utils {
         fontSize: textSize ?? 14,
         fontWeight: fontWeight??FontWeight.w500,
         color: color ?? AppColor.black_2,
+        // overflow: TextOverflow.ellipsis
       ),
     );
   }

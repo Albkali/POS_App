@@ -56,8 +56,6 @@ class UtilStrings {
   static const pleaseEnterYourCash = 'Please enter your cash';
 
 
-
-
   static const moreInfirmation = 'moreInfirmation';
   static const customerGroup = 'customerGroup';
   static const contactId = 'contactId';
@@ -75,7 +73,6 @@ class UtilStrings {
   static const save = 'Save';
 
   static const submit = 'submit';
-
 
 
 }

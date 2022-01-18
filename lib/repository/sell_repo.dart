@@ -6,7 +6,6 @@ import 'package:pos/utils/constants/api_end_points.dart';
 
 class SellRepo{
   final DioClient dioClient;
-
   SellRepo({required this.dioClient});
 
   Future<ApiResponse?> getListSell() async {
@@ -39,8 +38,12 @@ class SellRepo{
     }
   }
 
-  Future<ApiResponse?> getFilterListSell(String? locationId,
-      String? paymentStatus, String? contactId, String? ShippingStatus) async {
+  Future<ApiResponse?> getFilterListSell(
+      String? locationId,
+      String? paymentStatus,
+      String? contactId,
+      String? ShippingStatus,
+      String? IsSubscribed) async {
     try {
       Response response =
           await dioClient.get(ApiEndPoints.apiListOfSell, queryParameters: {
@@ -49,6 +52,7 @@ class SellRepo{
         'payment_status': '$paymentStatus',
         'contact_id': '$contactId',
         'shipping_status': '$ShippingStatus',
+        'only_subscriptions': '$IsSubscribed'
       });
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -56,7 +60,6 @@ class SellRepo{
       return ApiResponse.withError(e);
     }
   }
-
   Future<ApiResponse?> addSellReturn({required ReqAddReturnSell req}) async {
     try {
       Response response = await dioClient.post(ApiEndPoints.apiAddSellReturn,
@@ -67,7 +70,6 @@ class SellRepo{
       return ApiResponse.withError(e);
     }
   }
-
   Future<ApiResponse?> getSpecifiedContact({required String contactId}) async {
     try {
       Response response =

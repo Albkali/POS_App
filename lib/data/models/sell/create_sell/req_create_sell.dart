@@ -2,10 +2,10 @@
 //
 //     final reqCreateSell = reqCreateSellFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
-ReqCreateSell reqCreateSellFromJson(String str) => ReqCreateSell.fromJson(json.decode(str));
+ReqCreateSell reqCreateSellFromJson(String str) =>
+    ReqCreateSell.fromJson(json.decode(str));
 
 String reqCreateSellToJson(ReqCreateSell data) => json.encode(data.toJson());
 
@@ -17,12 +17,12 @@ class ReqCreateSell {
   List<Sell> sells;
 
   factory ReqCreateSell.fromJson(Map<String, dynamic> json) => ReqCreateSell(
-    sells: List<Sell>.from(json["sells"].map((x) => Sell.fromJson(x))),
-  );
+        sells: List<Sell>.from(json["sells"].map((x) => Sell.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "sells": List<dynamic>.from(sells.map((x) => x.toJson())),
-  };
+        "sells": List<dynamic>.from(sells.map((x) => x.toJson())),
+      };
 }
 
 class Sell {
@@ -31,6 +31,9 @@ class Sell {
     required this.contactId,
     required this.discountAmount,
     required this.discountType,
+    this.status,
+    this.subStatus,
+    this.isQuotation,
     required this.products,
     required this.payments,
   });
@@ -39,26 +42,37 @@ class Sell {
   int contactId;
   String discountAmount;
   String discountType;
+  String? status;
+  String? subStatus;
+  String? isQuotation;
   List<Product> products;
   List<Payment> payments;
 
   factory Sell.fromJson(Map<String, dynamic> json) => Sell(
-    locationId: json["location_id"],
-    contactId: json["contact_id"],
-    discountAmount: json["discount_amount"].toString(),
-    discountType: json["discount_type"],
-    products: List<Product>.from(json["products"].map((x) => Product.fromJson(x))),
-    payments: List<Payment>.from(json["payments"].map((x) => Payment.fromJson(x))),
-  );
+        locationId: json["location_id"],
+        contactId: json["contact_id"],
+        discountAmount: json["discount_amount"].toString(),
+        discountType: json["discount_type"].toString(),
+        status: json["status"].toString(),
+        subStatus: json["sub_status"].toString(),
+        isQuotation: json["is_quotation"].toString(),
+        products: List<Product>.from(
+            json["products"].map((x) => Product.fromJson(x))),
+        payments: List<Payment>.from(
+            json["payments"].map((x) => Payment.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "location_id": locationId,
-    "contact_id": contactId,
-    "discount_amount": discountAmount,
-    "discount_type": discountType,
-    "products": List<dynamic>.from(products.map((x) => x.toJson())),
-    "payments": List<dynamic>.from(payments.map((x) => x.toJson())),
-  };
+        "location_id": locationId,
+        "contact_id": contactId,
+        "discount_amount": discountAmount,
+        "discount_type": discountType,
+        "status": status,
+        "sub_status": subStatus,
+        "is_quotation": isQuotation,
+        "products": List<dynamic>.from(products.map((x) => x.toJson())),
+        "payments": List<dynamic>.from(payments.map((x) => x.toJson())),
+      };
 }
 
 class Payment {
@@ -71,14 +85,14 @@ class Payment {
   String method;
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
-    amount: json["amount"].toString(),
-    method: json["method"],
-  );
+        amount: json["amount"].toString(),
+        method: json["method"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "amount": amount,
-    "method": method,
-  };
+        "amount": amount,
+        "method": method,
+      };
 }
 
 class Product {
@@ -95,16 +109,16 @@ class Product {
   String unitPrice;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-    productId: json["product_id"].toString(),
-    quantity: json["quantity"].toString(),
-    variationId: json["variation_id"].toString(),
-    unitPrice: json["unit_price"].toString(),
-  );
+        productId: json["product_id"].toString(),
+        quantity: json["quantity"].toString(),
+        variationId: json["variation_id"].toString(),
+        unitPrice: json["unit_price"].toString(),
+      );
 
   Map<String, dynamic> toJson() => {
-    "product_id": productId,
-    "quantity": quantity,
-    "variation_id": variationId,
-    "unit_price": unitPrice,
-  };
+        "product_id": productId,
+        "quantity": quantity,
+        "variation_id": variationId,
+        "unit_price": unitPrice,
+      };
 }
