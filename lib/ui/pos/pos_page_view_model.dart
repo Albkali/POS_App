@@ -10,6 +10,7 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/closesell/res_before_close.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/data/models/sell/create_sell/res_create_sell.dart';
+import 'package:pos/data/models/sell/create_sell/res_create_sell_error.dart';
 import 'package:pos/repository/pos_repo.dart';
 import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
@@ -37,6 +38,8 @@ class PosPageViewModel with ChangeNotifier {
   List<Items> cartItemList = [];
   List<Location> locationList = [];
   List<ItemDetails> registerDetails = [];
+  List<String> skuList = [];
+
 
   void addCounter(Items item) {
     item.itemCounter++;
@@ -62,20 +65,22 @@ class PosPageViewModel with ChangeNotifier {
 
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
-            apiResponse.response!.statusCode == 201 ||
-        apiResponse.response!.statusCode == 200) {
+        apiResponse.response!.statusCode == 201 || apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
       ResPos data = ResPos.fromJson(apiResponse.response!.data);
       setString(PrefKeyConstants.customerID, data.data.id.toString());
       responseModel = ResponseModel(true, 'successful');
       Navigator.pop(context);
       isLoading = false;
-    } else {
+    }
+    else
+      {
       hideLoadingDialog(context: context);
       String errorMessage;
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
-      } else {
+      }
+      else {
         print('Your error is ${apiResponse.error}');
         errorMessage = apiResponse.error.errors[0].message;
       }
@@ -120,15 +125,18 @@ class PosPageViewModel with ChangeNotifier {
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
-      hideLoadingDialog(context: context);
+      // hideLoadingDialog(context: context);
       productsList.clear();
+      skuList.clear();
       ResProductPos data = ResProductPos.fromJson(apiResponse.response!.data);
       for (var item in data.data) {
         productsList.add(item);
+        skuList.add(item.sku);
+
       }
       responseModel = ResponseModel(true, 'successful');
     } else {
-      hideLoadingDialog(context: context);
+      // hideLoadingDialog(context: context);
       String errorMessage;
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
@@ -148,31 +156,34 @@ class PosPageViewModel with ChangeNotifier {
     isLoading = true;
     ApiResponse? apiResponse = await posRepo.createSell(sell);
     ResponseModel responseModel;
-    if (apiResponse!.response != null &&
+    if(apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      if (apiResponse.response?.data[0]['original'] == null) {
+      if(apiResponse.response?.data[0]['original'] == null )
+      {
         ResCreateSell data =
-            ResCreateSell.fromJson(apiResponse.response!.data[0]);
+        ResCreateSell.fromJson(apiResponse.response!.data[0]);
         invoiceUrl = data.invoiceUrl;
         print('Your total data ${data.invoiceUrl}');
         ToastUtils.showCustomToast(
             context, 'Sell added successfully', 'success');
         responseModel = ResponseModel(true, 'successful');
-      } else {
-        ToastUtils.showCustomToast(
-            context,
-            apiResponse.response?.data[0]['original']['error']['message'],
-            'warning');
-        responseModel = ResponseModel(false, 'successful');
       }
+      else
+        {
+          ToastUtils.showCustomToast(
+              context, apiResponse.response?.data[0]['original']['error']['message'], 'warning');
+          responseModel = ResponseModel(false, 'successful');
+
+        }
       // for (var item in data.data) {
       //   productsList.add(item);
       // }
       // print('Your total product  ${data.invoiceUrl}');
 
       isLoading = false;
-    } else {
+    }
+    else {
       hideLoadingDialog(context: context);
       String errorMessage;
       if (apiResponse.error is String) {
@@ -193,7 +204,7 @@ class PosPageViewModel with ChangeNotifier {
         registerId: '${getString(PrefKeyConstants.customerID)}');
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
-        apiResponse.response!.statusCode == 200) {
+        apiResponse.response!.statusCode == 200)  {
       hideLoadingDialog(context: context);
       registerDetails.clear();
       ResLogedUserDetils data =
@@ -202,9 +213,11 @@ class PosPageViewModel with ChangeNotifier {
       AppConstant.status = registerDetails[0].status;
       print("HELLO STAUS${registerDetails[0].status}");
       responseModel = ResponseModel(true, 'successful');
-    } else {
-      hideLoadingDialog(context: context);
-      String errorMessage;
+    }
+    else
+      {
+        hideLoadingDialog(context: context);
+        String errorMessage;
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
       } else {
@@ -246,12 +259,12 @@ class PosPageViewModel with ChangeNotifier {
   }
 
   Future<ResponseModel> beforeClose(
-      String cashId, String locationId, BuildContext context) async {
+      String cashId,String locationId, BuildContext context) async {
     notifyListeners();
     isLoading = true;
 
-    ApiResponse? apiResponse = await posRepo.beforeCloseRegister(
-        locationId: locationId, cashId: cashId);
+    ApiResponse? apiResponse =
+    await posRepo.beforeCloseRegister(locationId: locationId,cashId: cashId);
 
     ResponseModel responseModel;
     if (apiResponse!.response != null &&

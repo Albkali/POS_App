@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pos/utils/color_utils.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+
+
 
 class CustomTextFiled extends StatelessWidget {
   final String? title;
@@ -10,17 +15,7 @@ class CustomTextFiled extends StatelessWidget {
   final TextEditingController? textEditingController;
   final void Function(String)? onchange;
   final TextInputType? textInputType;
-
-  const CustomTextFiled(
-      {Key? key,
-      this.title,
-      this.icon,
-      this.isContentPedding = false,
-      this.onchange,
-      this.textEditingController,
-      this.isPreffixIcon,
-      this.textInputType})
-      : super(key: key);
+  const CustomTextFiled({Key? key,this.title,this.icon,this.isContentPedding = false,this.onchange, this.textEditingController,this.isPreffixIcon, this.textInputType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +32,12 @@ class CustomTextFiled extends StatelessWidget {
         keyboardType: textInputType,
         controller: textEditingController,
         decoration: InputDecoration(
-          contentPadding: isContentPedding == false
-              ? EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 10)
-              : EdgeInsets.only(top: 0, left: 12, right: 0, bottom: 0),
+          contentPadding: isContentPedding == false ?  EdgeInsets.only(top: 5,left: 20,right: 20,bottom: 10) : EdgeInsets.only(top: 0,left: 12,right: 0,bottom: 0),
           border: InputBorder.none,
-          suffixIcon: isContentPedding == false
-              ? Icon(
-                  icon,
-                  color: AppColor.light_grey,
-                )
-              : null,
+          suffixIcon:isContentPedding == false ? Icon(
+            icon,
+            color: AppColor.light_grey,
+          ) : null,
           hintStyle: const TextStyle(
             fontSize: 14,
           ),

@@ -2,6 +2,7 @@
 //
 //     final reqPos = reqPosFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReqPos reqPosFromJson(String str) => ReqPos.fromJson(json.decode(str));
@@ -36,31 +37,31 @@ class ReqPos {
   String? transactionIds;
 
   factory ReqPos.fromJson(Map<String, dynamic> json) => ReqPos(
-        locationId: json["location_id"].toString(),
-        initialAmount: json["initial_amount"].toString(),
-        createdAt: json["created_at"].toString(),
-        closedAt: json["closed_at"].toString(),
-        status: json["status"].toString(),
-        cashRegisterId: json["cash_register_id"].toString(),
-        closingAmount: json["closing_amount"].toString(),
-        totalCardSlips: json["total_card_slips"].toString(),
-        totalCheques: json["total_cheques"].toString(),
-        closingNote: json["closing_note"].toString(),
-        transactionIds: json["transaction_ids"].toString(),
-      );
+    locationId: json["location_id"].toString(),
+    initialAmount: json["initial_amount"].toString(),
+    createdAt: json["created_at"].toString(),
+    closedAt: json["closed_at"].toString(),
+    status: json["status"].toString(),
+    cashRegisterId: json["cash_register_id"].toString(),
+    closingAmount: json["closing_amount"].toString(),
+    totalCardSlips: json["total_card_slips"].toString(),
+    totalCheques: json["total_cheques"].toString(),
+    closingNote: json["closing_note"].toString(),
+    transactionIds: json["transaction_ids"].toString(),
+  );
 
   Map<String, dynamic> toJson() => {
-        "location_id": locationId,
-        "initial_amount": initialAmount,
-        "created_at": createdAt,
-        "closed_at": closedAt,
-        "status": status,
-        "cash_register_id": cashRegisterId,
-        "closing_amount": closingAmount,
-        "total_card_slips": totalCardSlips,
-        "total_cheques": totalCheques,
-        "closing_note": closingNote,
-        "transaction_ids": transactionIds,
-      };
+    "location_id": locationId,
+    "initial_amount": initialAmount,
+    "created_at": createdAt,
+    "closed_at" : closedAt,
+    "status": status,
+    "cash_register_id": cashRegisterId,
+    "closing_amount": closingAmount,
+    "total_card_slips": totalCardSlips,
+    "total_cheques": totalCheques,
+    "closing_note": closingNote,
+    "transaction_ids": transactionIds,
+  };
 }
 

@@ -8,6 +8,7 @@ import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/setting_page/setting_page.dart';
+import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -38,12 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List textList = [
-      getTranslated(context, UtilStrings.pos),
-      getTranslated(context, UtilStrings.addContact),
-      getTranslated(context, UtilStrings.sale),
-      'Setting'
-    ];
+    List textList = [getTranslated(context, UtilStrings.pos), getTranslated(context, UtilStrings.addContact), getTranslated(context, UtilStrings.sale),'Setting'];
 
     return Scaffold(
       body: SafeArea(
@@ -129,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
-                                onTap: () {
+                                onTap: (){
                                   print("HH");
                                   HapticFeedback.heavyImpact();
                                 },
@@ -137,8 +133,7 @@ class _HomePageState extends State<HomePage> {
                                 icon: Icons.phone_android_outlined,
                               ),
                               commonCircleWithText(
-                                text: getTranslated(
-                                    context, UtilStrings.quotation),
+                                text: getTranslated(context, UtilStrings.quotation),
                                 icon: Icons.description_outlined,
                               ),
                               commonCircleWithText(
@@ -216,9 +211,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () async {
                             if (index == 0) {
                               showLoadingDialog(context: context);
-                              await Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                  .UserDetails(context: context);
+                              await Provider.of<PosPageViewModel>(context, listen: false).UserDetails(context: context);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -232,11 +225,13 @@ class _HomePageState extends State<HomePage> {
                                   builder: (context) => AddNewContactPage(),
                                 ),
                               );
-                            } else if (index == 2) {
+                            }
+                            else if (index == 2) {
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                return ListOfSellPage();
-                              }));
+                                    return ListOfSellPage();
+                                  }));
+
                             } else if (index == 3) {
                               Navigator.push(
                                 context,

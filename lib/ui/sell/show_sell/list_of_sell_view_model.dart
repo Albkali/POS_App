@@ -14,6 +14,7 @@ class ListOfSellViewModel with ChangeNotifier {
 
   ListOfSellViewModel({required this.sellRepo});
 
+
   List<User> userList = [];
 
   List<SellItem> reversedSellItemList = [];
@@ -68,17 +69,11 @@ class ListOfSellViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> filterSellList(
-      {String? locationId,
-      String? paymentStatus,
-      String? contactId,
-      String? ShippingStatus,
-      String? IsSubscribed}) async {
+  Future<ResponseModel> filterSellList({String? locationId,String? paymentStatus,String? contactId,String? ShippingStatus,String? IsSubscribed}) async {
     _isLoading = true;
     notifyListeners();
 
-    ApiResponse? apiResponse = await sellRepo.getFilterListSell(
-        locationId, paymentStatus, contactId, ShippingStatus, IsSubscribed);
+    ApiResponse? apiResponse = await sellRepo.getFilterListSell(locationId,paymentStatus,contactId,ShippingStatus,IsSubscribed);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
@@ -107,17 +102,14 @@ class ListOfSellViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> addPayment(
-      {required String sellID, required String payment}) async {
+  Future<ResponseModel> addPayment({required String sellID,required String payment}) async {
     _isLoading = true;
     notifyListeners();
-    ApiResponse? apiResponse = await sellRepo.updateReturnSell(
-        sellId: '$sellID', pendingPayment: payment);
+    ApiResponse? apiResponse = await sellRepo.updateReturnSell(sellId: '$sellID',pendingPayment:payment );
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
-      ResUpdateReturnSell data =
-          ResUpdateReturnSell.fromJson(apiResponse.response!.data);
+      ResUpdateReturnSell data = ResUpdateReturnSell.fromJson(apiResponse.response!.data);
       paymentUrl = data.invoiceUrl;
       print('Your total data is 31 ${data.type}');
       print('Your total data is 32${data.transactionDate}');
@@ -139,24 +131,24 @@ class ListOfSellViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> getSpecifiedContact(
-      {required String contactId, required BuildContext context}) async {
-    ApiResponse? apiResponse =
-        await sellRepo.getSpecifiedContact(contactId: contactId);
+  Future<ResponseModel> getSpecifiedContact({required String contactId,required BuildContext context}) async {
+    ApiResponse? apiResponse = await sellRepo.getSpecifiedContact(contactId: contactId);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
-      hideLoadingDialog(context: context);
-      ResSpecifiedContact data =
-          ResSpecifiedContact.fromJson(apiResponse.response!.data);
-      specifiedContactList = data.data;
+        hideLoadingDialog(context: context);
+       ResSpecifiedContact data = ResSpecifiedContact.fromJson(apiResponse.response!.data);
+       specifiedContactList = data.data;
       responseModel = ResponseModel(true, 'successful');
-    } else {
+    }
+      else {
       hideLoadingDialog(context: context);
       String errorMessage;
-      if (apiResponse.error is String) {
+      if (apiResponse.error is String)
+      {
         errorMessage = apiResponse.error.toString();
-      } else {
+      }
+      else {
         errorMessage = apiResponse.error.errors[0].message;
       }
       print(errorMessage);
@@ -166,4 +158,5 @@ class ListOfSellViewModel with ChangeNotifier {
     notifyListeners();
     return responseModel;
   }
+
 }

@@ -1,3 +1,7 @@
+
+
+import 'package:flutter/cupertino.dart';
+
 class UtilStrings {
   static const smartX = 'smartX';
   static const login = 'login';
@@ -15,6 +19,10 @@ class UtilStrings {
   static const dateRange = 'Date Range';
   static const cash = 'Cash';
   static const other = 'Other';
+  static const divllo = 'Divllo';
+
+
+
 
   static const product = 'Product';
   static const quantity = 'Quantity';
@@ -45,7 +53,6 @@ class UtilStrings {
   static const tax = 'Tax';
   static const discount = 'Discount';
   static const totalPayable = 'Total Payable';
-  static const smart = 'Smart';
   static const walkInCustomer = 'Walk-in customer';
   static const enterProductName = 'Enter Product Name/ SKU / Scan bar code';
   static const quotation = 'Quotation';
@@ -54,6 +61,8 @@ class UtilStrings {
   static const creditSale = 'Credit Sale';
   static const multiplePay = 'Multiple Pay';
   static const pleaseEnterYourCash = 'Please enter your cash';
+
+
 
 
   static const moreInfirmation = 'moreInfirmation';
@@ -73,6 +82,7 @@ class UtilStrings {
   static const save = 'Save';
 
   static const submit = 'submit';
+
 
 
 }

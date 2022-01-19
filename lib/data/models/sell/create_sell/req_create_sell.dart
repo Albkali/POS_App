@@ -2,6 +2,7 @@
 //
 //     final reqCreateSell = reqCreateSellFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReqCreateSell reqCreateSellFromJson(String str) =>
@@ -67,7 +68,7 @@ class Sell {
         "contact_id": contactId,
         "discount_amount": discountAmount,
         "discount_type": discountType,
-        "status": status,
+        "status" : status,
         "sub_status": subStatus,
         "is_quotation": isQuotation,
         "products": List<dynamic>.from(products.map((x) => x.toJson())),

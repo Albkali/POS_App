@@ -44,6 +44,8 @@ class _PosPageState extends State<PosPage> {
   late double SubTotal = 0;
   double balance = 0;
 
+  FocusNode focus = FocusNode();
+
   @override
   void initState() {
     print('Your page value is ${getString(PrefKeyConstants.isOpen)}');
@@ -60,7 +62,8 @@ class _PosPageState extends State<PosPage> {
     discountController.text = '0';
     taxController.text = '0';
     Provider.of<PosPageViewModel>(context, listen: false).userList();
-    // Provider.of<PosPageViewModel>(context, listen: false).productList();
+    Provider.of<PosPageViewModel>(context, listen: false)
+        .productList(context: context);
     fetchData();
 
     super.initState();
@@ -173,6 +176,8 @@ class _PosPageState extends State<PosPage> {
                         onSuggestionSelected: (Location suggestion) {
                           locationController.text = suggestion.name.toString();
                           setString(PrefKeyConstants.locationId, suggestion.id);
+                          setString(
+                              PrefKeyConstants.locationName, suggestion.name);
                         }),
                   ),
                 ],
@@ -233,44 +238,198 @@ class _PosPageState extends State<PosPage> {
   @override
   Widget build(BuildContext context) {
     dynamic barcodeScanResList;
+    // Future<void> scanBarcodeNormal() async {
+    //   var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
+    //   try {
+    //     if(getBool(PrefKeyConstants.scanType) == false) {
+    //       barcodeScanResList = FlutterBarcodeScanner.scanBarcode('#ff6666', 'close', true, ScanMode.BARCODE);
+    //       if (barcodeScanResList == '-1') {
+    //         print("in if part");
+    //       } else {
+    //         for (int i = 0; i < posprovider.productsList.length; i++) {
+    //           if (posprovider.productsList[i].sku == barcodeScanResList) {
+    //             if (posprovider.cartItemList
+    //                 .contains(posprovider.productsList[i])) {
+    //               print("remaining part");
+    //               posprovider.productsList[i].itemCounter++;
+    //               HapticFeedback.heavyImpact();
+    //             }
+    //             else {
+    //               print("hello else part");
+    //               if (posprovider.productsList[i].enableStock == '0') {
+    //                 ToastUtils.showCustomToast(
+    //                     context, "PRODUCT NOT AVAILABLE", "warning");
+    //                 HapticFeedback.heavyImpact();
+    //
+    //               } else {
+    //                 posprovider.cartItemList.add(posprovider.productsList[i]);
+    //                 HapticFeedback.heavyImpact();
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //     else
+    //       {
+    //       FlutterBarcodeScanner.getBarcodeStreamReceiver(
+    //           '#ff6666', 'close', true, ScanMode.BARCODE)?.listen((event) {
+    //         if (event == '-1') {
+    //           print("in if part");
+    //         } else {
+    //           for (int i = 0; i < posprovider.productsList.length; i++) {
+    //             if (posprovider.productsList[i].sku == event) {
+    //               if (posprovider.cartItemList
+    //                   .contains(posprovider.productsList[i])) {
+    //                 print("remaining part");
+    //                 posprovider.productsList[i].itemCounter++;
+    //                 HapticFeedback.heavyImpact();
+    //               } else {
+    //                 print("hello else part");
+    //                 if (posprovider.productsList[i].enableStock == '0') {
+    //                   ToastUtils.showCustomToast(
+    //                       context, "PRODUCT NOT AVAILABLE", "warning");
+    //                   HapticFeedback.heavyImpact();
+    //
+    //                 } else {
+    //                   posprovider.cartItemList.add(posprovider.productsList[i]);
+    //                   HapticFeedback.heavyImpact();
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       });
+    //     }
+    //
+    //
+    //   } on PlatformException {
+    //     barcodeScanResList = 'Failed to get platform version.';
+    //   }
+    //   if (!mounted) return;
+    //   setState(() {
+    //     _scanBarcode = barcodeScanResList;
+    //   });
+    // }
 
     Future<void> scanBarcodeNormal() async {
       var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
-      try {
-        barcodeScanResList = (await FlutterBarcodeScanner.scanBarcode(
-            '#ff6666', 'close', true, ScanMode.BARCODE));
-        print("barcode list ${barcodeScanResList.runtimeType} ");
-        if (barcodeScanResList == '-1') {
-          print("in if part");
-        } else {
-          for (int i = 0; i < posprovider.productsList.length; i++) {
-            if (posprovider.productsList[i].sku == barcodeScanResList) {
-              if (posprovider.cartItemList
-                  .contains(posprovider.productsList[i])) {
-                print("remaining part");
-                posprovider.productsList[i].itemCounter++;
-                HapticFeedback.heavyImpact();
-              } else {
-                print("hello else part");
-                if (posprovider.productsList[i].enableStock == '0') {
-                  ToastUtils.showCustomToast(
-                      context, "PRODUCT NOT AVAILABLE", "warning");
-                  HapticFeedback.heavyImpact();
-                } else {
-                  posprovider.cartItemList.add(posprovider.productsList[i]);
-                  HapticFeedback.heavyImpact();
+      // try {
+        if(getBool(PrefKeyConstants.scanType) == false) {
+          try{
+            barcodeScanResList = (await FlutterBarcodeScanner.scanBarcode(
+                '#ff6666', 'close', true, ScanMode.BARCODE));
+            print("barcode list ${barcodeScanResList.runtimeType} ");
+            if (barcodeScanResList == '-1') {
+              print("in if part");
+            } else {
+              for (int i = 0; i < posprovider.productsList.length; i++) {
+                if (posprovider.productsList[i].sku == barcodeScanResList) {
+                  print("HELLO VALUE${posprovider.productsList[i].sku}");
+                  print("HELLO VALUE${barcodeScanResList}");
+                  if (posprovider.cartItemList
+                      .contains(posprovider.productsList[i])) {
+                    print("remaining part");
+                    posprovider.productsList[i].itemCounter++;
+                    HapticFeedback.heavyImpact();
+                  } else {
+                    print("hello else part");
+                    if (posprovider.productsList[i].enableStock == '0') {
+                      ToastUtils.showCustomToast(
+                          context, "PRODUCT NOT AVAILABLE", "warning");
+                      HapticFeedback.heavyImpact();
+                    } else {
+                      posprovider.cartItemList.add(posprovider.productsList[i]);
+                      HapticFeedback.heavyImpact();
+                    }
+                  }
                 }
               }
             }
-          }
-        }
-      } on PlatformException {
+        } on PlatformException {
         barcodeScanResList = 'Failed to get platform version.';
       }
       if (!mounted) return;
       setState(() {
-        _scanBarcode = barcodeScanResList;
+        // _scanBarcode = barcodeScanResList;
       });
+
+        }
+        else
+        {
+          FocusScope.of(context).requestFocus(FocusNode());
+          try{
+            (await FlutterBarcodeScanner.getBarcodeStreamReceiver(
+                '#ff6666', 'close', true, ScanMode.BARCODE))!.listen((barcodeScanResLists) {
+              print("barcode list ${barcodeScanResLists.runtimeType} ");
+              if (barcodeScanResLists == '-1') {
+                print("in if part");
+              } else {
+                for (int i = 0; i < posprovider.productsList.length; i++) {
+                  if (posprovider.productsList[i].sku == barcodeScanResLists) {
+
+                    print("HELLO VALUE${posprovider.productsList[i].sku}");
+                    print("HELLO VALUE${barcodeScanResLists}");
+                    if (posprovider.cartItemList
+                        .contains(posprovider.productsList[i])) {
+                      print("remaining part");
+                      posprovider.productsList[i].itemCounter++;
+                      HapticFeedback.heavyImpact();
+                    } else {
+                      print("hello else part");
+                      if (posprovider.productsList[i].enableStock == '0') {
+                        ToastUtils.showCustomToast(
+                            context, "PRODUCT NOT AVAILABLE", "warning");
+                        HapticFeedback.heavyImpact();
+                      } else {
+                        posprovider.cartItemList.add(posprovider.productsList[i]);
+                        HapticFeedback.heavyImpact();
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          }
+          on PlatformException {
+            // barcodeScanResLists = 'Failed to get platform version.';
+          }
+          if (!mounted) return;
+          setState(() {
+            _scanBarcode = 'Failed to get platform version';
+          });
+
+
+         // await FlutterBarcodeScanner.getBarcodeStreamReceiver(
+         //      '#ff6666', 'close', true, ScanMode.DEFAULT)?.listen((event) {
+         //    if (event == '-1') {
+         //      print("in if part");
+         //    } else {
+         //      for (int i = 0; i < posprovider.productsList.length; i++) {
+         //        if (posprovider.productsList[i].sku == event) {
+         //          if (posprovider.cartItemList
+         //              .contains(posprovider.productsList[i])) {
+         //            print("remaining part");
+         //            posprovider.productsList[i].itemCounter++;
+         //            HapticFeedback.heavyImpact();
+         //          } else {
+         //            print("hello else part");
+         //            if (posprovider.productsList[i].enableStock == '0') {
+         //              ToastUtils.showCustomToast(
+         //                  context, "PRODUCT NOT AVAILABLE", "warning");
+         //              HapticFeedback.heavyImpact();
+         //
+         //            } else {
+         //              posprovider.cartItemList.add(posprovider.productsList[i]);
+         //              HapticFeedback.heavyImpact();
+         //            }
+         //          }
+         //        }
+         //      }
+         //    }
+         //  });
+        }
+
     }
 
     return Scaffold(
@@ -313,16 +472,10 @@ class _PosPageState extends State<PosPage> {
                                 const Gap(10),
                                 Row(
                                   children: const [
-                                    Text(UtilStrings.smart,
+                                    Text(UtilStrings.divllo,
                                         style: TextStyle(
                                             color: Colors.yellowAccent,
                                             fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Gap(5),
-                                    Text('x',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18,
                                             fontWeight: FontWeight.bold)),
                                   ],
                                 ),
@@ -474,7 +627,7 @@ class _PosPageState extends State<PosPage> {
                               ),
                               Utils.mediumHeadingText(
                                   text:
-                                      'Store - ${getString(PrefKeyConstants.locationId)}'),
+                                      'Store - ${getString(PrefKeyConstants.locationName)}'),
                               // Consumer<PosPageViewModel>(
                               //   builder: (BuildContext context, value,
                               //       Widget? child) {
@@ -508,7 +661,9 @@ class _PosPageState extends State<PosPage> {
                               // ),
                               const Spacer(),
                               Utils.mediumHeadingText(
-                                  text: '20-11-2021  19:41 PM'),
+                                  text: DateFormat("dd-MM-yyyy hh:mm a")
+                                      .format(DateTime.now())
+                                      .toString()),
                             ],
                           ),
                         ],
@@ -584,7 +739,7 @@ class _PosPageState extends State<PosPage> {
                                                   .withOpacity(0.1))),
                                       child: ListTile(
                                         title: Text(
-                                            '${suggestion.supplierBusinessName} -> ${suggestion.id}'),
+                                            '${suggestion.name} -> ${suggestion.id}'),
                                       ),
                                     );
                                   },
@@ -605,106 +760,152 @@ class _PosPageState extends State<PosPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: InkWell(
-                              onTap: () async {
-                                showLoadingDialog(context: context);
-                                await Provider.of<PosPageViewModel>(context,
-                                        listen: false)
-                                    .productList(context: context);
-                              },
-                              child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppColor.white,
-                                  border: Border.all(
-                                      color: AppColor.grey, width: 1),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: AppColor.grey2,
-                                      offset: Offset(-1.0, 10),
-                                      blurRadius: 15,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: TypeAheadField(
-                                    suggestionsBoxDecoration:
-                                        SuggestionsBoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            elevation: 5),
-                                    keepSuggestionsOnLoading: false,
-                                    hideSuggestionsOnKeyboardHide: false,
-                                    textFieldConfiguration:
-                                        TextFieldConfiguration(
-                                      autofocus: false,
-                                      decoration: const InputDecoration(
-                                        hintStyle: TextStyle(
-                                          color: AppColor.grey,
-                                          fontSize: 14,
-                                        ),
-                                        contentPadding: EdgeInsets.only(top: 4),
-                                        border: InputBorder.none,
-                                        hintText: UtilStrings.enterProductName,
-                                        prefixIcon: Icon(
-                                          Icons.zoom_in_outlined,
-                                          color: AppColor.grey,
-                                        ),
-                                      ),
-                                      controller: productController,
-                                    ),
-                                    suggestionsCallback: (pattern) async {
-                                      return StateService.getProductSuggestions(
-                                          pattern, context);
-                                    },
-                                    transitionBuilder:
-                                        (context, suggestionsBox, controller) {
-                                      return suggestionsBox;
-                                    },
-                                    itemBuilder: (context, Items suggestion) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border: Border.all(
-                                                color: Colors.grey
-                                                    .withOpacity(0.1))),
-                                        child: ListTile(
-                                          title:
-                                              Text(suggestion.name.toString()),
-                                        ),
-                                      );
-                                    },
-                                    onSuggestionSelected: (Items suggestion) {
-                                      productController.text =
-                                          suggestion.name.toString();
-                                      HapticFeedback.heavyImpact();
-                                      productController.clear();
-                                      var poproviser =
-                                          Provider.of<PosPageViewModel>(context,
-                                              listen: false);
-                                      if (suggestion.enableStock == '0') {
-                                        ToastUtils.showCustomToast(context,
-                                            "PRODUCT NOT AVAILABLE", "warning");
-                                      } else if (poproviser.cartItemList
-                                          .contains(suggestion)) {
-                                        suggestion.itemCounter++;
-                                      } else {
-                                        poproviser.cartItemList.add(suggestion);
-                                      }
-                                    }),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: AppColor.white,
+                                border:
+                                    Border.all(color: AppColor.grey, width: 1),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: AppColor.grey2,
+                                    offset: Offset(-1.0, 10),
+                                    blurRadius: 15,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              child: TypeAheadField(
+                                  suggestionsBoxDecoration:
+                                      SuggestionsBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          elevation: 5),
+                                  keepSuggestionsOnLoading: false,
+                                  hideSuggestionsOnKeyboardHide: false,
+                                  textFieldConfiguration:
+                                      TextFieldConfiguration(
+                                          autofocus: false,
+                                          decoration: const InputDecoration(
+                                            hintStyle: TextStyle(
+                                              color: AppColor.grey,
+                                              fontSize: 14,
+                                            ),
+                                            contentPadding:
+                                                EdgeInsets.only(top: 4),
+                                            border: InputBorder.none,
+                                            hintText:
+                                                UtilStrings.enterProductName,
+                                            prefixIcon: Icon(
+                                              Icons.zoom_in_outlined,
+                                              color: AppColor.grey,
+                                            ),
+                                          ),
+                                          controller: productController,
+                                          focusNode: focus,
+                                          onChanged: (val) {
+                                            final posprovider =
+                                                Provider.of<PosPageViewModel>(
+                                                    context,
+                                                    listen: false);
+                                            if (posprovider.skuList
+                                                .contains(val)) {
+                                              for (int i = 0;
+                                                  i <
+                                                      posprovider
+                                                          .productsList.length;
+                                                  i++) {
+                                                if (posprovider
+                                                        .productsList[i].sku ==
+                                                    val) {
+                                                  productController.clear();
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  if (posprovider.cartItemList
+                                                      .contains(posprovider
+                                                          .productsList[i])) {
+                                                    posprovider.productsList[i]
+                                                        .itemCounter++;
+                                                    HapticFeedback
+                                                        .heavyImpact();
+                                                  } else {
+
+                                                    if (posprovider
+                                                            .productsList[i]
+                                                            .enableStock ==
+                                                        '0') {
+                                                      ToastUtils.showCustomToast(
+                                                          context,
+                                                          "PRODUCT NOT AVAILABLE",
+                                                          "warning");
+                                                      HapticFeedback
+                                                          .heavyImpact();
+                                                    } else {
+                                                      posprovider.cartItemList
+                                                          .add(posprovider
+                                                              .productsList[i]);
+                                                      HapticFeedback
+                                                          .heavyImpact();
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+
+                                            setState(() {});
+                                          }),
+                                  suggestionsCallback: (pattern) async {
+                                    return StateService.getProductSuggestions(
+                                        pattern, context);
+                                  },
+                                  transitionBuilder:
+                                      (context, suggestionsBox, controller) {
+                                    return suggestionsBox;
+                                  },
+                                  itemBuilder: (context, Items suggestion) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                              color: Colors.grey
+                                                  .withOpacity(0.1))),
+                                      child: ListTile(
+                                        title: Text(suggestion.name.toString()),
+                                      ),
+                                    );
+                                  },
+                                  onSuggestionSelected: (Items suggestion) {
+                                    productController.text =
+                                        suggestion.name.toString();
+                                    HapticFeedback.heavyImpact();
+                                    productController.clear();
+                                    var poproviser =
+                                        Provider.of<PosPageViewModel>(context,
+                                            listen: false);
+                                    if (suggestion.enableStock == '0') {
+                                      ToastUtils.showCustomToast(context,
+                                          "PRODUCT NOT AVAILABLE", "warning");
+                                    } else if (poproviser.cartItemList
+                                        .contains(suggestion)) {
+                                      suggestion.itemCounter++;
+                                    } else {
+                                      poproviser.cartItemList.add(suggestion);
+                                    }
+                                  }),
                             ),
                           ),
                           const Gap(5),
                           InkWell(
-                            onTap: () async {
-                              showLoadingDialog(context: context);
-                              await Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                  .productList(context: context);
-                              scanBarcodeNormal();
+                            onTap: ()  async {
+                               focus.requestFocus();
+                              // showLoadingDialog(context: context);
+                              // await Provider.of<PosPageViewModel>(context, listen: false).productList(context: context);
+                              // scanBarcodeNormal();
+                            Future.delayed(const Duration(microseconds: 500),(){
+                             return scanBarcodeNormal();
+                            });
                             },
                             child: const Icon(
                               Icons.qr_code_scanner_outlined,
@@ -892,7 +1093,8 @@ class _PosPageState extends State<PosPage> {
                             // );
                           },
                           child: commonText(
-                              title: UtilStrings.tax, subTitle: '$tax'),
+                              title: UtilStrings.tax,
+                              subTitle: '${tax.toStringAsPrecision(4)}'),
                         ),
                       ),
                     ],
@@ -982,7 +1184,7 @@ class _PosPageState extends State<PosPage> {
                       Expanded(
                         child: commonText(
                             title: UtilStrings.totalPayable,
-                            subTitle: totalAmount.toString()),
+                            subTitle: totalAmount.toStringAsPrecision(5)),
                       ),
                     ],
                   ),
@@ -1395,15 +1597,6 @@ class _PosPageState extends State<PosPage> {
                               iconColor: AppColor.white,
                             ),
                           ),
-                          // const Gap(10),
-                          // InkWell(
-                          //   child: commonContainer(
-                          //     title: 'Pay',
-                          //     color: const Color(0xff64b5f6),
-                          //     icon: Icons.notes_outlined,
-                          //     iconColor: AppColor.white,
-                          //   ),
-                          // ),
                           const Gap(10),
                           InkWell(
                             onTap: () {
@@ -1470,11 +1663,53 @@ class _PosPageState extends State<PosPage> {
                             ),
                           ),
                           const Gap(10),
-                          commonContainer(
-                            title: 'Cancel',
-                            color: const Color(0xfff06292),
-                            icon: Icons.cancel,
-                            iconColor: AppColor.white,
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0))),
+                                    title: const Text("Are You Sure"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Cancel")),
+                                      TextButton(
+                                        onPressed: () {
+                                          userController.clear();
+                                          productController.clear();
+                                          setState(() {
+                                            Provider.of<PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .cartItemList
+                                                .clear();
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: commonContainer(
+                              title: 'Cancel',
+                              color: const Color(0xfff06292),
+                              icon: Icons.cancel,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 90,
+                            color: Colors.transparent,
                           ),
                         ],
                       ),
@@ -1617,6 +1852,7 @@ class _PosPageState extends State<PosPage> {
     //   ),
     // );
   }
+
   commonTile({required String text, required String subText}) {
     return Row(
       children: [
@@ -1648,7 +1884,7 @@ class _PosPageState extends State<PosPage> {
           builder: (BuildContext context, value, Widget? child) {
             return Padding(
               padding:
-              const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+                  const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1678,9 +1914,9 @@ class _PosPageState extends State<PosPage> {
                   Expanded(
                     child: Column(
                       children: [
-                        const Gap(15),
+                        const Gap(10),
                         Container(
-                          height: 22,
+                          height: 30,
                           width: 110,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
@@ -1699,13 +1935,14 @@ class _PosPageState extends State<PosPage> {
                                       children: [
                                         const Icon(
                                           Icons.remove,
-                                          size: 20,
+                                          size: 25,
                                           color: AppColor.red,
                                         ),
                                         Utils.customVerticalDivider(),
                                       ],
                                     )),
-                                Utils.smallHeadingText(text: '$qty'),
+                                Utils.smallHeadingText(
+                                    text: '$qty', textSize: 14),
                                 InkWell(
                                     onTap: () {
                                       value.addCounter(item);
@@ -1715,7 +1952,7 @@ class _PosPageState extends State<PosPage> {
                                         Utils.customVerticalDivider(),
                                         const Icon(
                                           Icons.add,
-                                          size: 20,
+                                          size: 25,
                                           color: AppColor.green,
                                         ),
                                       ],
@@ -1862,7 +2099,8 @@ class StateService {
     products.addAll(
         Provider.of<PosPageViewModel>(context, listen: false).productsList);
     products.retainWhere((s) {
-      return s.name.toLowerCase().contains(query.toLowerCase());
+      return s.name.toLowerCase().contains(query.toLowerCase()) ||
+          s.sku.toLowerCase().contains(query.toLowerCase());
     });
     return products;
   }

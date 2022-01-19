@@ -4,9 +4,12 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/data/models/sell/returnsell/req_add_return_sell.dart';
 import 'package:pos/data/models/sell/show_sell/res_show_sell.dart';
+import 'package:pos/repository/sell_repo.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/common_methods.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -19,8 +22,7 @@ import 'package:provider/provider.dart';
 class ReturnSellPage extends StatefulWidget {
   final SellItem item;
   final String payline;
-  const ReturnSellPage({Key? key, required this.item, required this.payline})
-      : super(key: key);
+  const ReturnSellPage({Key? key,required this.item, required this.payline}) : super(key: key);
 
   @override
   State<ReturnSellPage> createState() => _ReturnSellPageState();
@@ -31,19 +33,17 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
   TextEditingController discountController = TextEditingController();
   TextEditingController returnQtyController = TextEditingController();
 
-  var returnSubtoal = 0.0;
-
-  var totalDiscount;
-
-  var finalTotal;
-
-  var discountPrice;
+  var  returnSubtoal = 0.0 ;
+  var totalDiscount  ;
+  var finalTotal  ;
+  var discountPrice ;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +101,7 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                     color: AppColor.white,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -111,31 +110,29 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                         Gap(10),
                         const ContainerBorder(
                             child: CustomTextFiled(
-                          title: '',
-                        )),
+                              title: '',
+                            )),
                         const Gap(10),
                         Utils.mediumHeadingText(text: '${UtilStrings.date}:*'),
                         const Gap(5),
                         InkWell(
-                          onTap: () async {
+                          onTap: () async{
                             final DateTime? picked = await pickDate(
                               context: context,
                               initialDate: dateController.text.isNotEmpty
-                                  ? DateFormat('dd-MM-yyyy')
-                                      .parse(dateController.text)
+                                  ? DateFormat('dd-MM-yyyy').parse(dateController.text)
                                   : DateTime.now(),
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2101),
                             );
                             if (picked != null) {
-                              final DateFormat formatter =
-                                  DateFormat('dd-MM-yyyy');
+                              final DateFormat formatter = DateFormat('dd-MM-yyyy');
                               final String formatted = formatter.format(picked);
                               dateController.text = formatted;
                             }
                             print('Your date is  ${dateController.text}');
                           },
-                          child: IgnorePointer(
+                          child:  IgnorePointer(
                             child: CustomSellTextFiled(
                               controller: dateController,
                               iconLeft: Icons.calendar_today_outlined,
@@ -147,6 +144,7 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                       ],
                     ),
                   ),
+
                 ),
                 const Gap(20),
                 Container(
@@ -155,8 +153,7 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                     color: AppColor.white,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
+                    padding: const EdgeInsets.symmetric( horizontal: 20,vertical: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -169,8 +166,7 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                             Utils.boldSubHeadingText(text: "Unit Price:"),
                             const Gap(5),
                             // Utils.mediumHeadingText(text: '650')
-                            Utils.mediumHeadingText(
-                                text: widget.item.sellLines[0].unitPrice)
+                            Utils.mediumHeadingText(text: widget.item.sellLines[0].unitPrice)
                           ],
                         ),
                         const Gap(3),
@@ -178,46 +174,39 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                           children: [
                             Utils.boldSubHeadingText(text: "Sell Quantity:"),
                             const Gap(5),
-                            Utils.mediumHeadingText(
-                                text: widget.item.sellLines[0].quantity),
+                            Utils.mediumHeadingText(text: widget.item.sellLines[0].quantity),
                             // Utils.mediumHeadingText(text: "5")
                           ],
                         ),
                         const Gap(3),
                         Utils.boldSubHeadingText(text: "Return Quantity:"),
                         const Gap(5),
-                        ContainerBorder(
-                          child: CustomTextFiled(
-                            textInputType: TextInputType.number,
-                            textEditingController: returnQtyController,
-                            onchange: (val) {
-                              setState(() {
-                                double x =
-                                    double.parse(returnQtyController.text);
-                                double min = 0.0;
-                                double max = double.parse(
-                                    widget.item.sellLines[0].quantity);
-                                try {
-                                  x = double.parse(val);
-                                } catch (error) {
-                                  x = min;
-                                }
-                                if (x < min) {
-                                  x = min;
-                                } else if (x > max) {
-                                  ToastUtils.showCustomToast(
-                                      context,
-                                      "Only ${widget.item.sellLines[0].quantity} quantity available. ",
-                                      "warning");
-                                  x = max;
-                                }
-                                returnSubtoal = double.parse(
-                                        widget.item.sellLines[0].unitPrice) *
-                                    double.parse(returnQtyController.text);
-                              });
-                            },
-                          ),
-                        ),
+                         ContainerBorder(
+                           child: CustomTextFiled(
+                             textInputType: TextInputType.number,
+                             textEditingController: returnQtyController,
+                             onchange: (val){
+                               setState(() {
+                                 double x =  double.parse(returnQtyController.text);
+                                 double min = 0.0;
+                                 double max = double.parse(widget.item.sellLines[0].quantity);
+                                 try {
+                                   x = double.parse(val);
+                                 } catch (error) {
+                                   x = min;
+                                 }
+                                 if (x < min) {
+                                   x = min;
+                                 } else if (x > max) {
+                                   ToastUtils.showCustomToast(context, "Only ${widget.item.sellLines[0].quantity} quantity available. ", "warning");
+                                   x = max;
+                                 }
+                                 returnSubtoal = double.parse(widget.item.sellLines[0].unitPrice)  *
+                                     double.parse(returnQtyController.text);
+                               });
+                             },
+                           ),
+                         ),
                         const Gap(10),
                         Row(
                           children: [
@@ -332,24 +321,17 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                               textEditingController: discountController,
                               title: '0.00',
                               isContentPedding: true,
-                              onchange: (val) {
+                             onchange: (val){
                                 setState(() {
-                                  var discountAmountForFix =
-                                      double.parse(discountController.text);
-                                  var discountAmountForPercantage =
-                                      returnSubtoal *
-                                          double.parse(
-                                              discountController.text) /
-                                          100;
+                                  var discountAmountForFix = double.parse(discountController.text);
+                                  var discountAmountForPercantage = returnSubtoal * double.parse(discountController.text) / 100;
 
-                                  discountPrice = val == 'Fixed'
+                                   discountPrice = val == 'Fixed'
                                       ? discountAmountForFix
                                       : discountAmountForPercantage;
-                                  finalTotal = returnSubtoal -
-                                      discountPrice +
-                                      double.parse(widget.item.taxAmount);
+                                  finalTotal = returnSubtoal - discountPrice + double.parse( widget.item.taxAmount);
                                 });
-                              },
+                             },
                             ),
                           ),
                           const Gap(15),
@@ -366,6 +348,7 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                                     title: 'Total Return Tax -:',
                                     subTitle: '${widget.item.taxAmount}'),
                                 const Gap(3),
+
                                 customText(
                                     title: 'Return Total:',
                                     subTitle: '$finalTotal'),
@@ -373,24 +356,20 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                                 SizedBox(
                                     width: 100,
                                     child: SmallCustomButtonWithIcon(
-                                      onTap: () {
+                                      onTap: (){
                                         Product product = Product(
-                                          quantity:
-                                              '${returnQtyController.text}',
-                                          sellLineId:
-                                              '${widget.item.sellingPriceGroupId}',
+                                          quantity: '${returnQtyController.text}',
+                                          sellLineId: '${widget.item.sellingPriceGroupId}',
                                           unitPriceIncTax: '${returnSubtoal}',
                                         );
-                                        ReqAddReturnSell data =
-                                            ReqAddReturnSell(products: [
-                                          product
-                                        ], transactionId: '${widget.payline}');
-                                        Provider.of<ReturnSellViewModel>(
-                                                context,
-                                                listen: false)
-                                            .AddReturnSell(req: data);
-                                        ToastUtils.showCustomToast(
-                                            context, "Success", "success");
+                                        ReqAddReturnSell data = ReqAddReturnSell(
+                                            products: [
+                                              product
+                                            ],
+                                            transactionId: '${widget.payline}'
+                                        );
+                                        Provider.of<ReturnSellViewModel>(context, listen: false).AddReturnSell(req: data);
+                                        ToastUtils.showCustomToast(context, "Success", "success");
 
                                         Navigator.pop(context);
                                       },

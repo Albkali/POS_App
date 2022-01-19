@@ -2,243 +2,241 @@
 //
 //     final resUpdateReturnSell = resUpdateReturnSellFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
-ResUpdateReturnSell resUpdateReturnSellFromJson(String str) =>
-    ResUpdateReturnSell.fromJson(json.decode(str));
+ResUpdateReturnSell resUpdateReturnSellFromJson(String str) => ResUpdateReturnSell.fromJson(json.decode(str));
 
-String resUpdateReturnSellToJson(ResUpdateReturnSell data) =>
-    json.encode(data.toJson());
+String resUpdateReturnSellToJson(ResUpdateReturnSell data) => json.encode(data.toJson());
 
 class ResUpdateReturnSell {
-  ResUpdateReturnSell({
-    required this.id,
-    required this.businessId,
-    required this.locationId,
-    required this.resTableId,
-    required this.resWaiterId,
-    required this.resOrderStatus,
-    required this.type,
-    required this.subType,
-    required this.status,
-    required this.subStatus,
-    required this.isQuotation,
-    required this.paymentStatus,
-    required this.adjustmentType,
-    required this.contactId,
-    required this.customerGroupId,
-    required this.invoiceNo,
-    required this.refNo,
-    required this.source,
-    required this.subscriptionNo,
-    required this.subscriptionRepeatOn,
-    required this.transactionDate,
-    required this.totalBeforeTax,
-    required this.taxId,
-    required this.taxAmount,
-    required this.discountType,
-    required this.discountAmount,
-    required this.rpRedeemed,
-    required this.rpRedeemedAmount,
-    required this.shippingDetails,
-    required this.shippingAddress,
-    required this.shippingStatus,
-    required this.deliveredTo,
-    required this.shippingCharges,
-    required this.shippingCustomField1,
-    required this.shippingCustomField2,
-    required this.shippingCustomField3,
-    required this.shippingCustomField4,
-    required this.shippingCustomField5,
-    required this.additionalNotes,
-    required this.staffNote,
-    required this.isExport,
-    required this.exportCustomFieldsInfo,
-    required this.roundOffAmount,
-    required this.additionalExpenseKey1,
-    required this.additionalExpenseValue1,
-    required this.additionalExpenseKey2,
-    required this.additionalExpenseValue2,
-    required this.additionalExpenseKey3,
-    required this.additionalExpenseValue3,
-    required this.additionalExpenseKey4,
-    required this.additionalExpenseValue4,
-    required this.finalTotal,
-    required this.expenseCategoryId,
-    required this.expenseFor,
-    required this.commissionAgent,
-    required this.document,
-    required this.isDirectSale,
-    required this.isSuspend,
-    required this.exchangeRate,
-    required this.totalAmountRecovered,
-    required this.transferParentId,
-    required this.returnParentId,
-    required this.openingStockProductId,
-    required this.createdBy,
-    required this.woocommerceOrderId,
-    required this.mfgParentProductionPurchaseId,
-    required this.mfgWastedUnits,
-    required this.mfgProductionCost,
-    required this.mfgIsFinal,
-    required this.essentialsDuration,
-    required this.essentialsDurationUnit,
-    required this.essentialsAmountPerUnitDuration,
-    required this.essentialsAllowances,
-    required this.essentialsDeductions,
-    required this.preferPaymentMethod,
-    required this.preferPaymentAccount,
-    required this.salesOrderIds,
-    required this.purchaseOrderIds,
-    required this.customField1,
-    required this.customField2,
-    required this.customField3,
-    required this.customField4,
-    required this.importBatch,
-    required this.importTime,
-    required this.typesOfServiceId,
-    required this.packingCharge,
-    required this.packingChargeType,
-    required this.serviceCustomField1,
-    required this.serviceCustomField2,
-    required this.serviceCustomField3,
-    required this.serviceCustomField4,
-    required this.serviceCustomField5,
-    required this.serviceCustomField6,
-    required this.isCreatedFromApi,
-    required this.rpEarned,
-    required this.orderAddresses,
-    required this.isRecurring,
-    required this.recurInterval,
-    required this.recurIntervalType,
-    required this.recurRepetitions,
-    required this.recurStoppedOn,
-    required this.recurParentId,
-    required this.invoiceToken,
-    required this.payTermNumber,
-    required this.payTermType,
-    required this.sellingPriceGroupId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.invoiceUrl,
-    required this.paymentLink,
-    required this.paymentLines,
-  });
+    ResUpdateReturnSell({
+        required this.id,
+        required this.businessId,
+        required this.locationId,
+        required this.resTableId,
+        required this.resWaiterId,
+        required this.resOrderStatus,
+        required this.type,
+        required this.subType,
+        required this.status,
+        required this.subStatus,
+        required this.isQuotation,
+        required this.paymentStatus,
+        required this.adjustmentType,
+        required this.contactId,
+        required this.customerGroupId,
+        required this.invoiceNo,
+        required this.refNo,
+        required this.source,
+        required this.subscriptionNo,
+        required this.subscriptionRepeatOn,
+        required this.transactionDate,
+        required this.totalBeforeTax,
+        required this.taxId,
+        required this.taxAmount,
+        required this.discountType,
+        required this.discountAmount,
+        required this.rpRedeemed,
+        required this.rpRedeemedAmount,
+        required this.shippingDetails,
+        required this.shippingAddress,
+        required this.shippingStatus,
+        required this.deliveredTo,
+        required this.shippingCharges,
+        required this.shippingCustomField1,
+        required this.shippingCustomField2,
+        required this.shippingCustomField3,
+        required this.shippingCustomField4,
+        required this.shippingCustomField5,
+        required this.additionalNotes,
+        required this.staffNote,
+        required this.isExport,
+        required this.exportCustomFieldsInfo,
+        required this.roundOffAmount,
+        required this.additionalExpenseKey1,
+        required this.additionalExpenseValue1,
+        required this.additionalExpenseKey2,
+        required this.additionalExpenseValue2,
+        required this.additionalExpenseKey3,
+        required this.additionalExpenseValue3,
+        required this.additionalExpenseKey4,
+        required this.additionalExpenseValue4,
+        required this.finalTotal,
+        required this.expenseCategoryId,
+        required this.expenseFor,
+        required this.commissionAgent,
+        required this.document,
+        required this.isDirectSale,
+        required this.isSuspend,
+        required this.exchangeRate,
+        required this.totalAmountRecovered,
+        required this.transferParentId,
+        required this.returnParentId,
+        required this.openingStockProductId,
+        required this.createdBy,
+        required this.woocommerceOrderId,
+        required this.mfgParentProductionPurchaseId,
+        required this.mfgWastedUnits,
+        required this.mfgProductionCost,
+        required this.mfgIsFinal,
+        required this.essentialsDuration,
+        required this.essentialsDurationUnit,
+        required this.essentialsAmountPerUnitDuration,
+        required this.essentialsAllowances,
+        required this.essentialsDeductions,
+        required this.preferPaymentMethod,
+        required this.preferPaymentAccount,
+        required this.salesOrderIds,
+        required this.purchaseOrderIds,
+        required this.customField1,
+        required this.customField2,
+        required this.customField3,
+        required this.customField4,
+        required this.importBatch,
+        required this.importTime,
+        required this.typesOfServiceId,
+        required this.packingCharge,
+        required this.packingChargeType,
+        required this.serviceCustomField1,
+        required this.serviceCustomField2,
+        required this.serviceCustomField3,
+        required this.serviceCustomField4,
+        required this.serviceCustomField5,
+        required this.serviceCustomField6,
+        required this.isCreatedFromApi,
+        required this.rpEarned,
+        required this.orderAddresses,
+        required this.isRecurring,
+        required this.recurInterval,
+        required this.recurIntervalType,
+        required this.recurRepetitions,
+        required this.recurStoppedOn,
+        required this.recurParentId,
+        required this.invoiceToken,
+        required this.payTermNumber,
+        required this.payTermType,
+        required this.sellingPriceGroupId,
+        required this.createdAt,
+        required this.updatedAt,
+        required this.invoiceUrl,
+        required this.paymentLink,
+        required this.paymentLines,
+    });
 
-  String id;
-  String businessId;
-  String locationId;
-  String resTableId;
-  String resWaiterId;
-  String resOrderStatus;
-  String type;
-  String subType;
-  String status;
-  String subStatus;
-  String isQuotation;
-  String paymentStatus;
-  String adjustmentType;
-  String contactId;
-  String customerGroupId;
-  String invoiceNo;
-  String refNo;
-  String source;
-  String subscriptionNo;
-  String subscriptionRepeatOn;
-  String transactionDate;
-  String totalBeforeTax;
-  String taxId;
-  String taxAmount;
-  String discountType;
-  String discountAmount;
-  String rpRedeemed;
-  String rpRedeemedAmount;
-  String shippingDetails;
-  String shippingAddress;
-  String shippingStatus;
-  String deliveredTo;
-  String shippingCharges;
-  String shippingCustomField1;
-  String shippingCustomField2;
-  String shippingCustomField3;
-  String shippingCustomField4;
-  String shippingCustomField5;
-  String additionalNotes;
-  String staffNote;
-  String isExport;
-  String exportCustomFieldsInfo;
-  String roundOffAmount;
-  String additionalExpenseKey1;
-  String additionalExpenseValue1;
-  String additionalExpenseKey2;
-  String additionalExpenseValue2;
-  String additionalExpenseKey3;
-  String additionalExpenseValue3;
-  String additionalExpenseKey4;
-  String additionalExpenseValue4;
-  String finalTotal;
-  String expenseCategoryId;
-  String expenseFor;
-  String commissionAgent;
-  String document;
-  String isDirectSale;
-  String isSuspend;
-  String exchangeRate;
-  String totalAmountRecovered;
-  String transferParentId;
-  String returnParentId;
-  String openingStockProductId;
-  String createdBy;
-  String woocommerceOrderId;
-  String mfgParentProductionPurchaseId;
-  String mfgWastedUnits;
-  String mfgProductionCost;
-  String mfgIsFinal;
-  String essentialsDuration;
-  String essentialsDurationUnit;
-  String essentialsAmountPerUnitDuration;
-  String essentialsAllowances;
-  String essentialsDeductions;
-  String preferPaymentMethod;
-  String preferPaymentAccount;
-  String salesOrderIds;
-  String purchaseOrderIds;
-  String customField1;
-  String customField2;
-  String customField3;
-  String customField4;
-  String importBatch;
-  String importTime;
-  String typesOfServiceId;
-  String packingCharge;
-  String packingChargeType;
-  String serviceCustomField1;
-  String serviceCustomField2;
-  String serviceCustomField3;
-  String serviceCustomField4;
-  String serviceCustomField5;
-  String serviceCustomField6;
-  String isCreatedFromApi;
-  String rpEarned;
-  String orderAddresses;
-  String isRecurring;
-  String recurInterval;
-  String recurIntervalType;
-  String recurRepetitions;
-  String recurStoppedOn;
-  String recurParentId;
-  String invoiceToken;
-  String payTermNumber;
-  String payTermType;
-  String sellingPriceGroupId;
-  String createdAt;
-  String updatedAt;
-  String invoiceUrl;
-  String paymentLink;
-  List<PaymentLine> paymentLines;
+    String id;
+    String businessId;
+    String locationId;
+    String resTableId;
+    String resWaiterId;
+    String resOrderStatus;
+    String type;
+    String subType;
+    String status;
+    String subStatus;
+    String isQuotation;
+    String paymentStatus;
+    String adjustmentType;
+    String contactId;
+    String customerGroupId;
+    String invoiceNo;
+    String refNo;
+    String source;
+    String subscriptionNo;
+    String subscriptionRepeatOn;
+    String transactionDate;
+    String totalBeforeTax;
+    String taxId;
+    String taxAmount;
+    String discountType;
+    String discountAmount;
+    String rpRedeemed;
+    String rpRedeemedAmount;
+    String shippingDetails;
+    String shippingAddress;
+    String shippingStatus;
+    String deliveredTo;
+    String shippingCharges;
+    String shippingCustomField1;
+    String shippingCustomField2;
+    String shippingCustomField3;
+    String shippingCustomField4;
+    String shippingCustomField5;
+    String additionalNotes;
+    String staffNote;
+    String isExport;
+    String exportCustomFieldsInfo;
+    String roundOffAmount;
+    String additionalExpenseKey1;
+    String additionalExpenseValue1;
+    String additionalExpenseKey2;
+    String additionalExpenseValue2;
+    String additionalExpenseKey3;
+    String additionalExpenseValue3;
+    String additionalExpenseKey4;
+    String additionalExpenseValue4;
+    String finalTotal;
+    String expenseCategoryId;
+    String expenseFor;
+    String commissionAgent;
+    String document;
+    String isDirectSale;
+    String isSuspend;
+    String exchangeRate;
+    String totalAmountRecovered;
+    String transferParentId;
+    String returnParentId;
+    String openingStockProductId;
+    String createdBy;
+    String woocommerceOrderId;
+    String mfgParentProductionPurchaseId;
+    String mfgWastedUnits;
+    String mfgProductionCost;
+    String mfgIsFinal;
+    String essentialsDuration;
+    String essentialsDurationUnit;
+    String essentialsAmountPerUnitDuration;
+    String essentialsAllowances;
+    String essentialsDeductions;
+    String preferPaymentMethod;
+    String preferPaymentAccount;
+    String salesOrderIds;
+    String purchaseOrderIds;
+    String customField1;
+    String customField2;
+    String customField3;
+    String customField4;
+    String importBatch;
+    String importTime;
+    String typesOfServiceId;
+    String packingCharge;
+    String packingChargeType;
+    String serviceCustomField1;
+    String serviceCustomField2;
+    String serviceCustomField3;
+    String serviceCustomField4;
+    String serviceCustomField5;
+    String serviceCustomField6;
+    String isCreatedFromApi;
+    String rpEarned;
+    String orderAddresses;
+    String isRecurring;
+    String recurInterval;
+    String recurIntervalType;
+    String recurRepetitions;
+    String recurStoppedOn;
+    String recurParentId;
+    String invoiceToken;
+    String payTermNumber;
+    String payTermType;
+    String sellingPriceGroupId;
+    String createdAt;
+    String updatedAt;
+    String invoiceUrl;
+    String paymentLink;
+    List<PaymentLine> paymentLines;
 
-  factory ResUpdateReturnSell.fromJson(Map<String, dynamic> json) =>
-      ResUpdateReturnSell(
+    factory ResUpdateReturnSell.fromJson(Map<String, dynamic> json) => ResUpdateReturnSell(
         id: json["id"].toString().toString(),
         businessId: json["business_id"].toString(),
         locationId: json["location_id"].toString(),
@@ -304,15 +302,13 @@ class ResUpdateReturnSell {
         openingStockProductId: json["opening_stock_product_id"].toString(),
         createdBy: json["created_by"].toString(),
         woocommerceOrderId: json["woocommerce_order_id"].toString(),
-        mfgParentProductionPurchaseId:
-            json["mfg_parent_production_purchase_id"].toString(),
+        mfgParentProductionPurchaseId: json["mfg_parent_production_purchase_id"].toString(),
         mfgWastedUnits: json["mfg_wasted_units"].toString(),
         mfgProductionCost: json["mfg_production_cost"].toString(),
         mfgIsFinal: json["mfg_is_final"].toString(),
         essentialsDuration: json["essentials_duration"].toString(),
         essentialsDurationUnit: json["essentials_duration_unit"].toString(),
-        essentialsAmountPerUnitDuration:
-            json["essentials_amount_per_unit_duration"].toString(),
+        essentialsAmountPerUnitDuration: json["essentials_amount_per_unit_duration"].toString(),
         essentialsAllowances: json["essentials_allowances"].toString(),
         essentialsDeductions: json["essentials_deductions"].toString(),
         preferPaymentMethod: json["prefer_payment_method"].toString(),
@@ -351,11 +347,10 @@ class ResUpdateReturnSell {
         updatedAt: json["updated_at"].toString(),
         invoiceUrl: json["invoice_url"].toString(),
         paymentLink: json["payment_link"].toString(),
-        paymentLines: List<PaymentLine>.from(
-            json["payment_lines"].map((x) => PaymentLine.fromJson(x))),
-      );
+        paymentLines: List<PaymentLine>.from(json["payment_lines"].map((x) => PaymentLine.fromJson(x))),
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "id": id,
         "business_id": businessId,
         "location_id": locationId,
@@ -466,75 +461,74 @@ class ResUpdateReturnSell {
         "updated_at": updatedAt,
         "invoice_url": invoiceUrl,
         "payment_link": paymentLink,
-        "payment_lines":
-            List<dynamic>.from(paymentLines.map((x) => x.toJson())),
-      };
+        "payment_lines": List<dynamic>.from(paymentLines.map((x) => x.toJson())),
+    };
 }
 
 class PaymentLine {
-  PaymentLine({
-    required this.id,
-    required this.transactionId,
-    required this.businessId,
-    required this.isReturn,
-    required this.amount,
-    required this.method,
-    required this.transactionNo,
-    required this.cardTransactionNumber,
-    required this.cardNumber,
-    required this.cardType,
-    required this.cardHolderName,
-    required this.cardMonth,
-    required this.cardYear,
-    required this.cardSecurity,
-    required this.chequeNumber,
-    required this.bankAccountNumber,
-    required this.paidOn,
-    required this.createdBy,
-    required this.paidThroughLink,
-    required this.gateway,
-    required this.isAdvance,
-    required this.paymentFor,
-    required this.parentId,
-    required this.note,
-    required this.document,
-    required this.paymentRefNo,
-    required this.accountId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    PaymentLine({
+        required this.id,
+        required this.transactionId,
+        required this.businessId,
+        required this.isReturn,
+        required this.amount,
+        required this.method,
+        required this.transactionNo,
+        required this.cardTransactionNumber,
+        required this.cardNumber,
+        required this.cardType,
+        required this.cardHolderName,
+        required this.cardMonth,
+        required this.cardYear,
+        required this.cardSecurity,
+        required this.chequeNumber,
+        required this.bankAccountNumber,
+        required this.paidOn,
+        required this.createdBy,
+        required this.paidThroughLink,
+        required this.gateway,
+        required this.isAdvance,
+        required this.paymentFor,
+        required this.parentId,
+        required this.note,
+        required this.document,
+        required this.paymentRefNo,
+        required this.accountId,
+        required this.createdAt,
+        required this.updatedAt,
+    });
 
-  String id;
-  String transactionId;
-  String businessId;
-  String isReturn;
-  String amount;
-  String method;
-  String transactionNo;
-  String cardTransactionNumber;
-  String cardNumber;
-  String cardType;
-  String cardHolderName;
-  String cardMonth;
-  String cardYear;
-  String cardSecurity;
-  String chequeNumber;
-  String bankAccountNumber;
-  String paidOn;
-  String createdBy;
-  String paidThroughLink;
-  String gateway;
-  String isAdvance;
-  String paymentFor;
-  String parentId;
-  String note;
-  String document;
-  String paymentRefNo;
-  String accountId;
-  String createdAt;
-  String updatedAt;
+    String id;
+    String transactionId;
+    String businessId;
+    String isReturn;
+    String amount;
+    String method;
+    String transactionNo;
+    String cardTransactionNumber;
+    String cardNumber;
+    String cardType;
+    String cardHolderName;
+    String cardMonth;
+    String cardYear;
+    String cardSecurity;
+    String chequeNumber;
+    String bankAccountNumber;
+    String paidOn;
+    String createdBy;
+    String paidThroughLink;
+    String gateway;
+    String isAdvance;
+    String paymentFor;
+    String parentId;
+    String note;
+    String document;
+    String paymentRefNo;
+    String accountId;
+    String createdAt;
+    String updatedAt;
 
-  factory PaymentLine.fromJson(Map<String, dynamic> json) => PaymentLine(
+    factory PaymentLine.fromJson(Map<String, dynamic> json) => PaymentLine(
         id: json["id"].toString(),
         transactionId: json["transaction_id"].toString(),
         businessId: json["business_id"].toString(),
@@ -564,9 +558,9 @@ class PaymentLine {
         accountId: json["account_id"].toString(),
         createdAt: json["created_at"].toString(),
         updatedAt: json["updated_at"].toString(),
-      );
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "id": id,
         "transaction_id": transactionId,
         "business_id": businessId,
@@ -596,5 +590,5 @@ class PaymentLine {
         "account_id": accountId,
         "created_at": createdAt,
         "updated_at": updatedAt,
-      };
+    };
 }

@@ -9,7 +9,6 @@ import 'package:pos/utils/preference_utils.dart';
 
 class PosRepo {
   final DioClient dioClient;
-
   PosRepo({
     required this.dioClient,
   });
@@ -28,7 +27,7 @@ class PosRepo {
               }
             : {
                 "location_id": data.locationId,
-                "closed_at": data.closedAt,
+                "closed_at" : data.closedAt,
                 "status": data.status,
                 "cash_register_id": data.cashRegisterId,
                 "closing_amount": data.closingAmount,
@@ -61,9 +60,8 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiProductList,
-          queryParameters: {
-            "location_id": getString(PrefKeyConstants.locationId)
-          });
+        // queryParameters: {"location_id":getString(PrefKeyConstants.locationId)}
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
@@ -78,25 +76,25 @@ class PosRepo {
       //     {
       //   "sells": [
       //     {
-              //       "location_id": 1,
-              //       "contact_id": 1,
-              //       "discount_amount": 10,
-              //       "discount_type": "fixed",
-              //       "products": [
-              //         {
-              //           "product_id": 1,
-              //           "quantity": 1,
-              //           "variation_id": 1,
-              //           "unit_price": 437.5
-              //         }
-              //       ],
-              //       "payments": [
-              //         {"amount": 1200.13, "method": "cash"}
-              //       ]
-              //     }
-              //   ]
-              // }
-              );
+      //       "location_id": 1,
+      //       "contact_id": 1,
+      //       "discount_amount": 10,
+      //       "discount_type": "fixed",
+      //       "products": [
+      //         {
+      //           "product_id": 1,
+      //           "quantity": 1,
+      //           "variation_id": 1,
+      //           "unit_price": 437.5
+      //         }
+      //       ],
+      //       "payments": [
+      //         {"amount": 1200.13, "method": "cash"}
+      //       ]
+      //     }
+      //   ]
+      // }
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
@@ -106,7 +104,9 @@ class PosRepo {
   Future<ApiResponse?> createSellError(ReqCreateSell sell) async {
     try {
       Response response =
-          await dioClient.post(ApiEndPoints.apiCreateSell, data: sell);
+      await dioClient.post(ApiEndPoints.apiCreateSell, data:sell
+
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
@@ -128,30 +128,33 @@ class PosRepo {
 
   Future<ApiResponse?> fetchRegister({required String registerId}) async {
     try {
-      Response response =
-          await dioClient.get(ApiEndPoints.apiLUserList + '/' + registerId);
-      return ApiResponse.withSuccess(response);
-    } catch (e) {
-      print(e.toString());
-      return ApiResponse.withError(e);
-    }
-  }
-
-  Future<ApiResponse?> beforeCloseRegister(
-      {required String cashId, required String locationId}) async {
-    try {
-      Response response = await dioClient.post(
-        ApiEndPoints.apiCashRegister,
-        data: {
-          'location_id': locationId,
-          'cash_register_id': cashId,
-          'status': 'before_close',
-        },
+      Response response = await dioClient.get(
+        ApiEndPoints.apiLUserList + '/' + registerId
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
       return ApiResponse.withError(e);
     }
+  }
+  Future <ApiResponse?> beforeCloseRegister({
+     required String cashId,  required String locationId}) async
+  {
+    try {
+      Response response = await dioClient.post(
+          ApiEndPoints.apiCashRegister,
+          data:
+          {
+            'location_id' : locationId,
+            'cash_register_id' : cashId,
+            'status': 'before_close',
+          },
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print(e.toString());
+      return ApiResponse.withError(e);
+    }
+
   }
 }

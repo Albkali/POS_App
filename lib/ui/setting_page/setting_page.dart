@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/ui/choose_language/choose_language_page.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/custom_app_bar.dart';
 
@@ -16,6 +18,16 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   bool _switchValue=true;
+  bool _scanValue = false;
+  @override
+  void initState() {
+    if(getBool(PrefKeyConstants.scanType) == false ) {
+      _scanValue = false;
+    }else{
+      _scanValue = true;
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +83,26 @@ class _SettingPageState extends State<SettingPage> {
                 ],
               ),
             ),
+            const Gap(20),
+            Padding(
+              padding: const EdgeInsets.only(left: 16,right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Utils.boldSubHeadingText(text: 'Is Scan Multiple  ($_scanValue)'),
+                  CupertinoSwitch(
+                    value: _scanValue,
+                    onChanged: (value) {
+                      setState(() {
+                        _scanValue = value;
+                        setBool(PrefKeyConstants.scanType, value);
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const Gap(20),
             commonListTile(
                 title: 'My Order',
                 icon:   Icons.shopping_bag_outlined,
@@ -94,7 +126,7 @@ class _SettingPageState extends State<SettingPage> {
             commonListTile(
                 title: 'Language',
                 icon:   Icons.local_offer_outlined,
-                onTap: () {              Navigator.push(context, MaterialPageRoute(builder: (builder)=> ChooseLanguagePage(isLanguage: true,)));
+                onTap: () { Navigator.push(context, MaterialPageRoute(builder: (builder)=> ChooseLanguagePage(isLanguage: true,)));
                 }),
             commonListTile(
                 title: 'Help & Support',

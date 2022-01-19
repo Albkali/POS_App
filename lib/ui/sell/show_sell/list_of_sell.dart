@@ -722,6 +722,7 @@ import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -730,7 +731,6 @@ import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'list_of_sell_view_model.dart';
 
 class ListOfSellPage extends StatefulWidget {
@@ -741,13 +741,14 @@ class ListOfSellPage extends StatefulWidget {
 }
 
 class _ListOfSellPageState extends State<ListOfSellPage> {
-  bool isSubcribed = false;
+
   late TextEditingController locationController = TextEditingController();
   late TextEditingController customerController = TextEditingController();
   late TextEditingController paymentStatusController = TextEditingController();
   late TextEditingController userController = TextEditingController();
   late TextEditingController shippingStatusController = TextEditingController();
   late TextEditingController amountController = TextEditingController();
+
 
   @override
   void initState() {
@@ -772,6 +773,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -823,726 +825,544 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                   ),
                 ),
               ),
-              Consumer<ListOfSellViewModel>(
-                builder: (BuildContext context, value, Widget? child) {
-                  if (value.isLoading == true) {
-                    return SizedBox(
-                        height: Utils.getHeight(context),
-                        width: Utils.getWidth(context),
-                        child:
-                            const Center(child: CircularProgressIndicator()));
-                  }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Gap(15),
+              Consumer<ListOfSellViewModel>(builder: (BuildContext context, value, Widget? child) {
+                if(value.isLoading == true)
+                {
+                  return SizedBox(height: Utils.getHeight(context),width: Utils.getWidth(context),child: const Center(child: CircularProgressIndicator( )));
+                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Gap(15),
 
-                      /// Filter Button...
-                      InkWell(
-                        onTap: () {
-                          print('Check it...');
-                          showDialogBox();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.filter_list_outlined,
-                              ),
-                              Utils.mediumHeadingText(
-                                  text: 'Flters', textSize: 15),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Gap(10),
-                      Container(
-                        margin: const EdgeInsets.only(left: 10, right: 10),
-                        height: 45,
-                        width: Utils.getWidth(context),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            width: 1,
-                            color: AppColor.grey2,
-                          ),
-                        ),
+                    /// Filter Button...
+                    InkWell(
+                      onTap: () {
+                        print('Check it...');
+                        showDialogBox();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                                child: Utils.mediumHeadingText(
-                                    text: 'Invoice No.',
-                                    color: AppColor.dark_green,
-                                    textAlign: TextAlign.center,
-                                    fontWeight: FontWeight.w700)),
-                            Utils.customVerticalDivider(),
-                            Expanded(
-                                child: Utils.mediumHeadingText(
-                                    text: 'Payment status',
-                                    color: AppColor.dark_green,
-                                    textAlign: TextAlign.center,
-                                    fontWeight: FontWeight.w700)),
-                            Utils.customVerticalDivider(),
-                            Expanded(
-                                child: Utils.mediumHeadingText(
-                                    text: 'Payment method',
-                                    color: AppColor.dark_green,
-                                    textAlign: TextAlign.center,
-                                    fontWeight: FontWeight.w700)),
-                            Utils.customVerticalDivider(),
-                            Expanded(
-                                child: Utils.mediumHeadingText(
-                                    text: 'Total amount',
-                                    color: AppColor.dark_green,
-                                    textAlign: TextAlign.center,
-                                    fontWeight: FontWeight.w700)),
-                            Utils.customVerticalDivider(),
-                            Expanded(
-                                child: Utils.mediumHeadingText(
-                                    text: 'Customer name',
-                                    color: AppColor.dark_green,
-                                    textAlign: TextAlign.center,
-                                    fontWeight: FontWeight.w700)),
+                            const Icon(
+                              Icons.filter_list_outlined,
+                            ),
+                            Utils.mediumHeadingText(text: 'Flters', textSize: 15),
                           ],
                         ),
                       ),
-                      const Gap(10),
-                      Consumer<ListOfSellViewModel>(
-                        builder: (BuildContext context, value, Widget? child) {
-                          return SizedBox(
-                            height: Utils.getHeight(context) * 0.76,
-                            width: Utils.getWidth(context),
-                            child: ListView.builder(
-                                itemCount: value.sellItemList.length,
-                                itemBuilder: (context, index) {
-                                  // for(int i = 0; i < value.userList.length; i++)
-                                  //   {
-                                  //     print("HELLO user 0 ${value.userList[0].contactId}");
-                                  //     print("HELLO sell 0 ${value.sellItemList[0].contactId}");
-                                  //     print("HELLO user 1 ${value.userList[1].contactId}");
-                                  //     print("HELLO sell 1 ${value.sellItemList[1].contactId}");
-                                  //     print("Old Name Is 0 ${value.userList[0].name}");
-                                  //     if(value.userList[i].id == value.sellItemList[index].id)
-                                  //      {
-                                  //        name = value.userList[i].name;
-                                  //        print("New Name Is ${name}");
-                                  //      }
-                                  //   }
-                                  return SwipeActionCell(
-                                    key: const ObjectKey(10),
-
-                                    ///this key is necessary
-                                    trailingActions: <SwipeAction>[
-                                      SwipeAction(
-                                          backgroundRadius: 20,
-                                          title: "Add",
-                                          onTap: (CompletionHandler
-                                              handler) async {
-                                            if (value.sellItemList[index]
-                                                    .paymentStatus ==
-                                                'paid') {
-                                              ToastUtils.showCustomToast(
-                                                  context,
-                                                  "Alreasy Paid",
-                                                  "warning");
-                                            } else {
-                                              showLoadingDialog(
-                                                  context: context);
-                                              await Provider.of<
-                                                          ListOfSellViewModel>(
-                                                      context,
-                                                      listen: false)
-                                                  .getSpecifiedContact(
-                                                      contactId: value
-                                                          .sellItemList[index]
-                                                          .contactId,
-                                                      context: context);
-                                              var name = Provider.of<
-                                                          ListOfSellViewModel>(
-                                                      context,
-                                                      listen: false)
-                                                  .specifiedContactList[0]
-                                                  .name;
-                                              print("NAMEIS ${name}");
-                                              showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: Utils
-                                                          .boldSubHeadingText(
-                                                        text: "Add Payment",
-                                                      ),
-                                                      content: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          commonTile(
-                                                              text: 'Customer',
-                                                              subText: name),
-                                                          const Gap(5),
-                                                          commonTile(
-                                                              text:
-                                                                  'Invoice No.',
-                                                              subText:
-                                                                  '#${value.sellItemList[index].invoiceNo}'),
-                                                          const Gap(5),
-                                                          commonTile(
-                                                              text: 'Location',
-                                                              subText: value
-                                                                  .sellItemList[
-                                                                      index]
-                                                                  .locationId),
-                                                          const Gap(5),
-                                                          commonTile(
-                                                              text: 'Date',
-                                                              subText: DateFormat(
-                                                                      'dd/MM/yyyy')
-                                                                  .format(value
-                                                                      .sellItemList[
-                                                                          index]
-                                                                      .transactionDate)),
-                                                          const Gap(5),
-                                                          commonTile(
-                                                              text:
-                                                                  'Advance Balance',
-                                                              subText: value
-                                                                  .sellItemList[
-                                                                      index]
-                                                                  .rpRedeemedAmount),
-                                                          const Gap(5),
-                                                          commonTile(
-                                                              text:
-                                                                  'total amount',
-                                                              subText: value
-                                                                  .sellItemList[
-                                                                      index]
-                                                                  .finalTotal),
-                                                          const Gap(5),
-                                                          Utils
-                                                              .mediumHeadingText(
-                                                                  text:
-                                                                      "Amount"),
-                                                          ContainerBorder(
-                                                            child: TextField(
-                                                              keyboardType:
-                                                                  TextInputType
-                                                                      .number,
-                                                              controller:
-                                                                  amountController,
-                                                              onChanged: (val) {
-                                                                setState(() {
-                                                                  double x = double.parse(
-                                                                      amountController
-                                                                          .text);
-                                                                  double min =
-                                                                      0.0;
-                                                                  double max = double.parse(value
-                                                                      .sellItemList[
-                                                                          index]
-                                                                      .finalTotal);
-                                                                  try {
-                                                                    x = double
-                                                                        .parse(
-                                                                            val);
-                                                                  } catch (error) {
-                                                                    x = min;
-                                                                  }
-                                                                  if (x < min) {
-                                                                    x = min;
-                                                                  } else if (x >
-                                                                      max) {
-                                                                    ToastUtils.showCustomToast(
-                                                                        context,
-                                                                        "Maximum amount is ${value.sellItemList[index].finalTotal}",
-                                                                        "warning");
-                                                                    x = max;
-                                                                  }
-                                                                });
-                                                              },
-                                                            ),
-                                                          ),
-                                                          commonTile(
-                                                              text:
-                                                                  'Payment Account',
-                                                              subText: value
-                                                                  .sellItemList[
-                                                                      index]
-                                                                  .preferPaymentAccount),
-                                                          Row(
-                                                            children: [
-                                                              Utils.mediumHeadingText(
-                                                                  text:
-                                                                      "Payment Method:"),
-                                                              commonDropDown()
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
-                                                      actions: [
-                                                        FlatButton(
-                                                          child: const Text(
-                                                              'Close'),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                        FlatButton(
-                                                          child: const Text(
-                                                              'Save'),
-                                                          onPressed: () {
-                                                            // if(amountController.text == value.sellItemList[index].finalTotal.){
-                                                            print(
-                                                                "HHH${value.sellItemList[index].sellLines[0].id}");
-                                                            Provider.of<ListOfSellViewModel>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .addPayment(
-                                                                    sellID: value
-                                                                        .sellItemList[
-                                                                            index]
-                                                                        .sellLines[
-                                                                            0]
-                                                                        .id,
-                                                                    payment:
-                                                                        amountController
-                                                                            .text)
-                                                                .then((value) {
-                                                              _launchURL(Provider.of<
-                                                                              ListOfSellViewModel>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .paymentUrl ??
-                                                                  '');
-                                                            });
-                                                            Navigator.pop(
-                                                                context);
-                                                            // }
-                                                            // _launchURL(value
-                                                            //     .sellItemList[index]
-                                                            //     .invoiceUrl);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    );
-                                                  });
-                                            }
-                                          },
-                                          color: Colors.blue),
-                                      SwipeAction(
-                                          backgroundRadius: 20,
-                                          title: "View",
-                                          onTap: (CompletionHandler
-                                              handler) async {
+                    ),
+                    const Gap(10),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      height: 45,
+                      width: Utils.getWidth(context),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          width: 1,
+                          color: AppColor.grey2,
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              child: Utils.mediumHeadingText(
+                                  text: 'Invoice No.',
+                                  color: AppColor.dark_green,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w700)),
+                          Utils.customVerticalDivider(),
+                          Expanded(
+                              child: Utils.mediumHeadingText(
+                                  text: 'Payment status',
+                                  color: AppColor.dark_green,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w700)),
+                          Utils.customVerticalDivider(),
+                          Expanded(
+                              child: Utils.mediumHeadingText(
+                                  text: 'Payment method',
+                                  color: AppColor.dark_green,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w700)),
+                          Utils.customVerticalDivider(),
+                          Expanded(
+                              child: Utils.mediumHeadingText(
+                                  text: 'Total amount',
+                                  color: AppColor.dark_green,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w700)),
+                          Utils.customVerticalDivider(),
+                          Expanded(
+                              child: Utils.mediumHeadingText(
+                                  text: 'Customer name',
+                                  color: AppColor.dark_green,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+                    ),
+                    const Gap(10),
+                    Consumer<ListOfSellViewModel>(
+                      builder: (BuildContext context, value, Widget? child) {
+                        return SizedBox(
+                          height: Utils.getHeight(context) * 0.76,
+                          width: Utils.getWidth(context),
+                          child: ListView.builder(
+                              itemCount: value.sellItemList.length,
+                              itemBuilder: (context, index) {
+                                // for(int i = 0; i < value.userList.length; i++)
+                                //   {
+                                //     print("HELLO user 0 ${value.userList[0].contactId}");
+                                //     print("HELLO sell 0 ${value.sellItemList[0].contactId}");
+                                //     print("HELLO user 1 ${value.userList[1].contactId}");
+                                //     print("HELLO sell 1 ${value.sellItemList[1].contactId}");
+                                //     print("Old Name Is 0 ${value.userList[0].name}");
+                                //     if(value.userList[i].id == value.sellItemList[index].id)
+                                //      {
+                                //        name = value.userList[i].name;
+                                //        print("New Name Is ${name}");
+                                //      }
+                                //   }
+                                return SwipeActionCell(
+                                  key: const ObjectKey(10),
+                                  ///this key is necessary
+                                  trailingActions: <SwipeAction>[
+                                    SwipeAction(
+                                        backgroundRadius: 20,
+                                        title: "Add",
+                                        onTap:
+                                            (CompletionHandler handler) async {
+                                          if(value.sellItemList[index].paymentStatus == 'paid')
+                                          {
+                                            ToastUtils.showCustomToast(context, "Alreasy Paid", "warning");
+                                          }
+                                          else
+                                          {
                                             showLoadingDialog(context: context);
-                                            await Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .getSpecifiedContact(
-                                                    contactId: value
-                                                        .sellItemList[index]
-                                                        .contactId,
-                                                    context: context);
-                                            var businessname = Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .supplierBusinessName;
-                                            var name = Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .name;
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
+                                            await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
+                                            var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
+                                            print("NAMEIS ${name}");
+                                            showDialog(context: context,
+                                                builder: (BuildContext context)
+                                                {
                                                   return AlertDialog(
-                                                    title: Text(
-                                                        "View Payments (${value.sellItemList[index].invoiceNo})"),
+                                                    title: Utils.boldSubHeadingText(text: "Add Payment",),
                                                     content: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       mainAxisSize:
-                                                          MainAxisSize.min,
+                                                      MainAxisSize.min,
                                                       children: [
                                                         commonTile(
                                                             text: 'Customer',
                                                             subText: name),
                                                         const Gap(5),
                                                         commonTile(
-                                                            text: 'Business',
-                                                            subText:
-                                                                businessname),
-                                                        const Gap(5),
-                                                        commonTile(
                                                             text: 'Invoice No.',
                                                             subText:
-                                                                '#${value.sellItemList[index].invoiceNo}'),
+                                                            '#${value.sellItemList[index].invoiceNo}'),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Location',
+                                                            subText: value
+                                                                .sellItemList[index]
+                                                                .locationId),
                                                         const Gap(5),
                                                         commonTile(
                                                             text: 'Date',
                                                             subText: DateFormat(
-                                                                    'dd/MM/yyyy')
+                                                                'dd/MM/yyyy')
                                                                 .format(value
-                                                                    .sellItemList[
-                                                                        index]
-                                                                    .transactionDate)),
+                                                                .sellItemList[
+                                                            index]
+                                                                .transactionDate)),
                                                         const Gap(5),
                                                         commonTile(
-                                                            text:
-                                                                'Payment Status',
-                                                            subText: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .paymentStatus),
+                                                            text: 'Advance Balance' ,
+                                                            subText: value.sellItemList[index].rpRedeemedAmount),
                                                         const Gap(5),
                                                         commonTile(
-                                                            text:
-                                                                'Reference Number',
-                                                            subText: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .refNo),
+                                                            text: 'total amount' ,
+                                                            subText: value.sellItemList[index].finalTotal),
+
                                                         const Gap(5),
+                                                        Utils.mediumHeadingText(text: "Amount"),
+                                                        ContainerBorder(
+                                                          child: TextField(
+                                                            keyboardType: TextInputType.number,
+                                                            controller: amountController,
+                                                            onChanged: (val){
+                                                              setState(() {
+                                                                double x =  double.parse(amountController.text);
+                                                                double min = 0.0;
+                                                                double max = double.parse(value.sellItemList[index].finalTotal);
+                                                                try {
+                                                                  x = double.parse(val);
+                                                                } catch (error) {
+                                                                  x = min;
+                                                                }
+                                                                if (x < min) {
+                                                                  x = min;
+                                                                } else if (x > max) {
+                                                                  ToastUtils.showCustomToast(context, "Maximum amount is ${value.sellItemList[index].finalTotal}", "warning");
+                                                                  x = max;
+                                                                }
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
                                                         commonTile(
-                                                            text: 'Amount',
-                                                            subText: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .roundOffAmount),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text:
-                                                                'Payment Method',
-                                                            subText: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .preferPaymentMethod)
+                                                            text: 'Payment Account',
+                                                            subText: value.sellItemList[index].preferPaymentAccount),
+                                                        Row(
+                                                          children: [
+                                                            Utils.mediumHeadingText(text: "Payment Method:"),
+                                                            commonDropDown()
+                                                          ],
+                                                        )
                                                       ],
                                                     ),
                                                     actions: [
                                                       FlatButton(
-                                                        child:
-                                                            const Text('Close'),
+                                                        child: const Text('Close'),
                                                         onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
+                                                          Navigator.pop(context);
                                                         },
                                                       ),
                                                       FlatButton(
-                                                        child:
-                                                            const Text('Print'),
+                                                        child: const Text('Save'),
                                                         onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                          _launchURL(value
-                                                              .sellItemList[
-                                                                  index]
-                                                              .invoiceUrl);
+                                                          // if(amountController.text == value.sellItemList[index].finalTotal.){
+                                                            print("HHH${value.sellItemList[index].sellLines[0].id}");
+                                                            Provider.of<ListOfSellViewModel>(context, listen: false).addPayment(
+                                                                sellID: value.sellItemList[index].sellLines[0].id,
+                                                                payment: amountController.text).then((value)
+                                                            {
+                                                              _launchURL(Provider.of<ListOfSellViewModel>(context,listen: false).paymentUrl??'');
+                                                            });
+                                                            Navigator.pop(context);
+                                                          // }
+                                                          // _launchURL(value
+                                                          //     .sellItemList[index]
+                                                          //     .invoiceUrl);
                                                         },
                                                       ),
                                                     ],
                                                   );
-                                                });
-                                          },
-                                          color: Colors.pink),
-                                    ],
-                                    leadingActions: [
-                                      SwipeAction(
-                                          backgroundRadius: 20,
-                                          title: "Print",
-                                          onTap: (CompletionHandler
-                                              handler) async {
-                                            _launchURL(value.sellItemList[index]
-                                                .invoiceUrl);
-                                          },
-                                          color: Colors.red),
-                                      SwipeAction(
-                                          backgroundRadius: 20,
-                                          title: "Return",
-                                          onTap: (CompletionHandler
-                                              handler) async {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(builder:
-                                                    (BuildContext context) {
-                                              return ReturnSellPage(
-                                                item: value.sellItemList[index],
-                                                payline: value
-                                                    .sellItemList[index]
-                                                    .paymentLines[0]
-                                                    .transactionId,
-                                              );
-                                            }));
-                                          },
-                                          color: Colors.amber),
-                                    ],
-                                    child: InkWell(
+                                                }
+                                            );
+                                          }
+                                        },
+                                        color: Colors.blue),
+                                    SwipeAction(
+                                        backgroundRadius: 20,
+                                        title: "View",
+                                        onTap: (CompletionHandler handler) async {
+                                          showLoadingDialog(context: context);
+                                          await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
+                                          var businessname = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].supplierBusinessName;
+                                          var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text("View Payments (${value.sellItemList[index].invoiceNo})"),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                    MainAxisSize.min,
+                                                    children: [
+                                                      commonTile(
+                                                          text: 'Customer',
+                                                          subText: name),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Business',
+                                                          subText: businessname),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Invoice No.',
+                                                          subText:
+                                                          '#${value.sellItemList[index].invoiceNo}'),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Date',
+                                                          subText: DateFormat(
+                                                              'dd/MM/yyyy')
+                                                              .format(value
+                                                              .sellItemList[
+                                                          index]
+                                                              .transactionDate)),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Payment Status',
+                                                          subText: value
+                                                              .sellItemList[index]
+                                                              .paymentStatus),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Reference Number',
+                                                          subText: value.sellItemList[index].refNo),
+                                                      const Gap(5),
+                                                      commonTile(
+                                                          text: 'Amount',
+                                                          subText: value.sellItemList[index].roundOffAmount),
+                                                      const Gap(5),
+                                                      commonTile
+                                                        (
+                                                          text: 'Payment Method',
+                                                          subText: value.sellItemList[index].preferPaymentMethod)
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    FlatButton(
+                                                      child: const Text('Close'),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    FlatButton(
+                                                      child: const Text('Print'),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        _launchURL(value
+                                                            .sellItemList[index]
+                                                            .invoiceUrl);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        color: Colors.pink),
+                                  ],
+                                  leadingActions: [
+                                    SwipeAction(
+                                        backgroundRadius: 20,
+                                        title: "Print",
+                                        onTap:
+                                            (CompletionHandler handler) async {
+                                          _launchURL(value
+                                              .sellItemList[index].invoiceUrl);
+                                        },
+                                        color: Colors.red),
+                                    SwipeAction(
+                                        backgroundRadius: 20,
+                                        title: "Return",
+                                        onTap:
+                                            (CompletionHandler handler) async {
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)
+                                          {
+                                            return ReturnSellPage(
+                                              item: value.sellItemList[index],
+                                              payline: value.sellItemList[index].paymentLines[0].transactionId,);
+                                          }));
+                                        },
+                                        color: Colors.amber),
+                                  ],
+                                  child: InkWell(
                                       onTap: () async {
                                         showLoadingDialog(context: context);
-                                        await Provider.of<ListOfSellViewModel>(
-                                                context,
-                                                listen: false)
-                                            .getSpecifiedContact(
-                                                contactId: value
-                                                    .sellItemList[index]
-                                                    .contactId,
-                                                context: context);
-                                        var name =
-                                            Provider.of<ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .name;
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                  "Sell Details(Invoice No.${value.sellItemList[index].invoiceNo})"),
-                                              content: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  commonTile(
-                                                      text: 'Customer Name',
-                                                      subText: name),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Payment Status',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .paymentStatus),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Date',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .transactionDate
-                                                          .toString()),
-                                                  const Gap(5),
-                                                  Divider(),
-                                                  Utils.boldSubHeadingText(
-                                                      text: "Products:"),
-                                                  Gap(5),
-                                                  commonTile(
-                                                      text: 'Product Name',
-                                                      subText: 'hh'),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Quantity',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .sellLines[0]
-                                                          .quantity),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Price',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .sellLines[0]
-                                                          .unitPrice),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Subtotal',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .finalTotal),
-                                                  Divider(),
-                                                  Utils.boldSubHeadingText(
-                                                      text: "Payment info:"),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Date',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .transactionDate
-                                                          .toString()),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Reference No',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .refNo),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Amount',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .totalAmountRecovered),
-                                                  const Gap(5),
-                                                  commonTile(
-                                                      text: 'Payment Mode',
-                                                      subText: value
-                                                          .sellItemList[index]
-                                                          .paymentLines[0]
-                                                          .method),
-                                                  const Gap(5),
-                                                ],
-                                              ),
-                                              actions: [
-                                                FlatButton(
-                                                  child: const Text("Close"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                FlatButton(
-                                                  child: const Text(
-                                                      "Print Invoice"),
-                                                  onPressed: () async {
-                                                    _launchURL(value
+                                        await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
+                                        var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context){
+                                          return  AlertDialog(
+                                            title: Text("Sell Details(Invoice No.${value.sellItemList[index].invoiceNo})"),
+                                            content: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisSize:
+                                              MainAxisSize.min,
+                                              children: [
+                                                commonTile(
+                                                    text: 'Customer Name',
+                                                    subText: name),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Payment Status',
+                                                    subText: value
                                                         .sellItemList[index]
-                                                        .invoiceUrl);
-                                                  },
-                                                )
+                                                        .paymentStatus),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Date',
+                                                    subText:value
+                                                        .sellItemList[index]
+                                                        .transactionDate.toString()),
+                                                const Gap(5),
+                                                Divider(),
+                                                Utils.boldSubHeadingText(text: "Products:"),
+                                                Gap(5),
+                                                commonTile(
+                                                    text: 'Product Name',
+                                                    subText: 'hh'),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Quantity',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .sellLines[0].quantity),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Price',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .sellLines[0].unitPrice),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Subtotal',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .finalTotal),
+                                                Divider(),
+                                                Utils.boldSubHeadingText(text: "Payment info:"),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Date',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .transactionDate.toString()),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Reference No',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .refNo),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Amount',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .totalAmountRecovered),
+                                                const Gap(5),
+                                                commonTile(
+                                                    text: 'Payment Mode',
+                                                    subText: value
+                                                        .sellItemList[index]
+                                                        .paymentLines[0].method),
+                                                const Gap(5),
+
                                               ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 10, right: 10, top: 5),
-                                        height: 60,
-                                        width: Utils.getWidth(context),
-                                        decoration: BoxDecoration(
-                                          color: AppColor.grey2,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              width: 1, color: AppColor.grey2),
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Expanded(
-                                                flex: 2,
-                                                child: Center(
-                                                  child:
-                                                      Utils.mediumHeadingText(
-                                                          text: value
-                                                              .sellItemList[
-                                                                  index]
-                                                              .invoiceNo,
-                                                          color: AppColor
-                                                              .dark_green),
-                                                )),
-                                            Utils.customVerticalDivider(),
-                                            Expanded(
-                                              flex: 2,
-                                              child: Container(
-                                                  height: 20,
-                                                  width: 40,
-                                                  margin:
-                                                      const EdgeInsets.all(6),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 1,
-                                                      horizontal: 8),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    color: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .paymentStatus ==
-                                                            'paid'
-                                                        ? AppColor.green
-                                                            .withOpacity(0.4)
-                                                        : AppColor.orange
-                                                            .withOpacity(0.4),
-                                                  ),
-                                                  child: Center(
-                                                    child: Utils.mediumHeadingText(
-                                                        text: value
-                                                                    .sellItemList[
-                                                                        index]
-                                                                    .paymentStatus ==
-                                                                'paid'
-                                                            ? 'Paid'
-                                                            : 'Due',
-                                                        color: AppColor.black),
-                                                  )),
                                             ),
-                                            Utils.customVerticalDivider(),
-                                            Expanded(
-                                                flex: 2,
+                                            actions:[
+
+                                              FlatButton(
+                                                child: const Text("Close"),
+                                                onPressed: (){
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              FlatButton(
+                                                child: const Text("Print Invoice"),
+
+                                                onPressed: () async {
+                                                  _launchURL(value
+                                                      .sellItemList[index].invoiceUrl);
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 10, right: 10, top: 5),
+                                      height: 60,
+                                      width: Utils.getWidth(context),
+                                      decoration: BoxDecoration(
+                                        color: AppColor.grey2,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            width: 1, color: AppColor.grey2),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                child: Utils.mediumHeadingText(
+                                                    text: value.sellItemList[index].invoiceNo,
+                                                    color: AppColor.dark_green),
+                                              )),
+                                          Utils.customVerticalDivider(),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Container(
+                                              height: 20,
+                                                width: 40,
+                                                margin: const EdgeInsets.all(6),
+                                                padding: const EdgeInsets.symmetric(
+                                                    vertical: 1, horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(20),
+                                                  color: value.sellItemList[index]
+                                                      .paymentStatus ==
+                                                      'paid'
+                                                      ? AppColor.green
+                                                      .withOpacity(0.4)
+                                                      : AppColor.orange
+                                                      .withOpacity(0.4),
+                                                ),
                                                 child: Center(
-                                                    child: Provider.of<
-                                                                    ListOfSellViewModel>(
-                                                                context,
-                                                                listen: false)
-                                                            .sellItemList[index]
-                                                            .paymentLines
-                                                            .isNotEmpty
-                                                        ? Utils.mediumHeadingText(
-                                                            text: value
-                                                                .sellItemList[
-                                                                    index]
-                                                                .paymentLines[0]
-                                                                .method,
-                                                            color: AppColor
-                                                                .dark_green)
-                                                        : Utils
-                                                            .mediumHeadingText(
-                                                                text: ""))),
-                                            Utils.customVerticalDivider(),
-                                            Expanded(
-                                                flex: 2,
-                                                child: Center(
-                                                  child:
-                                                      Utils.mediumHeadingText(
-                                                          text: value
-                                                              .sellItemList[
-                                                                  index]
-                                                              .finalTotal,
-                                                          color: AppColor
-                                                              .dark_green),
+                                                  child: Utils.mediumHeadingText(
+                                                      text: value.sellItemList[index]
+                                                          .paymentStatus ==
+                                                          'paid'
+                                                          ? 'Paid'
+                                                          : 'Due',
+                                                      color: AppColor.black),
                                                 )),
-                                            Utils.customVerticalDivider(),
-                                            Expanded(
-                                                flex: 2,
-                                                child: Center(
-                                                  child:
-                                                      Utils.mediumHeadingText(
-                                                          // text: value.sellItemList[index].id,
-                                                          text: value
-                                                              .sellItemList[
-                                                                  index]
-                                                              .contactId,
-                                                          color: AppColor
-                                                              .dark_green),
-                                                )),
-                                          ],
-                                        ),
+                                          ),
+                                          Utils.customVerticalDivider(),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                  child: Provider.of<ListOfSellViewModel>(context, listen: false).sellItemList[index].paymentLines.isNotEmpty
+                                                      ? Utils.mediumHeadingText(
+                                                      text: value.sellItemList[index]
+                                                          .paymentLines[0].method,
+                                                      color: AppColor.dark_green)
+                                                      : Utils.mediumHeadingText(text: "")
+                                              )),
+                                          Utils.customVerticalDivider(),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                child: Utils.mediumHeadingText(
+                                                    text: value.sellItemList[index].finalTotal,
+                                                    color: AppColor.dark_green),
+                                              )),
+                                          Utils.customVerticalDivider(),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Center(
+                                                child: Utils.mediumHeadingText(
+                                                    // text: value.sellItemList[index].id,
+                                                    text: value.sellItemList[index].contactId,
+                                                    color: AppColor.dark_green),
+                                              )),
+                                        ],
                                       ),
                                     ),
-                                  );
-                                }),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
-              )
+                                  ),
+                                );
+                              }),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },)
             ],
           ),
         ),
@@ -1572,6 +1392,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
+          bool isSubcribed = true;
           return Consumer<PosPageViewModel>(
             builder: (BuildContext context, value, Widget? child) {
               return Dialog(
@@ -1580,7 +1401,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                 insetPadding: const EdgeInsets.only(left: 10, right: 10),
                 //this right here
                 child: Container(
-                  height: 600,
+                  height: 500,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -1594,8 +1415,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Gap(10),
-                          Utils.boldSubHeadingText(
-                              text: 'View Payment', textSize: 20),
+                          Utils.boldSubHeadingText(text: 'View Payment',textSize: 20),
                           const Gap(10),
                           Row(
                             children: [
@@ -1603,14 +1423,12 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    commonText(
-                                        text: UtilStrings.businessLocation),
+                                    commonText(text: UtilStrings.businessLocation),
                                     const Gap(5),
                                     Container(
-                                      height: 60,
+                                      height: 50,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.grey, width: 1),
+                                        border: Border.all(color: AppColor.grey, width: 1),
                                         color: AppColor.white,
                                         boxShadow: const [
                                           BoxShadow(
@@ -1630,8 +1448,8 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                   elevation: 5),
                                           textFieldConfiguration:
                                               TextFieldConfiguration(
-                                            // textAlignVertical: TextAlignVertical.top,
-                                            textAlign: TextAlign.center,
+                                                // textAlignVertical: TextAlignVertical.top,
+                                                textAlign: TextAlign.center,
                                             decoration: const InputDecoration(
                                               hintStyle: TextStyle(
                                                 fontSize: 16,
@@ -1645,9 +1463,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                             controller: locationController,
                                           ),
                                           suggestionsCallback: (pattern) async {
-                                            return StateService
-                                                .getLocationSuggestions(
-                                                    pattern, context);
+                                            return StateService.getLocationSuggestions(pattern, context);
                                           },
                                           transitionBuilder: (context,
                                               suggestionsBox, controller) {
@@ -1685,7 +1501,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                     commonText(text: UtilStrings.paymentStatus),
                                     const Gap(5),
                                     Container(
-                                      height: 60,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             color: AppColor.grey, width: 1),
@@ -1700,46 +1516,55 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         ],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Center(
-                                        child: TypeAheadField(
-                                            textFieldConfiguration:
-                                                TextFieldConfiguration(
-                                              // textAlignVertical: TextAlignVertical.top,
-                                              textAlign: TextAlign.center,
-                                              decoration: const InputDecoration(
-                                                hintStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                contentPadding:
-                                                    EdgeInsets.only(top: 4),
-                                                border: InputBorder.none,
-                                                hintText: "ALL",
+                                      child: TypeAheadField(
+                                          suggestionsBoxDecoration:
+                                          SuggestionsBoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(20),
+                                              elevation: 5),
+                                          textFieldConfiguration:
+                                          TextFieldConfiguration(
+                                            // textAlignVertical: TextAlignVertical.top,
+                                            textAlign: TextAlign.center,
+                                            decoration: const InputDecoration(
+                                              hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              controller:
-                                                  paymentStatusController,
+                                              contentPadding:
+                                              EdgeInsets.only(top: 4),
+                                              border: InputBorder.none,
+                                              hintText: "ALL",
                                             ),
-                                            suggestionsCallback:
-                                                (pattern) async {
-                                              return await FilterServices
-                                                  .getPaymentSuggestion(
-                                                      pattern);
-                                            },
-                                            transitionBuilder: (context,
-                                                suggestionsBox, controller) {
-                                              return suggestionsBox;
-                                            },
-                                            itemBuilder: (context, suggestion) {
-                                              return ListTile(
+                                            controller: paymentStatusController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getPaymentSuggestion(pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(15),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.1))),
+
+                                              child: ListTile(
                                                 title:
                                                     Text(suggestion.toString()),
-                                              );
-                                            },
-                                            onSuggestionSelected: (suggestion) {
-                                              paymentStatusController.text =
-                                                  suggestion.toString();
-                                            }),
-                                      ),
+                                              ),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            paymentStatusController.text =
+                                                suggestion.toString();
+                                          }),
                                     ),
                                   ],
                                 ),
@@ -1756,7 +1581,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                     commonText(text: UtilStrings.customer),
                                     const Gap(5),
                                     Container(
-                                      height: 60,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             color: AppColor.grey, width: 1),
@@ -1778,7 +1603,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       BorderRadius.circular(20),
                                                   elevation: 5),
                                           textFieldConfiguration:
-                                              TextFieldConfiguration(
+                                          TextFieldConfiguration(
                                             // textAlignVertical: TextAlignVertical.top,
                                             textAlign: TextAlign.center,
                                             decoration: const InputDecoration(
@@ -1787,7 +1612,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                               contentPadding:
-                                                  EdgeInsets.only(top: 4),
+                                              EdgeInsets.only(top: 4),
                                               border: InputBorder.none,
                                               hintText: "ALL",
                                             ),
@@ -1806,7 +1631,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                             return Container(
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   border: Border.all(
                                                       color: Colors.grey
                                                           .withOpacity(0.1))),
@@ -1831,69 +1656,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    commonText(text: UtilStrings.dateRange),
-                                    const Gap(5),
-                                    Container(
-                                      height: 60,
-                                      child: InkWell(
-                                        onTap: () async {
-                                          final picked =
-                                              await showDateRangePicker(
-                                            context: context,
-                                            lastDate: endDate,
-                                            firstDate: startDate,
-                                          );
-                                          if (picked != null) {
-                                            print('Picked --> $startDate');
-                                            print('Picked --> $endDate');
-                                            setState(() {
-                                              startDate = picked.start;
-                                              endDate = picked.end;
-                                            });
-                                          }
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 40,
-                                          width: 170,
-                                          decoration: BoxDecoration(
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: AppColor.grey2,
-                                                offset: Offset(-1.0, 10),
-                                                blurRadius: 15,
-                                                spreadRadius: 1,
-                                              ),
-                                            ],
-                                            color: AppColor.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border: Border.all(
-                                                color: AppColor.grey, width: 1),
-                                          ),
-                                          child: Utils.mediumHeadingText(
-                                              text: '${startDate} - ${endDate}',
-                                              color: AppColor.grey),
-                                        ),
-                                      ),
-                                    ),
-                                    // commonDropDown(),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
                                     commonText(text: UtilStrings.user),
                                     const Gap(5),
                                     Container(
-                                      height: 60,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             color: AppColor.grey, width: 1),
@@ -1908,57 +1674,58 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         ],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Center(
-                                        child: TypeAheadField(
-                                            textFieldConfiguration:
-                                                TextFieldConfiguration(
-                                              // textAlignVertical: TextAlignVertical.top,
-                                              textAlign: TextAlign.center,
-                                              decoration: const InputDecoration(
-                                                hintStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                contentPadding:
-                                                    EdgeInsets.only(top: 4),
-                                                border: InputBorder.none,
-                                                hintText: "ALL",
+                                      child: TypeAheadField(
+                                          suggestionsBoxDecoration:
+                                          SuggestionsBoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(20),
+                                              elevation: 5),
+                                          textFieldConfiguration:
+                                          TextFieldConfiguration(
+                                            // textAlignVertical: TextAlignVertical.top,
+                                            textAlign: TextAlign.center,
+                                            decoration: const InputDecoration(
+                                              hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              controller: userController,
+                                              contentPadding:
+                                              EdgeInsets.only(top: 4),
+                                              border: InputBorder.none,
+                                              hintText: "ALL",
                                             ),
-                                            suggestionsCallback:
-                                                (pattern) async {
-                                              return await FilterServices
-                                                  .getUserSuggestion(pattern);
-                                            },
-                                            transitionBuilder: (context,
-                                                suggestionsBox, controller) {
-                                              return suggestionsBox;
-                                            },
-                                            itemBuilder: (context, suggestion) {
-                                              return ListTile(
+                                            controller: userController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getUserSuggestion(
+                                                pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(15),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.1))),
+
+                                              child: ListTile(
                                                 title:
-                                                    Text(suggestion.toString()),
-                                              );
-                                            },
-                                            onSuggestionSelected: (suggestion) {
-                                              userController.text =
-                                                  suggestion.toString();
-                                              userController.clear();
-                                            }),
-                                      ),
+                                                Text(suggestion.toString()),
+                                              ),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            userController.text =
+                                                suggestion.toString();
+                                            userController.clear();
+                                          }),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              const Gap(10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.sources),
-                                    const Gap(5),
-                                    // commonDropDown(),
                                   ],
                                 ),
                               ),
@@ -1971,11 +1738,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    commonText(
-                                        text: UtilStrings.shippingStatus),
+                                    commonText(text: UtilStrings.shippingStatus),
                                     const Gap(5),
                                     Container(
-                                      height: 60,
+                                      height: 50,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             color: AppColor.grey, width: 1),
@@ -1990,47 +1756,57 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         ],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Center(
-                                        child: TypeAheadField(
-                                            textFieldConfiguration:
-                                                TextFieldConfiguration(
-                                              // textAlignVertical: TextAlignVertical.top,
-                                              textAlign: TextAlign.center,
-                                              decoration: const InputDecoration(
-                                                hintStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                contentPadding:
-                                                    EdgeInsets.only(top: 4),
-                                                border: InputBorder.none,
-                                                hintText: "ALL",
+                                      child: TypeAheadField(
+                                          suggestionsBoxDecoration:
+                                          SuggestionsBoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(20),
+                                              elevation: 5),
+                                          textFieldConfiguration:
+                                          TextFieldConfiguration(
+                                            // textAlignVertical: TextAlignVertical.top,
+                                            textAlign: TextAlign.center,
+                                            decoration: const InputDecoration(
+                                              hintStyle: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              controller:
-                                                  shippingStatusController,
+                                              contentPadding:
+                                              EdgeInsets.only(top: 4),
+                                              border: InputBorder.none,
+                                              hintText: "ALL",
                                             ),
-                                            suggestionsCallback:
-                                                (pattern) async {
-                                              return await FilterServices
-                                                  .getShippingStatusSuggestion(
-                                                      pattern);
-                                            },
-                                            transitionBuilder: (context,
-                                                suggestionsBox, controller) {
-                                              return suggestionsBox;
-                                            },
-                                            itemBuilder: (context, suggestion) {
-                                              return ListTile(
+                                            controller: shippingStatusController,
+                                          ),
+                                          suggestionsCallback: (pattern) async {
+                                            return await FilterServices
+                                                .getShippingStatusSuggestion(
+                                                pattern);
+                                          },
+                                          transitionBuilder: (context,
+                                              suggestionsBox, controller) {
+                                            return suggestionsBox;
+                                          },
+                                          itemBuilder: (context, suggestion) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(15),
+                                                  border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.1))),
+
+                                              child: ListTile(
                                                 title:
-                                                    Text(suggestion.toString()),
-                                              );
-                                            },
-                                            onSuggestionSelected: (suggestion) {
-                                              shippingStatusController.clear();
-                                              shippingStatusController.text =
-                                                  suggestion.toString();
-                                            }),
-                                      ),
+                                                Text(suggestion.toString()),
+                                              ),
+                                            );
+                                          },
+                                          onSuggestionSelected: (suggestion) {
+                                            shippingStatusController.clear();
+                                            shippingStatusController.text =
+                                                suggestion.toString();
+                                          }),
                                     ),
                                     const Gap(20),
                                   ],
@@ -2038,44 +1814,129 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                               ),
                               const Gap(10),
                               Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Gap(20),
-                                    Row(
-                                      children: <Widget>[
-                                        Checkbox(
-                                            value: isSubcribed,
-                                            onChanged: (bool? value) {
-                                              setState(() {
-                                                print(
-                                                    "HELLO DATA${isSubcribed}");
-                                                isSubcribed = value!;
-                                              });
-                                            }),
-                                        commonText(
-                                            text: UtilStrings.subScription),
-                                        const Gap(10),
-                                      ],
-                                    ),
-                                  ],
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Gap(20),
+                                      Row(
+                                        children: <Widget>[
+                                          Gap(20),
+                                          commonText(text: UtilStrings.subScription),
+                                          Gap(5),
+                                          // InkWell(
+                                          //   child: Container(
+                                          //     decoration: BoxDecoration(
+                                          //         border: Border.all(color: AppColor.grey)
+                                          //     ),
+                                          //     width: 20,
+                                          //     height: 20,
+                                          //     child: isSubcribed == true ? Center(child: Icon(Icons.check,size: 20)) : Container(),
+                                          //   ),
+                                          //   onTap: (){
+                                          //     setState(() {
+                                          //       isSubcribed != isSubcribed;
+                                          //       print("hello${isSubcribed}");
+                                          //     });
+                                          //   },
+                                          // ),
+                                          Checkbox(
+                                              value: isSubcribed,
+                                              onChanged: (bool? value) {
+                                                setState(() {
+                                                  print("HELLO DATA${isSubcribed}");
+                                                  isSubcribed = value!;
+                                                });
+                                              }),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          const Gap(20),
+                          // const Gap(10),
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           commonText(text: UtilStrings.dateRange),
+                          //           const Gap(5),
+                          //           Container(
+                          //             height: 50,
+                          //             child: InkWell(
+                          //               onTap: ()
+                          //
+                          //               async {
+                          //                 final picked = await showDateRangePicker(
+                          //                   context: context,
+                          //                   lastDate: endDate,
+                          //                   firstDate: startDate,
+                          //                 );
+                          //                 if (picked != null) {
+                          //                   print('Picked --> $startDate');
+                          //                   print('Picked --> $endDate');
+                          //                   setState(() {
+                          //                     startDate = picked.start;
+                          //                     endDate = picked.end;
+                          //                   });
+                          //                 }
+                          //               },
+                          //               child: Container(
+                          //                 alignment: Alignment.center,
+                          //                 height: 40,
+                          //                 width: 170,
+                          //                 decoration: BoxDecoration(
+                          //                   boxShadow: const [
+                          //                     BoxShadow(
+                          //                       color: AppColor.grey2,
+                          //                       offset: Offset(-1.0, 10),
+                          //                       blurRadius: 15,
+                          //                       spreadRadius: 1,
+                          //                     ),
+                          //                   ],
+                          //                   color: AppColor.white,
+                          //                   borderRadius: BorderRadius.circular(15),
+                          //                   border: Border.all(
+                          //                       color: AppColor.grey, width: 1),
+                          //                 ),
+                          //                 child: Utils.mediumHeadingText(
+                          //                     text: '${startDate} - ${endDate}',
+                          //                     color: AppColor.grey),
+                          //               ),
+                          //             ),
+                          //           ),
+                          //           // commonDropDown(),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     const Gap(10),
+                          //     Expanded(
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           commonText(text: UtilStrings.sources),
+                          //           const Gap(5),
+                          //           // commonDropDown(),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          const Gap(30),
                           InkWell(
                             onTap: () {
                               setState(() {
-                                Provider.of<ListOfSellViewModel>(context,
-                                        listen: false)
-                                    .filterSellList(
+                                Provider.of<ListOfSellViewModel>(context, listen: false).filterSellList(
                                   locationId: locationController.text,
                                   contactId: customerController.text,
                                   paymentStatus: paymentStatusController.text,
-                                  ShippingStatus: shippingStatusController.text,
-                                  IsSubscribed: '1',
+                                  ShippingStatus:shippingStatusController.text,
+                                  IsSubscribed: '0',
                                 );
                                 Navigator.pop(context);
                               });

@@ -9,4 +9,6 @@ class PrefKeyConstants{
   static const String customerID = 'customerId';
   static const String statusId = 'status';
   static const String discountPrice = 'discountPrice';
+  static const String locationName = 'locationName';
+  static const String scanType = 'scanType';
 }

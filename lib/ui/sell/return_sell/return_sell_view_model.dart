@@ -4,17 +4,23 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/returnsell/req_add_return_sell.dart';
 import 'package:pos/data/models/sell/returnsell/res_add_return_sell.dart';
 import 'package:pos/repository/sell_repo.dart';
-class ReturnSellViewModel extends ChangeNotifier {
+import 'package:pos/data/models/sell/show_sell/res_update_return_sell.dart';
+import 'package:pos/utils/toast_utils.dart';
+class ReturnSellViewModel extends ChangeNotifier{
   final SellRepo sellRepo;
 
   ReturnSellViewModel({required this.sellRepo});
 
+
+
   String selectrange = 'Fixed';
   bool _isLoading = false;
 
-  changeVal() {
+
+  changeVal(){
     notifyListeners();
   }
+
 
   Future<ResponseModel> AddReturnSell({required ReqAddReturnSell req}) async {
     _isLoading = true;
@@ -23,10 +29,10 @@ class ReturnSellViewModel extends ChangeNotifier {
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
-      ResAddSellReturn data =
-          ResAddSellReturn.fromJson(apiResponse.response!.data);
+      ResAddSellReturn data = ResAddSellReturn.fromJson(apiResponse.response!.data);
       print("HELLO FINAL PRICE IS${data.finalTotal}");
       responseModel = ResponseModel(true, 'successful');
+
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -41,4 +47,7 @@ class ReturnSellViewModel extends ChangeNotifier {
     notifyListeners();
     return responseModel;
   }
+
+
+
 }

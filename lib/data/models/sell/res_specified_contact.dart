@@ -2,6 +2,7 @@
 //
 //     final resSpecifiedContact = resSpecifiedContactFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResSpecifiedContact resSpecifiedContactFromJson(String str) =>
@@ -213,8 +214,7 @@ class SpecifiedUser {
         totalRpExpired: json["total_rp_expired"].toString(),
         isDefault: json["is_default"].toString(),
         shippingAddress: json["shipping_address"].toString(),
-        shippingCustomFieldDetails:
-            json["shipping_custom_field_details"].toString(),
+        shippingCustomFieldDetails: json["shipping_custom_field_details"].toString(),
         isExport: json["is_export"].toString(),
         exportCustomField1: json["export_custom_field_1"].toString(),
         exportCustomField2: json["export_custom_field_2"].toString(),
@@ -316,7 +316,7 @@ class SpecifiedUser {
         "customer_group": customerGroup,
         "opening_balance": openingBalance,
         "opening_balance_paid": openingBalancePaid,
-        "max_transaction_date": maxTransactionDate,
+        "max_transaction_date":maxTransactionDate,
         "transaction_date": transactionDate,
         "total_purchase": totalPurchase,
         "purchase_paid": purchasePaid,
