@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:pos/data/datasource/remote/dio/dio_client.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
@@ -15,10 +14,7 @@ class SellRepo{
     try {
       Response response = await dioClient.get(ApiEndPoints.apiListOfSell,
           queryParameters:
-          {
-            'per_page' : "-1",
-          }
-          );
+          {'per_page': "30", "order_by_date": "desc"});
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());

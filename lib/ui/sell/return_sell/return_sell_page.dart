@@ -4,12 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:pos/data/models/sell/returnsell/req_add_return_sell.dart';
 import 'package:pos/data/models/sell/show_sell/res_show_sell.dart';
-import 'package:pos/repository/sell_repo.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/common_methods.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -80,7 +77,9 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                         const Gap(3),
                         customText(
                             title: '${UtilStrings.date}: ',
-                            subTitle: DateFormat('dd/MM/yyyy').format(widget.item.transactionDate)),
+                            subTitle: DateFormat('dd/MM/yyyy').format(
+                                DateTime.parse(
+                                    widget.item.transactionDate ?? ""))),
                         const Gap(3),
                         customText(
                             title: '${UtilStrings.customer}: ',
@@ -166,7 +165,8 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                             Utils.boldSubHeadingText(text: "Unit Price:"),
                             const Gap(5),
                             // Utils.mediumHeadingText(text: '650')
-                            Utils.mediumHeadingText(text: widget.item.sellLines[0].unitPrice)
+                            Utils.mediumHeadingText(
+                                text: widget.item.sellLines?[0].unitPrice ?? '')
                           ],
                         ),
                         const Gap(3),
@@ -174,7 +174,8 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                           children: [
                             Utils.boldSubHeadingText(text: "Sell Quantity:"),
                             const Gap(5),
-                            Utils.mediumHeadingText(text: widget.item.sellLines[0].quantity),
+                            Utils.mediumHeadingText(
+                                text: widget.item.sellLines?[0].quantity ?? ''),
                             // Utils.mediumHeadingText(text: "5")
                           ],
                         ),
@@ -187,22 +188,29 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                              textEditingController: returnQtyController,
                              onchange: (val){
                                setState(() {
-                                 double x =  double.parse(returnQtyController.text);
-                                 double min = 0.0;
-                                 double max = double.parse(widget.item.sellLines[0].quantity);
-                                 try {
-                                   x = double.parse(val);
-                                 } catch (error) {
-                                   x = min;
-                                 }
-                                 if (x < min) {
-                                   x = min;
-                                 } else if (x > max) {
-                                   ToastUtils.showCustomToast(context, "Only ${widget.item.sellLines[0].quantity} quantity available. ", "warning");
-                                   x = max;
-                                 }
-                                 returnSubtoal = double.parse(widget.item.sellLines[0].unitPrice)  *
-                                     double.parse(returnQtyController.text);
+                                 double x =
+                                    double.parse(returnQtyController.text);
+                                double min = 0.0;
+                                double max = double.parse(
+                                    widget.item.sellLines?[0].quantity ?? '');
+                                try {
+                                  x = double.parse(val);
+                                } catch (error) {
+                                  x = min;
+                                }
+                                if (x < min) {
+                                  x = min;
+                                } else if (x > max) {
+                                  ToastUtils.showCustomToast(
+                                      context,
+                                      "Only ${widget.item.sellLines?[0].quantity ?? ''} quantity available. ",
+                                      "warning");
+                                  x = max;
+                                }
+                                 returnSubtoal = double.parse(
+                                        widget.item.sellLines?[0].unitPrice ??
+                                            '') *
+                                    double.parse(returnQtyController.text);
                                });
                              },
                            ),
@@ -323,13 +331,20 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                               isContentPedding: true,
                              onchange: (val){
                                 setState(() {
-                                  var discountAmountForFix = double.parse(discountController.text);
-                                  var discountAmountForPercantage = returnSubtoal * double.parse(discountController.text) / 100;
+                                  var discountAmountForFix =
+                                      double.parse(discountController.text);
+                                  var discountAmountForPercantage =
+                                      returnSubtoal *
+                                          double.parse(
+                                              discountController.text) /
+                                          100;
 
-                                   discountPrice = val == 'Fixed'
+                                  discountPrice = val == 'Fixed'
                                       ? discountAmountForFix
                                       : discountAmountForPercantage;
-                                  finalTotal = returnSubtoal - discountPrice + double.parse( widget.item.taxAmount);
+                                  finalTotal = returnSubtoal -
+                                      discountPrice +
+                                      double.parse(widget.item.taxAmount ?? '');
                                 });
                              },
                             ),

@@ -944,88 +944,149 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           }
                                           else
                                           {
-                                            showLoadingDialog(context: context);
-                                            await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
-                                            var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
-                                            print("NAMEIS ${name}");
-                                            showDialog(context: context,
-                                                builder: (BuildContext context)
-                                                {
-                                                  return AlertDialog(
-                                                    title: Utils.boldSubHeadingText(text: "Add Payment",),
-                                                    content: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisSize:
-                                                      MainAxisSize.min,
+                                            showLoadingDialog(
+                                                  context: context);
+                                              await Provider.of<
+                                                          ListOfSellViewModel>(
+                                                      context,
+                                                      listen: false)
+                                                  .getSpecifiedContact(
+                                                      contactId: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .contactId ??
+                                                          '',
+                                                      context: context);
+                                              var name = Provider.of<
+                                                          ListOfSellViewModel>(
+                                                      context,
+                                                      listen: false)
+                                                  .specifiedContactList[0]
+                                                  .name;
+                                              print("NAMEIS ${name}");
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Utils
+                                                          .boldSubHeadingText(
+                                                        text: "Add Payment",
+                                                      ),
+                                                      content: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                       children: [
                                                         commonTile(
                                                             text: 'Customer',
                                                             subText: name),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text: 'Invoice No.',
-                                                            subText:
-                                                            '#${value.sellItemList[index].invoiceNo}'),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text: 'Location',
-                                                            subText: value
-                                                                .sellItemList[index]
-                                                                .locationId),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text: 'Date',
-                                                            subText: DateFormat(
-                                                                'dd/MM/yyyy')
-                                                                .format(value
-                                                                .sellItemList[
-                                                            index]
-                                                                .transactionDate)),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text: 'Advance Balance' ,
-                                                            subText: value.sellItemList[index].rpRedeemedAmount),
-                                                        const Gap(5),
-                                                        commonTile(
-                                                            text: 'total amount' ,
-                                                            subText: value.sellItemList[index].finalTotal),
-
-                                                        const Gap(5),
-                                                        Utils.mediumHeadingText(text: "Amount"),
-                                                        ContainerBorder(
-                                                          child: TextField(
-                                                            keyboardType: TextInputType.number,
-                                                            controller: amountController,
-                                                            onChanged: (val){
-                                                              setState(() {
-                                                                double x =  double.parse(amountController.text);
-                                                                double min = 0.0;
-                                                                double max = double.parse(value.sellItemList[index].finalTotal);
-                                                                try {
-                                                                  x = double.parse(val);
-                                                                } catch (error) {
-                                                                  x = min;
-                                                                }
-                                                                if (x < min) {
-                                                                  x = min;
-                                                                } else if (x > max) {
-                                                                  ToastUtils.showCustomToast(context, "Maximum amount is ${value.sellItemList[index].finalTotal}", "warning");
-                                                                  x = max;
-                                                                }
-                                                              });
-                                                            },
+                                                          const Gap(5),
+                                                          commonTile(
+                                                              text:
+                                                                  'Invoice No.',
+                                                              subText:
+                                                                  '#${value.sellItemList[index].invoiceNo}'),
+                                                          const Gap(5),
+                                                          commonTile(
+                                                              text: 'Location',
+                                                              subText: value
+                                                                      .sellItemList[
+                                                                          index]
+                                                                      .locationId ??
+                                                                  ""),
+                                                          const Gap(5),
+                                                          commonTile(
+                                                              text: 'Date',
+                                                              subText: DateFormat(
+                                                                      'dd/MM/yyyy')
+                                                                  .format(DateTime.parse(value
+                                                                          .sellItemList[
+                                                                              index]
+                                                                          .transactionDate ??
+                                                                      ""))),
+                                                          const Gap(5),
+                                                          commonTile(
+                                                              text:
+                                                                  'Advance Balance',
+                                                              subText: value
+                                                                      .sellItemList[
+                                                                          index]
+                                                                      .rpRedeemedAmount ??
+                                                                  ''),
+                                                          const Gap(5),
+                                                          commonTile(
+                                                              text:
+                                                                  'total amount',
+                                                              subText: value
+                                                                      .sellItemList[
+                                                                          index]
+                                                                      .finalTotal ??
+                                                                  ""),
+                                                          const Gap(5),
+                                                          Utils
+                                                              .mediumHeadingText(
+                                                                  text:
+                                                                      "Amount"),
+                                                          ContainerBorder(
+                                                            child: TextField(
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              controller:
+                                                                  amountController,
+                                                              onChanged: (val) {
+                                                                setState(() {
+                                                                  double x = double.parse(
+                                                                      amountController
+                                                                          .text);
+                                                                  double min =
+                                                                      0.0;
+                                                                  double max = double.parse(value
+                                                                          .sellItemList[
+                                                                              index]
+                                                                          .finalTotal ??
+                                                                      "");
+                                                                  try {
+                                                                    x = double
+                                                                        .parse(
+                                                                            val);
+                                                                  } catch (error) {
+                                                                    x = min;
+                                                                  }
+                                                                  if (x < min) {
+                                                                    x = min;
+                                                                  } else if (x >
+                                                                      max) {
+                                                                    ToastUtils.showCustomToast(
+                                                                        context,
+                                                                        "Maximum amount is ${value.sellItemList[index].finalTotal}",
+                                                                        "warning");
+                                                                    x = max;
+                                                                  }
+                                                                });
+                                                              },
+                                                            ),
                                                           ),
-                                                        ),
-                                                        commonTile(
-                                                            text: 'Payment Account',
-                                                            subText: value.sellItemList[index].preferPaymentAccount),
-                                                        Row(
-                                                          children: [
-                                                            Utils.mediumHeadingText(text: "Payment Method:"),
-                                                            commonDropDown()
-                                                          ],
-                                                        )
-                                                      ],
+                                                          commonTile(
+                                                              text:
+                                                                  'Payment Account',
+                                                              subText: value
+                                                                      .sellItemList[
+                                                                          index]
+                                                                      .preferPaymentAccount ??
+                                                                  ""),
+                                                          Row(
+                                                            children: [
+                                                              Utils.mediumHeadingText(
+                                                                  text:
+                                                                      "Payment Method:"),
+                                                              commonDropDown()
+                                                            ],
+                                                          )
+                                                        ],
                                                     ),
                                                     actions: [
                                                       FlatButton(
@@ -1038,15 +1099,35 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                         child: const Text('Save'),
                                                         onPressed: () {
                                                           // if(amountController.text == value.sellItemList[index].finalTotal.){
-                                                            print("HHH${value.sellItemList[index].sellLines[0].id}");
-                                                            Provider.of<ListOfSellViewModel>(context, listen: false).addPayment(
-                                                                sellID: value.sellItemList[index].sellLines[0].id,
-                                                                payment: amountController.text).then((value)
-                                                            {
-                                                              _launchURL(Provider.of<ListOfSellViewModel>(context,listen: false).paymentUrl??'');
+                                                          print(
+                                                                "HHH${value.sellItemList[index].sellLines?[0].id}");
+                                                            Provider.of<ListOfSellViewModel>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .addPayment(
+                                                                    sellID: value
+                                                                            .sellItemList[
+                                                                                index]
+                                                                            .sellLines?[
+                                                                                0]
+                                                                            .id ??
+                                                                        "",
+                                                                    payment:
+                                                                        amountController
+                                                                            .text)
+                                                                .then((value) {
+                                                              _launchURL(Provider.of<
+                                                                              ListOfSellViewModel>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .paymentUrl ??
+                                                                  '');
                                                             });
-                                                            Navigator.pop(context);
-                                                          // }
+                                                            Navigator.pop(
+                                                                context);
+                                                            // }
                                                           // _launchURL(value
                                                           //     .sellItemList[index]
                                                           //     .invoiceUrl);
@@ -1064,18 +1145,39 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         title: "View",
                                         onTap: (CompletionHandler handler) async {
                                           showLoadingDialog(context: context);
-                                          await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
-                                          var businessname = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].supplierBusinessName;
-                                          var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("View Payments (${value.sellItemList[index].invoiceNo})"),
-                                                  content: Column(
-                                                    mainAxisSize:
-                                                    MainAxisSize.min,
-                                                    children: [
+                                            await Provider.of<
+                                                        ListOfSellViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .getSpecifiedContact(
+                                                    contactId: value
+                                                            .sellItemList[index]
+                                                            .contactId ??
+                                                        "",
+                                                    context: context);
+                                            var businessname = Provider.of<
+                                                        ListOfSellViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .specifiedContactList[0]
+                                                .supplierBusinessName;
+                                            var name = Provider.of<
+                                                        ListOfSellViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .specifiedContactList[0]
+                                                .name;
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text(
+                                                        "View Payments (${value.sellItemList[index].invoiceNo})"),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
                                                       commonTile(
                                                           text: 'Customer',
                                                           subText: name),
@@ -1083,40 +1185,57 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       commonTile(
                                                           text: 'Business',
                                                           subText: businessname),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Invoice No.',
-                                                          subText:
-                                                          '#${value.sellItemList[index].invoiceNo}'),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Date',
-                                                          subText: DateFormat(
-                                                              'dd/MM/yyyy')
-                                                              .format(value
-                                                              .sellItemList[
-                                                          index]
-                                                              .transactionDate)),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Payment Status',
-                                                          subText: value
-                                                              .sellItemList[index]
-                                                              .paymentStatus),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Reference Number',
-                                                          subText: value.sellItemList[index].refNo),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Amount',
-                                                          subText: value.sellItemList[index].roundOffAmount),
-                                                      const Gap(5),
-                                                      commonTile
-                                                        (
-                                                          text: 'Payment Method',
-                                                          subText: value.sellItemList[index].preferPaymentMethod)
-                                                    ],
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Invoice No.',
+                                                            subText:
+                                                                '#${value.sellItemList[index].invoiceNo}'),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Date',
+                                                            subText: DateFormat(
+                                                                    'dd/MM/yyyy')
+                                                                .format(DateTime.parse(value
+                                                                        .sellItemList[
+                                                                            index]
+                                                                        .transactionDate ??
+                                                                    ""))),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text:
+                                                                'Payment Status',
+                                                            subText: value
+                                                                    .sellItemList[
+                                                                        index]
+                                                                    .paymentStatus ??
+                                                                ""),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text:
+                                                                'Reference Number',
+                                                            subText: value
+                                                                    .sellItemList[
+                                                                        index]
+                                                                    .refNo ??
+                                                                ""),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Amount',
+                                                            subText: value
+                                                                    .sellItemList[
+                                                                        index]
+                                                                    .roundOffAmount ??
+                                                                ""),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text:
+                                                                'Payment Method',
+                                                            subText: value
+                                                                    .sellItemList[
+                                                                        index]
+                                                                    .preferPaymentMethod ??
+                                                                "")
+                                                      ],
                                                   ),
                                                   actions: [
                                                     FlatButton(
@@ -1128,11 +1247,14 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                     FlatButton(
                                                       child: const Text('Print'),
                                                       onPressed: () {
-                                                        Navigator.pop(context);
-                                                        _launchURL(value
-                                                            .sellItemList[index]
-                                                            .invoiceUrl);
-                                                      },
+                                                        Navigator.pop(
+                                                              context);
+                                                          _launchURL(value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .invoiceUrl ??
+                                                              "");
+                                                        },
                                                     ),
                                                   ],
                                                 );
@@ -1146,9 +1268,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         title: "Print",
                                         onTap:
                                             (CompletionHandler handler) async {
-                                          _launchURL(value
-                                              .sellItemList[index].invoiceUrl);
-                                        },
+                                              _launchURL(value.sellItemList[index]
+                                                    .invoiceUrl ??
+                                                "");
+                                          },
                                         color: Colors.red),
                                     SwipeAction(
                                         backgroundRadius: 20,
@@ -1158,96 +1281,135 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)
                                           {
                                             return ReturnSellPage(
-                                              item: value.sellItemList[index],
-                                              payline: value.sellItemList[index].paymentLines[0].transactionId,);
-                                          }));
+                                                  item:
+                                                      value.sellItemList[index],
+                                                  payline: value
+                                                          .sellItemList[index]
+                                                          .paymentLines?[0]
+                                                          .transactionId ??
+                                                      "");
+                                            }));
                                         },
                                         color: Colors.amber),
                                   ],
                                   child: InkWell(
                                       onTap: () async {
                                         showLoadingDialog(context: context);
-                                        await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: value.sellItemList[index].contactId, context: context);
-                                        var name = Provider.of<ListOfSellViewModel>(context, listen: false).specifiedContactList[0].name;
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context){
-                                          return  AlertDialog(
-                                            title: Text("Sell Details(Invoice No.${value.sellItemList[index].invoiceNo})"),
-                                            content: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize:
-                                              MainAxisSize.min,
-                                              children: [
-                                                commonTile(
-                                                    text: 'Customer Name',
-                                                    subText: name),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Payment Status',
-                                                    subText: value
+                                        await Provider.of<ListOfSellViewModel>(
+                                                context,
+                                                listen: false)
+                                            .getSpecifiedContact(
+                                                contactId: value
                                                         .sellItemList[index]
-                                                        .paymentStatus),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Date',
-                                                    subText:value
-                                                        .sellItemList[index]
-                                                        .transactionDate.toString()),
-                                                const Gap(5),
-                                                Divider(),
-                                                Utils.boldSubHeadingText(text: "Products:"),
-                                                Gap(5),
-                                                commonTile(
-                                                    text: 'Product Name',
-                                                    subText: 'hh'),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Quantity',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .sellLines[0].quantity),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Price',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .sellLines[0].unitPrice),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Subtotal',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .finalTotal),
-                                                Divider(),
-                                                Utils.boldSubHeadingText(text: "Payment info:"),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Date',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .transactionDate.toString()),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Reference No',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .refNo),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Amount',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .totalAmountRecovered),
-                                                const Gap(5),
-                                                commonTile(
-                                                    text: 'Payment Mode',
-                                                    subText: value
-                                                        .sellItemList[index]
-                                                        .paymentLines[0].method),
-                                                const Gap(5),
-
-                                              ],
+                                                        .contactId ??
+                                                    "",
+                                                context: context);
+                                        var name =
+                                            Provider.of<ListOfSellViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .specifiedContactList[0]
+                                                .name;
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  "Sell Details(Invoice No.${value.sellItemList[index].invoiceNo})"),
+                                              content: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  commonTile(
+                                                      text: 'Customer Name',
+                                                      subText: name),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Payment Status',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .paymentStatus ??
+                                                          ""),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Date',
+                                                      subText: value
+                                                          .sellItemList[index]
+                                                          .transactionDate
+                                                          .toString()),
+                                                  const Gap(5),
+                                                  Divider(),
+                                                  Utils.boldSubHeadingText(
+                                                      text: "Products:"),
+                                                  Gap(5),
+                                                  commonTile(
+                                                      text: 'Product Name',
+                                                      subText: 'hh'),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Quantity',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .sellLines?[0]
+                                                              .quantity ??
+                                                          ""),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Price',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .sellLines?[0]
+                                                              .unitPrice ??
+                                                          ""),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Subtotal',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .finalTotal ??
+                                                          ""),
+                                                  Divider(),
+                                                  Utils.boldSubHeadingText(
+                                                      text: "Payment info:"),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Date',
+                                                      subText: value
+                                                          .sellItemList[index]
+                                                          .transactionDate
+                                                          .toString()),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Reference No',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .refNo ??
+                                                          ""),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Amount',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .totalAmountRecovered ??
+                                                          ""),
+                                                  const Gap(5),
+                                                  commonTile(
+                                                      text: 'Payment Mode',
+                                                      subText: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .paymentLines?[0]
+                                                              .method ??
+                                                          ""),
+                                                  const Gap(5),
+                                                ],
                                             ),
                                             actions:[
 
@@ -1262,8 +1424,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
                                                 onPressed: () async {
                                                   _launchURL(value
-                                                      .sellItemList[index].invoiceUrl);
-                                                },
+                                                            .sellItemList[index]
+                                                            .invoiceUrl ??
+                                                        "");
+                                                  },
                                               )
                                             ],
                                           );
@@ -1327,13 +1491,25 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           Expanded(
                                               flex: 2,
                                               child: Center(
-                                                  child: Provider.of<ListOfSellViewModel>(context, listen: false).sellItemList[index].paymentLines.isNotEmpty
-                                                      ? Utils.mediumHeadingText(
-                                                      text: value.sellItemList[index]
-                                                          .paymentLines[0].method,
-                                                      color: AppColor.dark_green)
-                                                      : Utils.mediumHeadingText(text: "")
-                                              )),
+                                                  child: Provider.of<
+                                                                    ListOfSellViewModel>(
+                                                                context,
+                                                                listen: false)
+                                                            .sellItemList[index]
+                                                            .paymentLines!
+                                                            .isNotEmpty
+                                                        ? Utils.mediumHeadingText(
+                                                            text: value
+                                                                .sellItemList[
+                                                                    index]
+                                                                .paymentLines?[
+                                                                    0]
+                                                                .method,
+                                                            color: AppColor
+                                                                .dark_green)
+                                                        : Utils
+                                                            .mediumHeadingText(
+                                                                text: ""))),
                                           Utils.customVerticalDivider(),
                                           Expanded(
                                               flex: 2,
@@ -1347,9 +1523,17 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                               flex: 2,
                                               child: Center(
                                                 child: Utils.mediumHeadingText(
-                                                    // text: value.sellItemList[index].id,
-                                                    text: value.sellItemList[index].contactId,
-                                                    color: AppColor.dark_green),
+                                                          // text: value.sellItemList[index].id,
+                                                          text: value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .contact
+                                                                  ?.name ??
+                                                              '',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          color: AppColor
+                                                              .dark_green),
                                               )),
                                         ],
                                       ),
