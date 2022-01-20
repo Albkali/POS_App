@@ -796,18 +796,18 @@ class _PosPageState extends State<PosPage> {
                                   hideSuggestionsOnKeyboardHide: false,
                                   textFieldConfiguration:
                                   TextFieldConfiguration(
-                                      autofocus: false,
-                                      decoration: const InputDecoration(
-                                        hintStyle: TextStyle(
-                                          color: AppColor.grey,
-                                          fontSize: 14,
-                                        ),
-                                        contentPadding:
-                                        EdgeInsets.only(top: 4),
-                                        border: InputBorder.none,
-                                        hintText:
-                                        UtilStrings.enterProductName,
-                                        prefixIcon: Icon(
+                                      autofocus: true,
+                                          decoration: const InputDecoration(
+                                            hintStyle: TextStyle(
+                                              color: AppColor.grey,
+                                              fontSize: 14,
+                                            ),
+                                            contentPadding:
+                                                EdgeInsets.only(top: 4),
+                                            border: InputBorder.none,
+                                            hintText:
+                                                UtilStrings.enterProductName,
+                                            prefixIcon: Icon(
                                           Icons.zoom_in_outlined,
                                           color: AppColor.grey,
                                         ),
@@ -840,7 +840,7 @@ class _PosPageState extends State<PosPage> {
                                                 HapticFeedback
                                                     .heavyImpact();
                                               } else {
-                                                if (posprovider
+                                                    if (posprovider
                                                             .productsList[i]
                                                             .enableStock ==
                                                         '0') {
@@ -875,17 +875,22 @@ class _PosPageState extends State<PosPage> {
                                     return suggestionsBox;
                                   },
                                   itemBuilder: (context, Items suggestion) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(15),
-                                          border: Border.all(
-                                              color: Colors.grey
-                                                  .withOpacity(0.1))),
-                                      child: ListTile(
-                                        title: Text(suggestion.name.toString()),
-                                      ),
-                                    );
+                                    if (productController.text.length >= 1) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border: Border.all(
+                                                color: Colors.grey
+                                                    .withOpacity(0.1))),
+                                        child: ListTile(
+                                          title:
+                                              Text(suggestion.name.toString()),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
                                   },
                                   onSuggestionSelected:
                                       (Items suggestion) async {
