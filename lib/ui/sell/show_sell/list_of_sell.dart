@@ -722,15 +722,16 @@ import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/container_border.dart';
 import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'list_of_sell_view_model.dart';
 
 class ListOfSellPage extends StatefulWidget {
@@ -748,7 +749,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
   late TextEditingController userController = TextEditingController();
   late TextEditingController shippingStatusController = TextEditingController();
   late TextEditingController amountController = TextEditingController();
-
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
 
   @override
   void initState() {
@@ -759,8 +763,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
   void loadData() async {
     await Provider.of<ListOfSellViewModel>(context, listen: false).sellList();
-    // await Provider.of<ListOfSellViewModel>(context, listen: false).getSpecifiedContact(contactId: '1');
     await Provider.of<PosPageViewModel>(context, listen: false).businessList();
+    await Provider.of<PosPageViewModel>(context, listen: false).userList();
+    await Provider.of<PosPageViewModel>(context, listen: false)
+        .productList(context: context);
+
+    Location data = Location(name: 'all', id: 'all', locationId: "");
+    Provider.of<PosPageViewModel>(context, listen: false)
+        .locationList
+        .insert(0, data);
+    User data2 = User(name: 'all', id: 'all');
+    Provider.of<PosPageViewModel>(context, listen: false)
+        .usersList
+        .insert(0, data2);
+
     // await Provider.of<PosPageViewModel>(context, listen: false).userList();
     // Provider.of<ListOfSellViewModel>(context, listen: false).userList.addAll(Provider.of<PosPageViewModel>(context, listen: false).usersList);
   }
@@ -768,8 +784,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
   late ListOfSellViewModel listOfSellViewModel;
   int index = 0;
   String dropdownValue = 'Cash';
-  DateTime startDate = DateTime(2021);
-  DateTime endDate = DateTime(2025);
 
   @override
   Widget build(BuildContext context) {
@@ -839,7 +853,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                     /// Filter Button...
                     InkWell(
                       onTap: () {
-                        print('Check it...');
                         showDialogBox();
                       },
                       child: Padding(
@@ -916,19 +929,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                           child: ListView.builder(
                               itemCount: value.sellItemList.length,
                               itemBuilder: (context, index) {
-                                // for(int i = 0; i < value.userList.length; i++)
-                                //   {
-                                //     print("HELLO user 0 ${value.userList[0].contactId}");
-                                //     print("HELLO sell 0 ${value.sellItemList[0].contactId}");
-                                //     print("HELLO user 1 ${value.userList[1].contactId}");
-                                //     print("HELLO sell 1 ${value.sellItemList[1].contactId}");
-                                //     print("Old Name Is 0 ${value.userList[0].name}");
-                                //     if(value.userList[i].id == value.sellItemList[index].id)
-                                //      {
-                                //        name = value.userList[i].name;
-                                //        print("New Name Is ${name}");
-                                //      }
-                                //   }
                                 return SwipeActionCell(
                                   key: const ObjectKey(10),
                                   ///this key is necessary
@@ -946,24 +946,24 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           {
                                             showLoadingDialog(
                                                   context: context);
-                                              await Provider.of<
-                                                          ListOfSellViewModel>(
-                                                      context,
-                                                      listen: false)
-                                                  .getSpecifiedContact(
-                                                      contactId: value
-                                                              .sellItemList[
-                                                                  index]
-                                                              .contactId ??
-                                                          '',
-                                                      context: context);
-                                              var name = Provider.of<
-                                                          ListOfSellViewModel>(
-                                                      context,
-                                                      listen: false)
-                                                  .specifiedContactList[0]
-                                                  .name;
-                                              print("NAMEIS ${name}");
+                                              // await Provider.of<
+                                              //             ListOfSellViewModel>(
+                                              //         context,
+                                              //         listen: false)
+                                              //     .getSpecifiedContact(
+                                              //         contactId: value
+                                              //                 .sellItemList[
+                                              //                     index]
+                                              //                 .contactId ??
+                                              //             '',
+                                              //         context: context);
+                                              // var name = Provider.of<
+                                              //             ListOfSellViewModel>(
+                                              //         context,
+                                              //         listen: false)
+                                              //     .specifiedContactList[0]
+                                              //     .name;
+                                              // print("NAMEIS ${name}");
                                               showDialog(
                                                   context: context,
                                                   builder:
@@ -980,9 +980,14 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                       children: [
-                                                        commonTile(
-                                                            text: 'Customer',
-                                                            subText: name),
+                                                          commonTile(
+                                                              text: 'Customer',
+                                                              subText: value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .contact!
+                                                                  .name
+                                                                  .toString()),
                                                           const Gap(5),
                                                           commonTile(
                                                               text:
@@ -1144,29 +1149,29 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                         backgroundRadius: 20,
                                         title: "View",
                                         onTap: (CompletionHandler handler) async {
-                                          showLoadingDialog(context: context);
-                                            await Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .getSpecifiedContact(
-                                                    contactId: value
-                                                            .sellItemList[index]
-                                                            .contactId ??
-                                                        "",
-                                                    context: context);
-                                            var businessname = Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .supplierBusinessName;
-                                            var name = Provider.of<
-                                                        ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .name;
+                                            // showLoadingDialog(context: context);
+                                            // await Provider.of<
+                                            //             ListOfSellViewModel>(
+                                            //         context,
+                                            //         listen: false)
+                                            //     .getSpecifiedContact(
+                                            //         contactId: value
+                                            //                 .sellItemList[index]
+                                            //                 .contactId ??
+                                            //             "",
+                                            //         context: context);
+                                            // var businessname = Provider.of<
+                                            //             ListOfSellViewModel>(
+                                            //         context,
+                                            //         listen: false)
+                                            //     .specifiedContactList[0]
+                                            //     .supplierBusinessName;
+                                            // var name = Provider.of<
+                                            //             ListOfSellViewModel>(
+                                            //         context,
+                                            //         listen: false)
+                                            //     .specifiedContactList[0]
+                                            //     .name;
                                             showDialog(
                                                 context: context,
                                                 builder:
@@ -1178,13 +1183,23 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
-                                                      commonTile(
-                                                          text: 'Customer',
-                                                          subText: name),
-                                                      const Gap(5),
-                                                      commonTile(
-                                                          text: 'Business',
-                                                          subText: businessname),
+                                                        commonTile(
+                                                            text: 'Customer',
+                                                            subText: value
+                                                                .sellItemList[
+                                                                    index]
+                                                                .contact!
+                                                                .name
+                                                                .toString()),
+                                                        const Gap(5),
+                                                        commonTile(
+                                                            text: 'Business',
+                                                            subText: value
+                                                                .sellItemList[
+                                                                    index]
+                                                                .contact!
+                                                                .supplierBusinessName
+                                                                .toString()),
                                                         const Gap(5),
                                                         commonTile(
                                                             text: 'Invoice No.',
@@ -1294,22 +1309,22 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                   ],
                                   child: InkWell(
                                       onTap: () async {
-                                        showLoadingDialog(context: context);
-                                        await Provider.of<ListOfSellViewModel>(
-                                                context,
-                                                listen: false)
-                                            .getSpecifiedContact(
-                                                contactId: value
-                                                        .sellItemList[index]
-                                                        .contactId ??
-                                                    "",
-                                                context: context);
-                                        var name =
-                                            Provider.of<ListOfSellViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .specifiedContactList[0]
-                                                .name;
+                                        // showLoadingDialog(context: context);
+                                        // await Provider.of<ListOfSellViewModel>(
+                                        //         context,
+                                        //         listen: false)
+                                        //     .getSpecifiedContact(
+                                        //         contactId: value
+                                        //                 .sellItemList[index]
+                                        //                 .contactId ??
+                                        //             "",
+                                        //         context: context);
+                                        // var name =
+                                        //     Provider.of<ListOfSellViewModel>(
+                                        //             context,
+                                        //             listen: false)
+                                        //         .specifiedContactList[0]
+                                        //         .name;
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
@@ -1323,7 +1338,11 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                 children: [
                                                   commonTile(
                                                       text: 'Customer Name',
-                                                      subText: name),
+                                                      subText: value
+                                                          .sellItemList[index]
+                                                          .contact!
+                                                          .name
+                                                          .toString()),
                                                   const Gap(5),
                                                   commonTile(
                                                       text: 'Payment Status',
@@ -1564,10 +1583,13 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
   commonTile({required String text, required String subText}) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Utils.mediumHeadingText(text: "${text}:"),
         const Gap(5),
-        Utils.regularHeadingText(text: subText)
+        Expanded(
+            child: Utils.regularHeadingText(
+                text: subText, textOverflow: TextOverflow.clip))
       ],
     );
   }
@@ -1576,563 +1598,720 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          bool isSubcribed = true;
+          bool isSubcribed = false;
+          String startDate = '';
+          String endDate = '';
           return Consumer<PosPageViewModel>(
             builder: (BuildContext context, value, Widget? child) {
-              return Dialog(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                insetPadding: const EdgeInsets.only(left: 10, right: 10),
-                //this right here
-                child: Container(
-                  height: 500,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: AppColor.light_white,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16, right: 16, top: 10, bottom: 10),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(10),
-                          Utils.boldSubHeadingText(text: 'View Payment',textSize: 20),
-                          const Gap(10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.businessLocation),
-                                    const Gap(5),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: AppColor.grey, width: 1),
-                                        color: AppColor.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: AppColor.grey2,
-                                            offset: Offset(-1.0, 10),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: TypeAheadField(
-                                          suggestionsBoxDecoration:
-                                              SuggestionsBoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  elevation: 5),
-                                          textFieldConfiguration:
-                                              TextFieldConfiguration(
-                                                // textAlignVertical: TextAlignVertical.top,
-                                                textAlign: TextAlign.center,
-                                            decoration: const InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              contentPadding:
-                                                  EdgeInsets.only(top: 4),
-                                              border: InputBorder.none,
-                                              hintText: "ALL",
-                                            ),
-                                            controller: locationController,
-                                          ),
-                                          suggestionsCallback: (pattern) async {
-                                            return StateService.getLocationSuggestions(pattern, context);
-                                          },
-                                          transitionBuilder: (context,
-                                              suggestionsBox, controller) {
-                                            return suggestionsBox;
-                                          },
-                                          itemBuilder:
-                                              (context, Location suggestion) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.1))),
-                                              child: ListTile(
-                                                title: Text(
-                                                    '${suggestion.name} (${suggestion.locationId})'),
-                                              ),
-                                            );
-                                          },
-                                          onSuggestionSelected:
-                                              (Location suggestion) {
-                                            locationController.text =
-                                                suggestion.id.toString();
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Gap(10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.paymentStatus),
-                                    const Gap(5),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.grey, width: 1),
-                                        color: AppColor.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: AppColor.grey2,
-                                            offset: Offset(-1.0, 10),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: TypeAheadField(
-                                          suggestionsBoxDecoration:
-                                          SuggestionsBoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(20),
-                                              elevation: 5),
-                                          textFieldConfiguration:
-                                          TextFieldConfiguration(
-                                            // textAlignVertical: TextAlignVertical.top,
-                                            textAlign: TextAlign.center,
-                                            decoration: const InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              contentPadding:
-                                              EdgeInsets.only(top: 4),
-                                              border: InputBorder.none,
-                                              hintText: "ALL",
-                                            ),
-                                            controller: paymentStatusController,
-                                          ),
-                                          suggestionsCallback: (pattern) async {
-                                            return await FilterServices
-                                                .getPaymentSuggestion(pattern);
-                                          },
-                                          transitionBuilder: (context,
-                                              suggestionsBox, controller) {
-                                            return suggestionsBox;
-                                          },
-                                          itemBuilder: (context, suggestion) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(15),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.1))),
-
-                                              child: ListTile(
-                                                title:
-                                                    Text(suggestion.toString()),
-                                              ),
-                                            );
-                                          },
-                                          onSuggestionSelected: (suggestion) {
-                                            paymentStatusController.text =
-                                                suggestion.toString();
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.customer),
-                                    const Gap(5),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.grey, width: 1),
-                                        color: AppColor.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: AppColor.grey2,
-                                            offset: Offset(-1.0, 10),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: TypeAheadField(
-                                          suggestionsBoxDecoration:
-                                              SuggestionsBoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  elevation: 5),
-                                          textFieldConfiguration:
-                                          TextFieldConfiguration(
-                                            // textAlignVertical: TextAlignVertical.top,
-                                            textAlign: TextAlign.center,
-                                            decoration: const InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              contentPadding:
-                                              EdgeInsets.only(top: 4),
-                                              border: InputBorder.none,
-                                              hintText: "ALL",
-                                            ),
-                                            controller: customerController,
-                                          ),
-                                          suggestionsCallback: (pattern) async {
-                                            return StateService.getSuggestions(
-                                                pattern, context);
-                                          },
-                                          transitionBuilder: (context,
-                                              suggestionsBox, controller) {
-                                            return suggestionsBox;
-                                          },
-                                          itemBuilder:
-                                              (context, User suggestion) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(15),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.1))),
-                                              child: ListTile(
-                                                title: Text(
-                                                    '${suggestion.supplierBusinessName} (${suggestion.id})'),
-                                              ),
-                                            );
-                                          },
-                                          onSuggestionSelected:
-                                              (User suggestion) {
-                                            customerController.text =
-                                                suggestion.id.toString();
-                                          }),
-                                    ),
-                                    // commonDropDown(),
-                                  ],
-                                ),
-                              ),
-                              const Gap(10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.user),
-                                    const Gap(5),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.grey, width: 1),
-                                        color: AppColor.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: AppColor.grey2,
-                                            offset: Offset(-1.0, 10),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: TypeAheadField(
-                                          suggestionsBoxDecoration:
-                                          SuggestionsBoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(20),
-                                              elevation: 5),
-                                          textFieldConfiguration:
-                                          TextFieldConfiguration(
-                                            // textAlignVertical: TextAlignVertical.top,
-                                            textAlign: TextAlign.center,
-                                            decoration: const InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              contentPadding:
-                                              EdgeInsets.only(top: 4),
-                                              border: InputBorder.none,
-                                              hintText: "ALL",
-                                            ),
-                                            controller: userController,
-                                          ),
-                                          suggestionsCallback: (pattern) async {
-                                            return await FilterServices
-                                                .getUserSuggestion(
-                                                pattern);
-                                          },
-                                          transitionBuilder: (context,
-                                              suggestionsBox, controller) {
-                                            return suggestionsBox;
-                                          },
-                                          itemBuilder: (context, suggestion) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(15),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.1))),
-
-                                              child: ListTile(
-                                                title:
-                                                Text(suggestion.toString()),
-                                              ),
-                                            );
-                                          },
-                                          onSuggestionSelected: (suggestion) {
-                                            userController.text =
-                                                suggestion.toString();
-                                            userController.clear();
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(text: UtilStrings.shippingStatus),
-                                    const Gap(5),
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.grey, width: 1),
-                                        color: AppColor.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: AppColor.grey2,
-                                            offset: Offset(-1.0, 10),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                          ),
-                                        ],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: TypeAheadField(
-                                          suggestionsBoxDecoration:
-                                          SuggestionsBoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(20),
-                                              elevation: 5),
-                                          textFieldConfiguration:
-                                          TextFieldConfiguration(
-                                            // textAlignVertical: TextAlignVertical.top,
-                                            textAlign: TextAlign.center,
-                                            decoration: const InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              contentPadding:
-                                              EdgeInsets.only(top: 4),
-                                              border: InputBorder.none,
-                                              hintText: "ALL",
-                                            ),
-                                            controller: shippingStatusController,
-                                          ),
-                                          suggestionsCallback: (pattern) async {
-                                            return await FilterServices
-                                                .getShippingStatusSuggestion(
-                                                pattern);
-                                          },
-                                          transitionBuilder: (context,
-                                              suggestionsBox, controller) {
-                                            return suggestionsBox;
-                                          },
-                                          itemBuilder: (context, suggestion) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(15),
-                                                  border: Border.all(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.1))),
-
-                                              child: ListTile(
-                                                title:
-                                                Text(suggestion.toString()),
-                                              ),
-                                            );
-                                          },
-                                          onSuggestionSelected: (suggestion) {
-                                            shippingStatusController.clear();
-                                            shippingStatusController.text =
-                                                suggestion.toString();
-                                          }),
-                                    ),
-                                    const Gap(20),
-                                  ],
-                                ),
-                              ),
-                              const Gap(10),
-                              Expanded(
-                                child: Center(
+              return StatefulBuilder(builder: (context, setState) {
+                return Dialog(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  insetPadding: const EdgeInsets.only(left: 10, right: 10),
+                  //this right here
+                  child: Container(
+                    height: 500,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColor.light_white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16, right: 16, top: 10, bottom: 10),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Gap(10),
+                            Utils.boldSubHeadingText(
+                                text: 'View Payment', textSize: 20),
+                            const Gap(10),
+                            Row(
+                              children: [
+                                Expanded(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Gap(20),
-                                      Row(
-                                        children: <Widget>[
-                                          Gap(20),
-                                          commonText(text: UtilStrings.subScription),
-                                          Gap(5),
-                                          // InkWell(
-                                          //   child: Container(
-                                          //     decoration: BoxDecoration(
-                                          //         border: Border.all(color: AppColor.grey)
-                                          //     ),
-                                          //     width: 20,
-                                          //     height: 20,
-                                          //     child: isSubcribed == true ? Center(child: Icon(Icons.check,size: 20)) : Container(),
-                                          //   ),
-                                          //   onTap: (){
-                                          //     setState(() {
-                                          //       isSubcribed != isSubcribed;
-                                          //       print("hello${isSubcribed}");
-                                          //     });
-                                          //   },
-                                          // ),
-                                          Checkbox(
-                                              value: isSubcribed,
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  print("HELLO DATA${isSubcribed}");
-                                                  isSubcribed = value!;
-                                                });
-                                              }),
-                                        ],
+                                      commonText(
+                                          text: UtilStrings.businessLocation),
+                                      const Gap(5),
+                                      Container(
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: AppColor.grey, width: 1),
+                                          color: AppColor.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: AppColor.grey2,
+                                              offset: Offset(-1.0, 10),
+                                              blurRadius: 15,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: TypeAheadField(
+                                            suggestionsBoxDecoration:
+                                                SuggestionsBoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    elevation: 5),
+                                            textFieldConfiguration:
+                                                TextFieldConfiguration(
+                                              // textAlignVertical: TextAlignVertical.top,
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 4),
+                                                border: InputBorder.none,
+                                                hintText: "all",
+                                              ),
+                                              controller: locationController,
+                                            ),
+                                            suggestionsCallback:
+                                                (pattern) async {
+                                              return StateService
+                                                  .getLocationSuggestions(
+                                                      pattern, context);
+                                            },
+                                            transitionBuilder: (context,
+                                                suggestionsBox, controller) {
+                                              return suggestionsBox;
+                                            },
+                                            itemBuilder:
+                                                (context, Location suggestion) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.1))),
+                                                child: ListTile(
+                                                  title: Text(suggestion.name ==
+                                                          'all'
+                                                      ? "all"
+                                                      : '${suggestion.name} (${suggestion.locationId})'),
+                                                ),
+                                              );
+                                            },
+                                            onSuggestionSelected:
+                                                (Location suggestion) {
+                                              locationController.text =
+                                                  suggestion.id.toString();
+                                            }),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          // const Gap(10),
-                          // Row(
-                          //   children: [
-                          //     Expanded(
-                          //       child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.start,
-                          //         children: [
-                          //           commonText(text: UtilStrings.dateRange),
-                          //           const Gap(5),
-                          //           Container(
-                          //             height: 50,
-                          //             child: InkWell(
-                          //               onTap: ()
-                          //
-                          //               async {
-                          //                 final picked = await showDateRangePicker(
-                          //                   context: context,
-                          //                   lastDate: endDate,
-                          //                   firstDate: startDate,
-                          //                 );
-                          //                 if (picked != null) {
-                          //                   print('Picked --> $startDate');
-                          //                   print('Picked --> $endDate');
-                          //                   setState(() {
-                          //                     startDate = picked.start;
-                          //                     endDate = picked.end;
-                          //                   });
-                          //                 }
-                          //               },
-                          //               child: Container(
-                          //                 alignment: Alignment.center,
-                          //                 height: 40,
-                          //                 width: 170,
-                          //                 decoration: BoxDecoration(
-                          //                   boxShadow: const [
-                          //                     BoxShadow(
-                          //                       color: AppColor.grey2,
-                          //                       offset: Offset(-1.0, 10),
-                          //                       blurRadius: 15,
-                          //                       spreadRadius: 1,
-                          //                     ),
-                          //                   ],
-                          //                   color: AppColor.white,
-                          //                   borderRadius: BorderRadius.circular(15),
-                          //                   border: Border.all(
-                          //                       color: AppColor.grey, width: 1),
-                          //                 ),
-                          //                 child: Utils.mediumHeadingText(
-                          //                     text: '${startDate} - ${endDate}',
-                          //                     color: AppColor.grey),
-                          //               ),
-                          //             ),
-                          //           ),
-                          //           // commonDropDown(),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //     const Gap(10),
-                          //     Expanded(
-                          //       child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.start,
-                          //         children: [
-                          //           commonText(text: UtilStrings.sources),
-                          //           const Gap(5),
-                          //           // commonDropDown(),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          const Gap(30),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                Provider.of<ListOfSellViewModel>(context, listen: false).filterSellList(
-                                  locationId: locationController.text,
-                                  contactId: customerController.text,
-                                  paymentStatus: paymentStatusController.text,
-                                  ShippingStatus:shippingStatusController.text,
-                                  IsSubscribed: '0',
-                                );
-                                Navigator.pop(context);
-                              });
-                            },
-                            child: const CustomButton(title: 'Apply'),
-                          ),
-                        ],
+                                const Gap(10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(
+                                          text: UtilStrings.paymentStatus),
+                                      const Gap(5),
+                                      Container(
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: AppColor.grey, width: 1),
+                                          color: AppColor.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: AppColor.grey2,
+                                              offset: Offset(-1.0, 10),
+                                              blurRadius: 15,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: TypeAheadField(
+                                            suggestionsBoxDecoration:
+                                                SuggestionsBoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    elevation: 5),
+                                            textFieldConfiguration:
+                                                TextFieldConfiguration(
+                                              // textAlignVertical: TextAlignVertical.top,
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 4),
+                                                border: InputBorder.none,
+                                                hintText: "all",
+                                              ),
+                                              controller:
+                                                  paymentStatusController,
+                                            ),
+                                            suggestionsCallback:
+                                                (pattern) async {
+                                              return await FilterServices
+                                                  .getPaymentSuggestion(
+                                                      pattern);
+                                            },
+                                            transitionBuilder: (context,
+                                                suggestionsBox, controller) {
+                                              return suggestionsBox;
+                                            },
+                                            itemBuilder: (context, suggestion) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.1))),
+                                                child: ListTile(
+                                                  title: Text(
+                                                      suggestion.toString()),
+                                                ),
+                                              );
+                                            },
+                                            onSuggestionSelected: (suggestion) {
+                                              paymentStatusController.text =
+                                                  suggestion.toString();
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(text: UtilStrings.customer),
+                                      const Gap(5),
+                                      Container(
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: AppColor.grey, width: 1),
+                                          color: AppColor.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: AppColor.grey2,
+                                              offset: Offset(-1.0, 10),
+                                              blurRadius: 15,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: TypeAheadField(
+                                            suggestionsBoxDecoration:
+                                                SuggestionsBoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    elevation: 5),
+                                            textFieldConfiguration:
+                                                TextFieldConfiguration(
+                                              // textAlignVertical: TextAlignVertical.top,
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 4),
+                                                border: InputBorder.none,
+                                                hintText: "all",
+                                              ),
+                                              controller: customerController,
+                                            ),
+                                            suggestionsCallback:
+                                                (pattern) async {
+                                              return StateService
+                                                  .getSuggestions(
+                                                      pattern, context);
+                                            },
+                                            transitionBuilder: (context,
+                                                suggestionsBox, controller) {
+                                              return suggestionsBox;
+                                            },
+                                            itemBuilder:
+                                                (context, User suggestion) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.1))),
+                                                child: ListTile(
+                                                  title: Text(suggestion.name ==
+                                                          'all'
+                                                      ? 'all'
+                                                      : '${suggestion.name} (${suggestion.id})'),
+                                                ),
+                                              );
+                                            },
+                                            onSuggestionSelected:
+                                                (User suggestion) {
+                                              customerController.text =
+                                                  suggestion.id.toString();
+                                            }),
+                                      ),
+                                      // commonDropDown(),
+                                    ],
+                                  ),
+                                ),
+                                const Gap(10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(text: UtilStrings.user),
+                                      const Gap(5),
+                                      Container(
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: AppColor.grey, width: 1),
+                                          color: AppColor.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: AppColor.grey2,
+                                              offset: Offset(-1.0, 10),
+                                              blurRadius: 15,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: TypeAheadField(
+                                            suggestionsBoxDecoration:
+                                                SuggestionsBoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    elevation: 5),
+                                            textFieldConfiguration:
+                                                TextFieldConfiguration(
+                                              // textAlignVertical: TextAlignVertical.top,
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 4),
+                                                border: InputBorder.none,
+                                                hintText: "all",
+                                              ),
+                                              controller: userController,
+                                            ),
+                                            suggestionsCallback:
+                                                (pattern) async {
+                                              return await FilterServices
+                                                  .getUserSuggestion(pattern);
+                                            },
+                                            transitionBuilder: (context,
+                                                suggestionsBox, controller) {
+                                              return suggestionsBox;
+                                            },
+                                            itemBuilder: (context, suggestion) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.1))),
+                                                child: ListTile(
+                                                  title: Text(
+                                                      suggestion.toString()),
+                                                ),
+                                              );
+                                            },
+                                            onSuggestionSelected: (suggestion) {
+                                              userController.text =
+                                                  suggestion.toString();
+                                              userController.clear();
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(
+                                          text: UtilStrings.shippingStatus),
+                                      const Gap(5),
+                                      Container(
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: AppColor.grey, width: 1),
+                                          color: AppColor.white,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: AppColor.grey2,
+                                              offset: Offset(-1.0, 10),
+                                              blurRadius: 15,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: TypeAheadField(
+                                            suggestionsBoxDecoration:
+                                                SuggestionsBoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    elevation: 5),
+                                            textFieldConfiguration:
+                                                TextFieldConfiguration(
+                                              // textAlignVertical: TextAlignVertical.top,
+                                              textAlign: TextAlign.center,
+                                              decoration: const InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                contentPadding:
+                                                    EdgeInsets.only(top: 4),
+                                                border: InputBorder.none,
+                                                hintText: "all",
+                                              ),
+                                              controller:
+                                                  shippingStatusController,
+                                            ),
+                                            suggestionsCallback:
+                                                (pattern) async {
+                                              return await FilterServices
+                                                  .getShippingStatusSuggestion(
+                                                      pattern);
+                                            },
+                                            transitionBuilder: (context,
+                                                suggestionsBox, controller) {
+                                              return suggestionsBox;
+                                            },
+                                            itemBuilder: (context, suggestion) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.1))),
+                                                child: ListTile(
+                                                  title: Text(
+                                                      suggestion.toString()),
+                                                ),
+                                              );
+                                            },
+                                            onSuggestionSelected: (suggestion) {
+                                              shippingStatusController.clear();
+                                              shippingStatusController.text =
+                                                  suggestion.toString();
+                                            }),
+                                      ),
+                                      const Gap(20),
+                                    ],
+                                  ),
+                                ),
+                                const Gap(10),
+                                Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Gap(20),
+                                        Row(
+                                          children: <Widget>[
+                                            Gap(20),
+                                            commonText(
+                                                text: UtilStrings.subScription),
+                                            Gap(5),
+                                            // InkWell(
+                                            //   child: Container(
+                                            //     decoration: BoxDecoration(
+                                            //         border: Border.all(color: AppColor.grey)
+                                            //     ),
+                                            //     width: 20,
+                                            //     height: 20,
+                                            //     child: isSubcribed == true ? Center(child: Icon(Icons.check,size: 20)) : Container(),
+                                            //   ),
+                                            //   onTap: (){
+                                            //     setState(() {
+                                            //       isSubcribed != isSubcribed;
+                                            //       print("hello${isSubcribed}");
+                                            //     });
+                                            //   },
+                                            // ),
+                                            Checkbox(
+                                                value: isSubcribed,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    isSubcribed = value!;
+                                                  });
+                                                }),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(text: UtilStrings.dateRange),
+                                      const Gap(5),
+                                      InkWell(
+                                        onTap: () {
+                                          showDialog<Widget>(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                  height: 200,
+                                                  width: 200,
+                                                  child: SfDateRangePicker(
+                                                    backgroundColor:
+                                                        AppColor.white,
+                                                    showActionButtons: true,
+                                                    onSelectionChanged:
+                                                        (DateRangePickerSelectionChangedArgs
+                                                            args) {
+                                                      setState(() {
+                                                        if (args.value
+                                                            is PickerDateRange) {
+                                                          _range =
+                                                              '${DateFormat('dd/MM/yyyy').format(args.value.startDate)}'
+                                                              '-'
+                                                              '${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+                                                          startDate = DateFormat(
+                                                                  'yyyy/MM/dd')
+                                                              .format(args.value
+                                                                  .startDate);
+                                                          endDate = DateFormat(
+                                                                  'yyyy/MM/dd')
+                                                              .format(args.value
+                                                                      .endDate ??
+                                                                  args.value
+                                                                      .startDate);
+                                                          print(
+                                                              "HELLO RANGE${_range}");
+                                                          print(
+                                                              "HELLO START${startDate}");
+                                                          print(
+                                                              "HELLO END${endDate}");
+                                                        }
+                                                      });
+                                                    },
+                                                    selectionMode:
+                                                        DateRangePickerSelectionMode
+                                                            .range,
+                                                    // initialSelectedRange: PickerDateRange(
+                                                    //     DateTime.now().subtract(const Duration(days: 4)),
+                                                    //     DateTime.now().add(const Duration(days: 3))),
+                                                    //       showActionButtons: true,
+                                                    onCancel: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    onSubmit: (val) {
+                                                      Navigator.pop(context);
+                                                      print("HELLO${_range}");
+                                                    },
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          height: 45,
+                                          width: 170,
+                                          decoration: BoxDecoration(
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: AppColor.grey2,
+                                                offset: Offset(-1.0, 10),
+                                                blurRadius: 15,
+                                                spreadRadius: 1,
+                                              ),
+                                            ],
+                                            color: AppColor.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border: Border.all(
+                                                color: AppColor.grey, width: 1),
+                                          ),
+                                          child: Utils.mediumHeadingText(
+                                              text: _range,
+                                              color: AppColor.grey),
+                                        ),
+                                      ),
+                                      // Container(
+                                      //     child: SfDateRangePicker(
+                                      //       onSelectionChanged: _onSelectionChanged,
+                                      //       selectionMode: DateRangePickerSelectionMode.range,
+                                      //       initialSelectedRange: PickerDateRange(
+                                      //           DateTime.now().subtract(const Duration(days: 4)),
+                                      //           DateTime.now().add(const Duration(days: 3))),
+                                      //       showActionButtons: true,
+                                      //     ),
+                                      // )
+                                      // Container(
+                                      //   height: 50,
+                                      //   child: InkWell(
+                                      //     onTap: ()
+                                      //     async {
+                                      //       final picked = await showDateRangePicker(
+                                      //         context: context,
+                                      //         lastDate: endDate,
+                                      //         firstDate: startDate,
+                                      //       );
+                                      //       if (picked != null) {
+                                      //         print('Picked --> $startDate');
+                                      //         print('Picked --> $endDate');
+                                      //         setState(() {
+                                      //           startDate = picked.start;
+                                      //           endDate = picked.end;
+                                      //         });
+                                      //       }
+                                      //     },
+                                      //     child: Container(
+                                      //       alignment: Alignment.center,
+                                      //       height: 40,
+                                      //       width: 170,
+                                      //       decoration: BoxDecoration(
+                                      //         boxShadow: const [
+                                      //           BoxShadow(
+                                      //             color: AppColor.grey2,
+                                      //             offset: Offset(-1.0, 10),
+                                      //             blurRadius: 15,
+                                      //             spreadRadius: 1,
+                                      //           ),
+                                      //         ],
+                                      //         color: AppColor.white,
+                                      //         borderRadius: BorderRadius.circular(15),
+                                      //         border: Border.all(
+                                      //             color: AppColor.grey, width: 1),
+                                      //       ),
+                                      //       child: Utils.mediumHeadingText(
+                                      //           text: '${startDate} - ${endDate}',
+                                      //           color: AppColor.grey),
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                      // commonDropDown(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Gap(30),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  print(
+                                      "location is${locationController.text}");
+                                  print(
+                                      "contact id is${customerController.text}");
+                                  print(
+                                      "PAYMENT STATUS IS${paymentStatusController.text}");
+                                  print(
+                                      "SHIPPING STATUS IS${shippingStatusController.text}");
+                                  print("IS SUBSCRIBED IS$isSubcribed");
+                                  print("start date ius$startDate");
+                                  print("end date is$endDate");
+                                  print("subscripton is $isSubcribed");
+                                  Provider.of<ListOfSellViewModel>(context,
+                                          listen: false)
+                                      .filterSellList(
+                                    locationId: locationController.text == 'all'
+                                        ? ''
+                                        : locationController.text,
+                                    contactId: customerController.text == 'all'
+                                        ? ''
+                                        : customerController.text,
+                                    paymentStatus:
+                                        paymentStatusController.text == 'all'
+                                            ? ''
+                                            : paymentStatusController.text,
+                                    ShippingStatus:
+                                        shippingStatusController.text == 'all'
+                                            ? ''
+                                            : shippingStatusController.text,
+                                    IsSubscribed:
+                                        isSubcribed == true ? '1' : '0',
+                                    startDate: startDate,
+                                    endDate: endDate,
+                                  );
+                                  startDate = '';
+                                  endDate = '';
+                                  locationController.clear();
+                                  customerController.clear();
+                                  paymentStatusController.clear();
+                                  shippingStatusController.clear();
+                                  Navigator.pop(context);
+                                });
+                              },
+                              child: const CustomButton(title: 'Apply'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
+                );
+              });
             },
           );
         });
@@ -2239,16 +2418,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
       ),
     );
   }
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {}
 }
 
 class FilterServices {
   static final List<String> paymentStatus = [
+    'all',
     'Paid',
     'Due',
     'partial',
     'OverDue'
   ];
   static final List<String> shippingStatusList = [
+    'all',
     'Ordered',
     'Packed',
     'Shipped',
@@ -2256,6 +2439,7 @@ class FilterServices {
     'Cancelled'
   ];
   static final List<String> userList = [
+    'all',
     'Mr Admin user',
     'demo',
     'mr demo test'

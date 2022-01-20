@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pos/data/models/pos/ResLogedUserDetils.dart';
 import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/pos/res_business_location.dart';
+import 'package:pos/data/models/pos/res_error_open_register.dart';
 import 'package:pos/data/models/pos/res_pos.dart';
 import 'package:pos/data/models/pos/res_product_pos.dart';
 import 'package:pos/data/models/pos/res_users_pos.dart';
@@ -10,7 +11,6 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/closesell/res_before_close.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/data/models/sell/create_sell/res_create_sell.dart';
-import 'package:pos/data/models/sell/create_sell/res_create_sell_error.dart';
 import 'package:pos/repository/pos_repo.dart';
 import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
@@ -65,12 +65,21 @@ class PosPageViewModel with ChangeNotifier {
 
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
-        apiResponse.response!.statusCode == 201 || apiResponse.response!.statusCode == 200) {
+            apiResponse.response!.statusCode == 201 ||
+        apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      ResPos data = ResPos.fromJson(apiResponse.response!.data);
-      setString(PrefKeyConstants.customerID, data.data.id.toString());
-      responseModel = ResponseModel(true, 'successful');
-      Navigator.pop(context);
+      if (apiResponse.response?.data['status'] == 'error') {
+        ResOpenRegError data =
+            ResOpenRegError.fromJson(apiResponse.response!.data);
+        setString(PrefKeyConstants.customerID, data.cashRegisterId);
+        responseModel = ResponseModel(true, 'successful');
+        Navigator.pop(context);
+      } else {
+        ResPos data = ResPos.fromJson(apiResponse.response!.data);
+        setString(PrefKeyConstants.customerID, data.data.id.toString());
+        responseModel = ResponseModel(true, 'successful');
+        Navigator.pop(context);
+      }
       isLoading = false;
     }
     else
@@ -162,7 +171,7 @@ class PosPageViewModel with ChangeNotifier {
       if(apiResponse.response?.data[0]['original'] == null )
       {
         ResCreateSell data =
-        ResCreateSell.fromJson(apiResponse.response!.data[0]);
+            ResCreateSell.fromJson(apiResponse.response!.data[0]);
         invoiceUrl = data.invoiceUrl;
         print('Your total data ${data.invoiceUrl}');
         ToastUtils.showCustomToast(
@@ -172,10 +181,11 @@ class PosPageViewModel with ChangeNotifier {
       else
         {
           ToastUtils.showCustomToast(
-              context, apiResponse.response?.data[0]['original']['error']['message'], 'warning');
-          responseModel = ResponseModel(false, 'successful');
-
-        }
+            context,
+            apiResponse.response?.data[0]['original']['error']['message'],
+            'warning');
+        responseModel = ResponseModel(false, 'successful');
+      }
       // for (var item in data.data) {
       //   productsList.add(item);
       // }

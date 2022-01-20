@@ -2,7 +2,6 @@
 //
 //     final resBusinessLocation = resBusinessLocationFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResBusinessLocation resBusinessLocationFromJson(String str) => ResBusinessLocation.fromJson(json.decode(str));
@@ -27,79 +26,80 @@ class ResBusinessLocation {
 
 class Location {
   Location({
-    required this.id,
-    required this.businessId,
-    required this.locationId,
-    required this.name,
-    required this.landmark,
-    required this.country,
-    required this.state,
-    required this.city,
-    required this.zipCode,
-    required this.invoiceSchemeId,
-    required this.invoiceLayoutId,
-    required this.saleInvoiceLayoutId,
-    required this.sellingPriceGroupId,
-    required this.printReceiptOnInvoice,
-    required this.receiptPrinterType,
-    required this.printerId,
-    required this.mobile,
-    required this.alternateNumber,
-    required this.email,
-    required this.website,
-    required this.featuredProducts,
-    required this.isActive,
-    required this.customField1,
-    required this.customField2,
-    required this.customField3,
-    required this.customField4,
-    required this.deletedAt,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.paymentMethods,
+    this.id,
+    this.businessId,
+    this.locationId,
+    this.name,
+    this.landmark,
+    this.country,
+    this.state,
+    this.city,
+    this.zipCode,
+    this.invoiceSchemeId,
+    this.invoiceLayoutId,
+    this.saleInvoiceLayoutId,
+    this.sellingPriceGroupId,
+    this.printReceiptOnInvoice,
+    this.receiptPrinterType,
+    this.printerId,
+    this.mobile,
+    this.alternateNumber,
+    this.email,
+    this.website,
+    this.featuredProducts,
+    this.isActive,
+    this.customField1,
+    this.customField2,
+    this.customField3,
+    this.customField4,
+    this.deletedAt,
+    this.createdAt,
+    this.updatedAt,
+    // this.paymentMethods,
   });
 
-  String id;
-  String businessId;
-  String locationId;
-  String name;
-  String landmark;
-  String country;
-  String state;
-  String city;
-  String zipCode;
-  String invoiceSchemeId;
-  String invoiceLayoutId;
-  String saleInvoiceLayoutId;
-  String sellingPriceGroupId;
-  String printReceiptOnInvoice;
-  String receiptPrinterType;
-  String printerId;
-  String mobile;
-  String alternateNumber;
-  String email;
-  String website;
-  String featuredProducts;
-  String isActive;
-  String customField1;
-  String customField2;
-  String customField3;
-  String customField4;
-  String deletedAt;
-  String createdAt;
-  String updatedAt;
-  List<PaymentMethod> paymentMethods;
+  String? id;
+  String? businessId;
+  String? locationId;
+  String? name;
+  String? landmark;
+  String? country;
+  String? state;
+  String? city;
+  String? zipCode;
+  String? invoiceSchemeId;
+  String? invoiceLayoutId;
+  String? saleInvoiceLayoutId;
+  String? sellingPriceGroupId;
+  String? printReceiptOnInvoice;
+  String? receiptPrinterType;
+  String? printerId;
+  String? mobile;
+  String? alternateNumber;
+  String? email;
+  String? website;
+  String? featuredProducts;
+  String? isActive;
+  String? customField1;
+  String? customField2;
+  String? customField3;
+  String? customField4;
+  String? deletedAt;
+  String? createdAt;
+  String? updatedAt;
+
+  // List<PaymentMethod>? paymentMethods;
 
   factory Location.fromJson(Map<String, dynamic> json) => Location(
-    id: json["id"].toString(),
-    businessId: json["business_id"].toString(),
-    locationId: json["location_id"].toString(),
-    name: json["name"].toString(),
-    landmark: json["landmark"].toString(),
-    country: json["country"].toString(),
-    state: json["state"].toString(),
-    city: json["city"].toString(),
-    zipCode: json["zip_code"].toString(),
+        id: json["id"].toString(),
+        businessId: json["business_id"].toString(),
+        locationId: json["location_id"].toString(),
+        name: json["name"].toString(),
+        landmark: json["landmark"].toString(),
+        country: json["country"].toString(),
+        state: json["state"].toString(),
+        city: json["city"].toString(),
+        zipCode: json["zip_code"].toString(),
     invoiceSchemeId: json["invoice_scheme_id"].toString(),
     invoiceLayoutId: json["invoice_layout_id"].toString(),
     saleInvoiceLayoutId: json["sale_invoice_layout_id"].toString(),
@@ -120,8 +120,8 @@ class Location {
     deletedAt: json["deleted_at"].toString(),
     createdAt: json["created_at"].toString(),
     updatedAt: json["updated_at"].toString(),
-    paymentMethods: List<PaymentMethod>.from(json["payment_methods"].map((x) => PaymentMethod.fromJson(x))),
-  );
+        // paymentMethods: List<PaymentMethod>.from(json["payment_methods"].map((x) => PaymentMethod.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -153,30 +153,30 @@ class Location {
     "deleted_at": deletedAt,
     "created_at": createdAt,
     "updated_at": updatedAt,
-    "payment_methods": List<dynamic>.from(paymentMethods.map((x) => x.toJson())),
-  };
+    // "payment_methods": List<dynamic>.from(paymentMethods!.map((x) => x.toJson())),
+      };
 }
 
 class PaymentMethod {
   PaymentMethod({
-    required this.name,
-    required this.label,
-    required this.accountId,
+    this.name,
+    this.label,
+    this.accountId,
   });
 
-  String name;
-  String label;
-  String accountId;
+  String? name;
+  String? label;
+  String? accountId;
 
   factory PaymentMethod.fromJson(Map<String, dynamic> json) => PaymentMethod(
-    name: json["name"].toString(),
-    label: json["label"].toString(),
-    accountId: json["account_id"].toString(),
-  );
+        name: json["name"].toString(),
+        label: json["label"].toString(),
+        accountId: json["account_id"].toString(),
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "label": label,
-    "account_id": accountId,
+        "name": name,
+        "label": label,
+        "account_id": accountId,
   };
 }

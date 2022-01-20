@@ -14,14 +14,18 @@ class Utils {
   }
 
   static Widget regularHeadingText(
-      { String? text, double? textSize, Color? color}) {
+      {String? text,
+      double? textSize,
+      Color? color,
+      TextOverflow? textOverflow}) {
     return Text(
-      text??'',
+      text ?? '',
       style: TextStyle(
         fontFamily: 'DMSans',
         fontSize: textSize ?? 18,
         fontWeight: FontWeight.w300,
         color: color ?? AppColor.black_2,
+        overflow: textOverflow,
       ),
     );
   }

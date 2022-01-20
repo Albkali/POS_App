@@ -12,9 +12,10 @@ class SellRepo{
 
   Future<ApiResponse?> getListSell() async {
     try {
-      Response response = await dioClient.get(ApiEndPoints.apiListOfSell,
-          queryParameters:
-          {'per_page': "30", "order_by_date": "desc"});
+      Response response =
+          await dioClient.get(ApiEndPoints.apiListOfSell, queryParameters: {
+        'per_page': "-1",
+      });
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
@@ -29,31 +30,36 @@ class SellRepo{
           data:{
             'payments':[
               {
-                "amount": pendingPayment,
-                "method":"cash"
-              }
+                "amount": pendingPayment, "method": "cash"}
             ]
-          } );
+          });
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());
       return ApiResponse.withError(e);
     }
   }
-  Future<ApiResponse?> getFilterListSell(String? locationId,String? paymentStatus,String? contactId,String? ShippingStatus,String? IsSubscribed) async {
-    try {
-      Response response = await dioClient.get(ApiEndPoints.apiListOfSell,
-          queryParameters:
-          {
-            'per_page' : '-1',
-            'location_id' : '$locationId',
-            'payment_status' : '$paymentStatus',
-            'contact_id' : '$contactId',
-            'shipping_status' : '$ShippingStatus',
-            'only_subscriptions' : '$IsSubscribed'
 
-          }
-      );
+  Future<ApiResponse?> getFilterListSell(
+      String? locationId,
+      String? paymentStatus,
+      String? contactId,
+      String? ShippingStatus,
+      String? IsSubscribed,
+      String? startDate,
+      String? endDate) async {
+    try {
+      Response response =
+          await dioClient.get(ApiEndPoints.apiListOfSell, queryParameters: {
+        'per_page': '-1',
+        'location_id': '$locationId',
+        'payment_status': '$paymentStatus',
+        'contact_id': '$contactId',
+        'shipping_status': '$ShippingStatus',
+        'only_subscriptions': '$IsSubscribed',
+        'start_date': '$startDate',
+        'end_date': '$endDate'
+      });
       return ApiResponse.withSuccess(response);
     } catch (e) {
       print(e.toString());

@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_page.dart';
 import 'package:pos/ui/pos/pos_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/setting_page/setting_page.dart';
-import 'package:pos/ui/view_payment/view_payment_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -23,12 +22,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final player = AudioPlayer();
+
   double x = 0.9;
 
   double y = 0.2;
 
   double z = 0.0;
-
 
   List iconList = [
     Icons.payment_outlined,
@@ -49,6 +49,7 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
                   /// custom AppBar...
                   Container(
                     height: 150,
@@ -125,9 +126,12 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
-                                onTap: (){
-                                  print("HH");
-                                  HapticFeedback.heavyImpact();
+                                onTap: () async {
+                                  print("HELLO");
+                                  await player.setAsset(
+                                      'assets/audio/anime_hair_twitch.mp3');
+                                  player.play();
+                                  // HapticFeedback.heavyImpact();
                                 },
                                 text: getTranslated(context, UtilStrings.home),
                                 icon: Icons.phone_android_outlined,
@@ -149,10 +153,10 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             constraints: BoxConstraints.expand(
                               height: Theme.of(context)
-                                          .textTheme
-                                          .headline4!
-                                          .fontSize! *
-                                      3.5 +
+                                  .textTheme
+                                  .headline4!
+                                  .fontSize! *
+                                  3.5 +
                                   500.0,
                             ),
                             padding: const EdgeInsets.all(8.0),
@@ -201,11 +205,11 @@ class _HomePageState extends State<HomePage> {
                     child: GridView.builder(
                       itemCount: 4,
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 5.9 / 4.6,
-                              crossAxisSpacing: 20.0,
-                              mainAxisSpacing: 30.0),
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 5.9 / 4.6,
+                          crossAxisSpacing: 20.0,
+                          mainAxisSpacing: 30.0),
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () async {
@@ -231,7 +235,6 @@ class _HomePageState extends State<HomePage> {
                                   builder: (BuildContext context) {
                                     return ListOfSellPage();
                                   }));
-
                             } else if (index == 3) {
                               Navigator.push(
                                 context,
@@ -239,11 +242,7 @@ class _HomePageState extends State<HomePage> {
                                   builder: (context) => SettingPage(),
                                 ),
                               );
-                            } else if (index == 4) {
-                            } else if (index == 5) {
-                            } else if (index == 6) {
-                            } else if (index == 7) {
-                            } else if (index == 8) {}
+                            } else if (index == 4) {} else if (index == 5) {} else if (index == 6) {} else if (index == 7) {} else if (index == 8) {}
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20, right: 5),
@@ -290,10 +289,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget commonCircleWithText(
-      {required String? text,
-      required IconData? icon,
-      void Function()? onTap}) {
+  Widget commonCircleWithText({required String? text,
+    required IconData? icon,
+    void Function()? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Column(

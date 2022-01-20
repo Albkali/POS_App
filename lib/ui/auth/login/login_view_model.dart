@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pos/data/models/auth/res_base_url_page.dart';
 import 'package:pos/data/models/auth/res_login.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/response_model.dart';
@@ -61,6 +62,42 @@ class LoginViewModel with ChangeNotifier {
       responseModel = ResponseModel(false, errorMessage);
     }
     _isLoading = false;
+    notifyListeners();
+    return responseModel;
+  }
+
+  Future<ResponseModel> baseUrl(String id, BuildContext context) async {
+    notifyListeners();
+    ApiResponse? apiResponse = await authRepo.baseUrl(id: id);
+    ResponseModel responseModel;
+    if (apiResponse!.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      hideLoadingDialog(context: context);
+      print("HELLO");
+      // print("HELLO111${apiResponse.response?.data["status"].toString()}");
+      print("HELLO111${apiResponse.response?.data.toString()}");
+      print("HELLO111${apiResponse.response?.data[1]}");
+      if (apiResponse.response?.data["status"] == true) {
+        ResBaseUrl data = ResBaseUrl.fromJson(apiResponse.response!.data);
+        setString(PrefKeyConstants.SECRET_KEY, data.data.clientSecret);
+        responseModel = ResponseModel(true, 'successful');
+        ToastUtils.showCustomToast(context, 'ADDED successfully', 'success');
+      } else {
+        responseModel = ResponseModel(true, 'successful');
+        ToastUtils.showCustomToast(context, 'Invalid Subdomain', 'warning');
+      }
+    } else {
+      hideLoadingDialog(context: context);
+      String errorMessage;
+      ToastUtils.showCustomToast(context, 'Invalid User', 'warning');
+      if (apiResponse.error is String) {
+        errorMessage = apiResponse.error.toString();
+      } else {
+        errorMessage = apiResponse.error.errors[0].message;
+      }
+      print(errorMessage);
+      responseModel = ResponseModel(false, errorMessage);
+    }
     notifyListeners();
     return responseModel;
   }

@@ -4,6 +4,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/pos/res_business_location.dart';
 import 'package:pos/data/models/pos/res_product_pos.dart';
@@ -32,6 +33,8 @@ class PosPage extends StatefulWidget {
 }
 
 class _PosPageState extends State<PosPage> {
+  final player = AudioPlayer();
+
   String? userId;
   late final TabController tabController;
   late AnimationController animationController;
@@ -56,8 +59,9 @@ class _PosPageState extends State<PosPage> {
         .then((value) {
       Provider.of<PosPageViewModel>(context, listen: false).selectId =
           Provider.of<PosPageViewModel>(context, listen: false)
-              .locationList[0]
-              .id;
+                  .locationList[0]
+                  .id ??
+              '';
     });
 
     discountController.text = '0';
@@ -176,9 +180,10 @@ class _PosPageState extends State<PosPage> {
                         },
                         onSuggestionSelected: (Location suggestion) {
                           locationController.text = suggestion.name.toString();
-                          setString(PrefKeyConstants.locationId, suggestion.id);
                           setString(
-                              PrefKeyConstants.locationName, suggestion.name);
+                              PrefKeyConstants.locationId, suggestion.id ?? '');
+                          setString(PrefKeyConstants.locationName,
+                              suggestion.name ?? '');
                         }),
                   ),
                 ],
@@ -341,6 +346,8 @@ class _PosPageState extends State<PosPage> {
                     HapticFeedback.heavyImpact();
                   } else {
                     posprovider.cartItemList.add(posprovider.productsList[i]);
+                    await player.setAsset(UtilStrings.soundPath);
+                    player.play();
                     HapticFeedback.heavyImpact();
                   }
                 }
@@ -354,16 +361,17 @@ class _PosPageState extends State<PosPage> {
         setState(() {
           // _scanBarcode = barcodeScanResList;
         });
-      }
-      else {
+      } else {
         FocusScope.of(context).requestFocus(FocusNode());
-        try{
+        try {
           (await FlutterBarcodeScanner.getBarcodeStreamReceiver(
-              '#ff6666', 'close', true, ScanMode.BARCODE))!.listen((barcodeScanResLists) {
+                  '#ff6666', 'close', true, ScanMode.BARCODE))!
+              .listen((barcodeScanResLists) async {
             print("barcode list ${barcodeScanResLists.runtimeType} ");
             if (barcodeScanResLists == '-1') {
               print("in if part");
             } else {
+              setState(() {});
               for (int i = 0; i < posprovider.productsList.length; i++) {
                 if (posprovider.productsList[i].sku == barcodeScanResLists) {
                   print("HELLO VALUE${posprovider.productsList[i].sku}");
@@ -381,6 +389,8 @@ class _PosPageState extends State<PosPage> {
                       HapticFeedback.heavyImpact();
                     } else {
                       posprovider.cartItemList.add(posprovider.productsList[i]);
+                      await player.setAsset(UtilStrings.soundPath);
+                      player.play();
                       HapticFeedback.heavyImpact();
                     }
                   }
@@ -625,7 +635,7 @@ class _PosPageState extends State<PosPage> {
                               ),
                               Utils.mediumHeadingText(
                                   text:
-                                  'Store - ${getString(PrefKeyConstants.locationName)}'),
+                                      '${getString(PrefKeyConstants.locationName)}'),
                               // Consumer<PosPageViewModel>(
                               //   builder: (BuildContext context, value,
                               //       Widget? child) {
@@ -804,18 +814,18 @@ class _PosPageState extends State<PosPage> {
                                       ),
                                       controller: productController,
                                       focusNode: focus,
-                                      onChanged: (val) {
-                                        final posprovider =
-                                        Provider.of<PosPageViewModel>(
-                                            context,
-                                            listen: false);
-                                        if (posprovider.skuList
-                                            .contains(val)) {
-                                          for (int i = 0;
-                                          i <
-                                              posprovider
-                                                  .productsList.length;
-                                          i++) {
+                                      onChanged: (val) async {
+                                            final posprovider =
+                                                Provider.of<PosPageViewModel>(
+                                                    context,
+                                                    listen: false);
+                                            if (posprovider.skuList
+                                                .contains(val)) {
+                                              for (int i = 0;
+                                                  i <
+                                                      posprovider
+                                                          .productsList.length;
+                                                  i++) {
                                             if (posprovider
                                                 .productsList[i].sku ==
                                                 val) {
@@ -831,23 +841,25 @@ class _PosPageState extends State<PosPage> {
                                                     .heavyImpact();
                                               } else {
                                                 if (posprovider
-                                                    .productsList[i]
-                                                    .enableStock ==
-                                                    '0') {
-                                                  ToastUtils.showCustomToast(
-                                                      context,
-                                                      "PRODUCT NOT AVAILABLE",
-                                                      "warning");
-                                                  HapticFeedback
-                                                      .heavyImpact();
-                                                } else {
-                                                  posprovider.cartItemList
-                                                      .add(posprovider
-                                                      .productsList[i]);
-                                                  HapticFeedback
-                                                      .heavyImpact();
-                                                }
-                                              }
+                                                            .productsList[i]
+                                                            .enableStock ==
+                                                        '0') {
+                                                      ToastUtils.showCustomToast(
+                                                          context,
+                                                          "PRODUCT NOT AVAILABLE",
+                                                          "warning");
+                                                      HapticFeedback
+                                                          .heavyImpact();
+                                                    } else {
+                                                      posprovider.cartItemList
+                                                          .add(posprovider
+                                                              .productsList[i]);
+                                                      await player.setAsset(
+                                                          UtilStrings
+                                                              .soundPath);
+                                                      player.play();
+                                                    }
+                                                  }
                                             }
                                           }
                                         }
@@ -875,14 +887,15 @@ class _PosPageState extends State<PosPage> {
                                       ),
                                     );
                                   },
-                                  onSuggestionSelected: (Items suggestion) {
+                                  onSuggestionSelected:
+                                      (Items suggestion) async {
                                     productController.text =
                                         suggestion.name.toString();
                                     HapticFeedback.heavyImpact();
                                     productController.clear();
                                     var poproviser =
-                                    Provider.of<PosPageViewModel>(context,
-                                        listen: false);
+                                        Provider.of<PosPageViewModel>(context,
+                                            listen: false);
                                     if (suggestion.enableStock == '0') {
                                       ToastUtils.showCustomToast(context,
                                           "PRODUCT NOT AVAILABLE", "warning");
@@ -891,6 +904,9 @@ class _PosPageState extends State<PosPage> {
                                       suggestion.itemCounter++;
                                     } else {
                                       poproviser.cartItemList.add(suggestion);
+                                      await player
+                                          .setAsset(UtilStrings.soundPath);
+                                      player.play();
                                     }
                                   }),
                             ),
@@ -901,10 +917,14 @@ class _PosPageState extends State<PosPage> {
                               focus.requestFocus();
                               // showLoadingDialog(context: context);
                               // await Provider.of<PosPageViewModel>(context, listen: false).productList(context: context);
-                              // scanBarcodeNormal();
-                              Future.delayed(const Duration(microseconds: 500),(){
-                                return scanBarcodeNormal();
-                              });
+                              scanBarcodeNormal();
+                              // Future.delayed(const Duration(microseconds: 500),(){
+                              //   return scanBarcodeNormal().whenComplete(() {
+                              //     setState(() {
+                              //       print("INSIDE");
+                              //     });
+                              //   });
+                              // });
                             },
                             child: const Icon(
                               Icons.qr_code_scanner_outlined,
@@ -1205,18 +1225,18 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   Sell s = Sell(
                                     contactId: int.parse(userId ?? '1'),
-                                discountAmount: value.selectrange == 'Fixed'
-                                    ? discountAmountForFix.toString()
-                                    : discountAmountForPercantage.toString(),
-                                discountType: value.selectrange,
-                                locationId: int.parse(value.selectId),
-                                status: 'draft',
-                                subStatus: 'quotation',
-                                isQuotation: 'true',
-                                payments: [
-                                  Payment(
-                                      amount: '$totalAmount',
-                                      method: UtilStrings.quotation)
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage.toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    status: 'draft',
+                                    subStatus: 'quotation',
+                                    isQuotation: 'true',
+                                    payments: [
+                                      Payment(
+                                          amount: '$totalAmount',
+                                          method: UtilStrings.quotation)
                                     ],
                                     products: items,
                                   );
@@ -1315,18 +1335,18 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () {
                                               Sell s = Sell(
                                                 contactId: int.parse(userId ?? '1'),
-                                            discountAmount: value.selectrange ==
+                                                discountAmount: value.selectrange ==
                                                     'Fixed'
-                                                ? discountAmountForFix
+                                                    ? discountAmountForFix
                                                     .toString()
-                                                : discountAmountForPercantage
+                                                    : discountAmountForPercantage
                                                     .toString(),
-                                            discountType: value.selectrange,
-                                            locationId:
+                                                discountType: value.selectrange,
+                                                locationId:
                                                 int.parse(value.selectId),
-                                            payments: [
-                                              Payment(
-                                                  amount: '${balance}',
+                                                payments: [
+                                                  Payment(
+                                                      amount: '${balance}',
                                                       method: UtilStrings.card)
                                                 ],
                                                 products: items,
@@ -1402,18 +1422,18 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   Sell s = Sell(
                                     contactId: int.parse(userId ?? '1'),
-                                discountAmount: value.selectrange == 'Fixed'
-                                    ? discountAmountForFix.toString()
-                                    : discountAmountForPercantage.toString(),
-                                discountType: value.selectrange,
-                                locationId: int.parse(value.selectId),
-                                payments: [
-                                  Payment(
-                                      amount: '${totalAmount}',
-                                      method: UtilStrings.card)
-                                ],
-                                products: items,
-                              );
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage.toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    payments: [
+                                      Payment(
+                                          amount: '${totalAmount}',
+                                          method: UtilStrings.card)
+                                    ],
+                                    products: items,
+                                  );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
                                   print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
@@ -1467,18 +1487,18 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   Sell s = Sell(
                                     contactId: int.parse(userId ?? '1'),
-                                discountAmount: value.selectrange == 'Fixed'
-                                    ? discountAmountForFix.toString()
-                                    : discountAmountForPercantage.toString(),
-                                discountType: value.selectrange,
-                                locationId: int.parse(value.selectId),
-                                payments: [
-                                  Payment(
-                                      amount: '$totalAmount',
-                                      method: UtilStrings.cash)
-                                ],
-                                products: items,
-                              );
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage.toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    payments: [
+                                      Payment(
+                                          amount: '$totalAmount',
+                                          method: UtilStrings.cash)
+                                    ],
+                                    products: items,
+                                  );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
                                   print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
@@ -1538,16 +1558,16 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   Sell s = Sell(
                                     contactId: int.parse(userId ?? '1'),
-                                discountAmount: value.selectrange == 'Fixed'
-                                    ? discountAmountForFix.toString()
-                                    : discountAmountForPercantage.toString(),
-                                discountType: value.selectrange,
-                                locationId: int.parse(value.selectId),
-                                payments: [
-                                  Payment(amount: '0', method: UtilStrings.cash)
-                                ],
-                                products: items,
-                              );
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage.toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    payments: [
+                                      Payment(amount: '0', method: UtilStrings.cash)
+                                    ],
+                                    products: items,
+                                  );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
                                   print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
@@ -1601,17 +1621,17 @@ class _PosPageState extends State<PosPage> {
                                 onTap: () {
                                   Sell s = Sell(
                                     contactId: int.parse(userId ?? '1'),
-                                discountAmount: value.selectrange == 'Fixed'
-                                    ? discountAmountForFix.toString()
-                                    : discountAmountForPercantage.toString(),
-                                discountType: value.selectrange,
-                                locationId: int.parse(value.selectId),
-                                payments: [
-                                  Payment(
-                                      amount: '$totalAmount',
-                                      method: UtilStrings.other)
-                                ],
-                                products: items,
+                                    discountAmount: value.selectrange == 'Fixed'
+                                        ? discountAmountForFix.toString()
+                                        : discountAmountForPercantage.toString(),
+                                    discountType: value.selectrange,
+                                    locationId: int.parse(value.selectId),
+                                    payments: [
+                                      Payment(
+                                          amount: '$totalAmount',
+                                          method: UtilStrings.other)
+                                    ],
+                                    products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
                                   print('Your s is ${se.toJson()}');
@@ -2007,17 +2027,11 @@ class _PosPageState extends State<PosPage> {
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: iconColor,
-              size: 22,
-            ),
+            Icon(icon, color: iconColor, size: 22),
             const Gap(3),
-            Expanded(
-              child: FittedBox(
-                child: Utils.mediumHeadingText(
-                    text: title, textSize: 12, color: AppColor.white),
-              ),
+            FittedBox(
+              child: Utils.mediumHeadingText(
+                  text: title, textSize: 14, color: AppColor.white),
             ),
           ],
         ),
@@ -2083,8 +2097,8 @@ class StateService {
     searchedUser.addAll(
         Provider.of<PosPageViewModel>(context, listen: false).usersList);
     searchedUser.retainWhere((s) {
-      return s.id.toLowerCase().contains(query.toLowerCase()) ||
-          s.name.toLowerCase().contains(query.toLowerCase());
+      return s.id!.toLowerCase().contains(query.toLowerCase()) ||
+          s.name!.toLowerCase().contains(query.toLowerCase());
     });
 
     return searchedUser;
@@ -2108,7 +2122,7 @@ class StateService {
     locations.addAll(
         Provider.of<PosPageViewModel>(context, listen: false).locationList);
     locations.retainWhere((s) {
-      return s.locationId.toLowerCase().contains(query.toLowerCase());
+      return s.locationId!.toLowerCase().contains(query.toLowerCase());
     });
     return locations;
   }

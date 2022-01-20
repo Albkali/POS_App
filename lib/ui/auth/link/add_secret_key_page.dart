@@ -1,17 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
+import 'package:pos/ui/auth/login/login_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
-import 'package:pos/utils/constants/api_end_points.dart';
 import 'package:pos/utils/constants/custom_button.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
-import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
-import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/custom_text_filed.dart';
+import 'package:pos/widgets/loading_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:oauth2/oauth2.dart' as oauth2;
 
@@ -96,35 +93,41 @@ class _AddSecretKeyState extends State<AddSecretKey> {
                 CustomTextFiled(
                   isContentPedding: true,
                   isPreffixIcon: true,
-                  title: 'Enter Secret Key',
+                  title: 'Enter Your Id',
                   // title:getTranslated(context, UtilStrings.userName) ,
                   textEditingController: keyController,
                 ),
                 const Gap(20),
-                CustomTextFiled(
-                  isPreffixIcon: true,
-                  isContentPedding: true,
-                  title: 'Enter Auth Key',
-                  // title:getTranslated(context, UtilStrings.userName) ,
-                  textEditingController: tokenController,
-                ),
+                // CustomTextFiled(
+                //   isPreffixIcon: true,
+                //   isContentPedding: true,
+                //   title: 'Enter Auth Key',
+                //   // title:getTranslated(context, UtilStrings.userName) ,
+                //   textEditingController: tokenController,
+                // ),
                 // CustomTextFiled(hintText: hintText, controller: controller)
-               // CustomTextFiled(hintText: 'Enter Secret Key', controller: keyController),
-               //  const Gap(20),
-               //  CustomTextFiled(hintText: 'Enter Auth Token Key', controller: keyController),
+                // CustomTextFiled(hintText: 'Enter Secret Key', controller: keyController),
+                //  const Gap(20),
+                //  CustomTextFiled(hintText: 'Enter Auth Token Key', controller: keyController),
               ],
             ),
           ),
           Spacer(),
           InkWell(
-            onTap: (){
-              if(keyController.text.isEmpty && tokenController.text.isEmpty){
-                ToastUtils.showCustomToast(context, 'Please Enter Client Secret Key', 'warning');
-              }else{
-                setString(PrefKeyConstants.SECRET_KEY, keyController.text);
-                setString(PrefKeyConstants.BASE_URL, tokenController.text);
+            onTap: () {
+              if (keyController.text.isEmpty && tokenController.text.isEmpty) {
+                ToastUtils.showCustomToast(
+                    context, 'Please Enter Client Secret Key', 'warning');
+              } else {
+                // setString(PrefKeyConstants.SECRET_KEY, keyController.text);
+                // setString(PrefKeyConstants.BASE_URL, tokenController.text);
                 // checkData();
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                showLoadingDialog(context: context);
+                Provider.of<LoginViewModel>(context, listen: false)
+                    .baseUrl(keyController.text, context);
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
                   return const LoginPage();
                 }));
               }

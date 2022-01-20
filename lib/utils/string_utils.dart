@@ -1,7 +1,3 @@
-
-
-import 'package:flutter/cupertino.dart';
-
 class UtilStrings {
   static const smartX = 'smartX';
   static const login = 'login';
@@ -20,9 +16,7 @@ class UtilStrings {
   static const cash = 'Cash';
   static const other = 'Other';
   static const divllo = 'Divllo';
-
-
-
+  static const soundPath = 'assets/audio/anime_hair_twitch.mp3';
 
   static const product = 'Product';
   static const quantity = 'Quantity';

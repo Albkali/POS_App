@@ -32,4 +32,17 @@ class AuthRepo{
     }
   }
 
+  Future<ApiResponse?> baseUrl({required String id}) async {
+    var formData = FormData.fromMap({'id': id});
+    try {
+      Response response = await dioClient.post(
+        ApiEndPoints.apiBaseUrl,
+        data: formData,
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      print(e.toString());
+      return ApiResponse.withError(e);
+    }
+  }
 }

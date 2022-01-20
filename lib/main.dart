@@ -1,39 +1,40 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pos/localization/app_localization.dart';
 import 'package:pos/ui/add_new_contact/add_new_contact_view_model.dart';
-import 'package:pos/ui/auth/link/add_secret_key_page.dart';
 import 'package:pos/ui/auth/login/login_page.dart';
 import 'package:pos/ui/auth/login/login_view_model.dart';
-import 'package:pos/ui/choose_language/choose_language_page.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
-import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
-import 'package:pos/ui/setting_page/setting_page.dart';
+import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'di_container.dart' as di;
 import 'localization/language_constrants.dart';
 import 'utils/preference_utils.dart';
 
-void main() async{
+final GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await di.init();
+  await di.init();
   await inits();
-  runApp(
-      MultiProvider(
-    providers: [
+  runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => di.sl<LoginViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<ListOfSellViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<AddNewContactViewModel>()),
-    ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
-    ChangeNotifierProvider(create: (context) => di.sl<ReturnSellViewModel>()),
-  ],
-    child: const MyApp()
-  ));
+            ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
+            ChangeNotifierProvider(create: (context) => di.sl<ReturnSellViewModel>()),
+          ],
+          child: const MyApp()
+      ));
 }
 
 
@@ -42,6 +43,7 @@ class MyApp extends StatefulWidget {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state?.setLocale(newLocale);
   }
+
   const MyApp({Key? key}) : super(key: key);
 
   @override
@@ -49,7 +51,128 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late StreamSubscription connectivitySubscription;
+
+  late ConnectivityResult _previousResult;
+
+  Future<bool> check() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> check1() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    check().then((intenet) {
+      if (intenet != null && intenet) {
+      } else {
+        final context = nav.currentState!.overlay!.context;
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Center(
+                  child: Icon(Icons.wifi_off,
+                      size: 50, color: AppColor.primaryColor),
+                ),
+                contentPadding: const EdgeInsets.all(20),
+                content: const Text(
+                  'Slow or no internet conection \n Check your connection',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  Container(
+                    width: Utils.getWidth(context),
+                    child: Center(
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        color: AppColor.primaryColor,
+                        onPressed: () {
+                          check1().then((internet) {
+                            if (internet != null && internet) {
+                              // Navigator.push(
+                              //     context, MaterialPageRoute(builder: (context) => HomeActivity()));
+                              // print('tap');
+                            } else {
+                              print('tapped');
+                            }
+                          });
+                        },
+                        child: Text(
+                          'Recconect',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            });
+      }
+    });
+
+    connectivitySubscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult connectivityResult) {
+      if (connectivityResult == ConnectivityResult.none) {
+        print("HELLo");
+        final context = nav.currentState!.overlay!.context;
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) {
+              return const AlertDialog(
+                title: Center(
+                  child: Icon(
+                    Icons.wifi_off,
+                    size: 50,
+                    color: AppColor.primaryColor,
+                  ),
+                ),
+                contentPadding: EdgeInsets.all(20),
+                content: Text(
+                  'Slow or no internet conection \n Check your connection',
+                  textAlign: TextAlign.center,
+                ),
+              );
+            });
+      } else if (_previousResult == ConnectivityResult.none) {
+        nav.currentState!.pop();
+        // nav.currentState.push(
+        //     MaterialPageRoute(builder: (BuildContext _) => HomeActivity()));
+      }
+      _previousResult = connectivityResult;
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    connectivitySubscription.cancel();
+  }
+
   late Locale _locale;
+
   setLocale(Locale locale) {
     setState(() {
       _locale = locale;
@@ -65,12 +188,14 @@ class _MyAppState extends State<MyApp> {
     });
     super.didChangeDependencies();
   }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'POS App',
+      navigatorKey: nav,
       // localizationsDelegates: const [
       //   GlobalMaterialLocalizations.delegate,
       //   GlobalCupertinoLocalizations.delegate,

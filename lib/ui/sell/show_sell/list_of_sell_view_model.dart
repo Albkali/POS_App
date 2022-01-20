@@ -69,11 +69,25 @@ class ListOfSellViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> filterSellList({String? locationId,String? paymentStatus,String? contactId,String? ShippingStatus,String? IsSubscribed}) async {
+  Future<ResponseModel> filterSellList(
+      {String? locationId,
+      String? paymentStatus,
+      String? contactId,
+      String? ShippingStatus,
+      String? IsSubscribed,
+      String? startDate,
+      String? endDate}) async {
     _isLoading = true;
     notifyListeners();
 
-    ApiResponse? apiResponse = await sellRepo.getFilterListSell(locationId,paymentStatus,contactId,ShippingStatus,IsSubscribed);
+    ApiResponse? apiResponse = await sellRepo.getFilterListSell(
+        locationId,
+        paymentStatus,
+        contactId,
+        ShippingStatus,
+        IsSubscribed,
+        startDate,
+        endDate);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
@@ -83,7 +97,7 @@ class ListOfSellViewModel with ChangeNotifier {
       sellItemList.clear();
       reversedSellItemList.clear();
       for (var item in data.data) {
-        reversedSellItemList.add(item);
+        reversedFilterList.add(item);
         sellItemList = reversedSellItemList.reversed.toList();
       }
       responseModel = ResponseModel(true, 'successful');
