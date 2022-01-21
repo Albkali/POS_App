@@ -860,13 +860,16 @@ class _PosPageState extends State<PosPage> {
                                                       player.play();
                                                     }
                                                   }
+                                                }
+                                              }
                                             }
-                                          }
-                                        }
+                                            FocusScope.of(context)
+                                                .requestFocus(focus);
 
-                                        setState(() {});
-                                      }),
+                                            setState(() {});
+                                          }),
                                   suggestionsCallback: (pattern) async {
+                                    FocusScope.of(context).requestFocus(focus);
                                     return StateService.getProductSuggestions(
                                         pattern, context);
                                   },
@@ -913,6 +916,8 @@ class _PosPageState extends State<PosPage> {
                                           .setAsset(UtilStrings.soundPath);
                                       player.play();
                                     }
+                                    FocusScope.of(context).requestFocus(focus);
+                                    setState(() {});
                                   }),
                             ),
                           ),

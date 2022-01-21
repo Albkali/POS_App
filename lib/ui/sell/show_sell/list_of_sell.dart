@@ -1239,7 +1239,9 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             subText: value
                                                                     .sellItemList[
                                                                         index]
-                                                                    .roundOffAmount ??
+                                                                    .paymentLines?[
+                                                                        0]
+                                                                    .amount ??
                                                                 ""),
                                                         const Gap(5),
                                                         commonTile(
@@ -1248,7 +1250,9 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             subText: value
                                                                     .sellItemList[
                                                                         index]
-                                                                    .preferPaymentMethod ??
+                                                                    .paymentLines?[
+                                                                        0]
+                                                                    .method ??
                                                                 "")
                                                       ],
                                                   ),
@@ -1416,7 +1420,8 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       subText: value
                                                               .sellItemList[
                                                                   index]
-                                                              .totalAmountRecovered ??
+                                                              .paymentLines?[0]
+                                                              .amount ??
                                                           ""),
                                                   const Gap(5),
                                                   commonTile(
