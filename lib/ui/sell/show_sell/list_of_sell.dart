@@ -726,7 +726,6 @@ import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/container_border.dart';
-import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -944,8 +943,8 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                           }
                                           else
                                           {
-                                            showLoadingDialog(
-                                                  context: context);
+                                              // showLoadingDialog(
+                                              //       context: context);
                                               // await Provider.of<
                                               //             ListOfSellViewModel>(
                                               //         context,
@@ -1239,10 +1238,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             subText: value
                                                                     .sellItemList[
                                                                         index]
-                                                                    .paymentLines?[
-                                                                        0]
-                                                                    .amount ??
-                                                                ""),
+                                                                    .paymentLines!
+                                                                    .isEmpty
+                                                                ? value
+                                                                        .sellItemList[
+                                                                            index]
+                                                                        .finalTotal ??
+                                                                    ''
+                                                                : value
+                                                                        .sellItemList[
+                                                                            index]
+                                                                        .paymentLines?[
+                                                                            0]
+                                                                        .amount ??
+                                                                    ''),
                                                         const Gap(5),
                                                         commonTile(
                                                             text:
@@ -1250,10 +1259,19 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             subText: value
                                                                     .sellItemList[
                                                                         index]
-                                                                    .paymentLines?[
-                                                                        0]
-                                                                    .method ??
-                                                                "")
+                                                                    .paymentLines!
+                                                                    .isEmpty
+                                                                ? value.sellItemList[index].preferPaymentMethod ==
+                                                                        'null'
+                                                                    ? 'No records found'
+                                                                    : '' ?? ''
+                                                                : value
+                                                                        .sellItemList[
+                                                                            index]
+                                                                        .paymentLines?[
+                                                                            0]
+                                                                        .method ??
+                                                                    '')
                                                       ],
                                                   ),
                                                   actions: [
@@ -1304,9 +1322,15 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       value.sellItemList[index],
                                                   payline: value
                                                           .sellItemList[index]
-                                                          .paymentLines?[0]
-                                                          .transactionId ??
-                                                      "");
+                                                          .paymentLines!
+                                                          .isEmpty
+                                                      ? '0'
+                                                      : value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .paymentLines?[0]
+                                                              .transactionId ??
+                                                          "");
                                             }));
                                         },
                                         color: Colors.amber),
@@ -1420,18 +1444,42 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                       subText: value
                                                               .sellItemList[
                                                                   index]
-                                                              .paymentLines?[0]
-                                                              .amount ??
-                                                          ""),
+                                                              .paymentLines!
+                                                              .isEmpty
+                                                          ? value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .finalTotal ??
+                                                              ''
+                                                          : value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .paymentLines?[
+                                                                      0]
+                                                                  .amount ??
+                                                              ''),
                                                   const Gap(5),
                                                   commonTile(
                                                       text: 'Payment Mode',
                                                       subText: value
                                                               .sellItemList[
                                                                   index]
-                                                              .paymentLines?[0]
-                                                              .method ??
-                                                          ""),
+                                                              .paymentLines!
+                                                              .isEmpty
+                                                          ? value
+                                                                      .sellItemList[
+                                                                          index]
+                                                                      .preferPaymentMethod ==
+                                                                  'null'
+                                                              ? 'No records found'
+                                                              : '' ?? ''
+                                                          : value
+                                                                  .sellItemList[
+                                                                      index]
+                                                                  .paymentLines?[
+                                                                      0]
+                                                                  .method ??
+                                                              ''),
                                                   const Gap(5),
                                                 ],
                                             ),
