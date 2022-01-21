@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resCreateSell = resCreateSellFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 List<ResCreateSell> resCreateSellFromJson(String str) => List<ResCreateSell>.from(json.decode(str).map((x) => ResCreateSell.fromJson(x)));

@@ -5,8 +5,6 @@ import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
-import 'package:pos/widgets/container_border.dart';
-import 'package:pos/widgets/custom_text_filed.dart';
 import 'package:pos/widgets/loading_dialog.dart';
 import 'package:pos/widgets/small_custom_button_with_icon.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,6 @@ class AddNewContactPage extends StatefulWidget {
 }
 
 class _AddNewContactPageState extends State<AddNewContactPage> {
-  bool _value = false;
   int? val = 1;
   bool isSelected = false;
   TextEditingController businessNameController = TextEditingController();
@@ -183,17 +180,17 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                             title: '${UtilStrings.payTerm} : ',
                             icon: Icons.paid,
                             subTitle: UtilStrings.payTerm,
-                            controller: payTermNumberController,
-                        ),
-                        const Gap(10),
-                        customNewContactTextFiled(
-                            title: '${UtilStrings.creditLimit} : ',
-                            icon: Icons.credit_card,
-                            subTitle: UtilStrings.creditLimit),
-                        const Gap(10),
-                      ],
-                    )
-                        : SizedBox(),
+                                controller: payTermNumberController,
+                              ),
+                              const Gap(10),
+                              customNewContactTextFiled(
+                                  title: '${UtilStrings.creditLimit} : ',
+                                  icon: Icons.credit_card,
+                                  subTitle: UtilStrings.creditLimit),
+                              const Gap(10),
+                            ],
+                          )
+                        : const SizedBox(),
                     const Gap(10),
                   ],
                 ),
@@ -208,9 +205,6 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                   ),
                   child: InkWell(
                     onTap: (){
-                      print("DATA IS ${mobileController.text.toString()}");
-                      print("DATA IS ${businessNameController.text.toString()}");
-                      print("DATA IS ${firstNameController.text.toString()}");
                       ReqContact m = ReqContact(
                         type: 'business',
                         supplierBusinessName: businessNameController.text.toString(),
@@ -240,15 +234,27 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                         email: '',
                         shippingAddress: '',
                         position: '',
-                        openingBalance: openingBalanceController.text.toString(),
+                        openingBalance:
+                            openingBalanceController.text.toString(),
                         sourceId: '',
                         lifeStageId: '',
                         // assignedTo: ''
                       );
 
                       showLoadingDialog(context: context);
-                      Provider.of<AddNewContactViewModel>(context, listen: false)
+                      Provider.of<AddNewContactViewModel>(context,
+                              listen: false)
                           .addContact(m, context);
+                      businessNameController.clear();
+                      firstNameController.clear();
+                      mobileController.clear();
+                      contactIdController.clear();
+                      taxNumberController.clear();
+                      openingBalanceController.clear();
+                      payTermNumberController.clear();
+                      addressLine1Controller.clear();
+                      addressLine2Controller.clear();
+                      customerGroupIdController.clear();
                     },
                     child: SmallCustomButtonWithIcon(
                       label: 'Add',
@@ -296,8 +302,6 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
             // fontWeight: FontWeight.w900,
             color: AppColor.grey,
           ),
-          // contentPadding: const EdgeInsets.symmetric(
-          //     vertical: 12, horizontal: 12),
         ),
       ),
     );

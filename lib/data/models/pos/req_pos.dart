@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final reqPos = reqPosFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReqPos reqPosFromJson(String str) => ReqPos.fromJson(json.decode(str));

@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:pos/data/models/language_model.dart';
 import 'package:pos/localization/language_constrants.dart';
-import 'package:pos/main.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
-import 'package:pos/widgets/custom_app_bar.dart';
 import 'package:pos/widgets/custom_text_filed.dart';
 import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +26,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  void _changeLanguage(Language language) async {
-    Locale _locale = await setLocale(language.languageCode);
-    MyApp.setLocale(context, _locale);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +38,6 @@ class _LoginPageState extends State<LoginPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Utils.customAppBarNew(context: context),
                 const Gap(20),
                 // DropdownButton<Language>(
                 //   onChanged: (Language? language) {
@@ -146,8 +138,8 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(
                               builder: (BuildContext context) {
-                                return HomePage();
-                              }), (route) => false);
+                                return const HomePage();
+                      }), (route) => false);
                     }
                   });
                 }

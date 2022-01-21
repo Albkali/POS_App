@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resOpenRegError = resOpenRegErrorFromJson(jsonString);
-
 import 'dart:convert';
 
 ResOpenRegError resOpenRegErrorFromJson(String str) =>

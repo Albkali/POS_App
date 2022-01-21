@@ -13,7 +13,18 @@ class SmallCustomButtonWithIcon extends StatelessWidget {
   Color? iconColor;
   bool? isLeft;
   bool? isTagType;
-  SmallCustomButtonWithIcon({ this.label, this.borderColor, this.textColor,this.onTap, this.icon,this.bgcolor,this.iconColor,this.isLeft, this.isTagType = false});
+  SmallCustomButtonWithIcon(
+      {Key? key,
+      this.label,
+      this.borderColor,
+      this.textColor,
+      this.onTap,
+      this.icon,
+      this.bgcolor,
+      this.iconColor,
+      this.isLeft,
+      this.isTagType = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

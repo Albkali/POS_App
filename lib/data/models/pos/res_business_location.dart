@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resBusinessLocation = resBusinessLocationFromJson(jsonString);
-
 import 'dart:convert';
 
 ResBusinessLocation resBusinessLocationFromJson(String str) => ResBusinessLocation.fromJson(json.decode(str));

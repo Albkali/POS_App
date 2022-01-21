@@ -1,8 +1,4 @@
-// To parse this JSON data, do
-//
-//     final resUsersPos = resUsersPosFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResUsersPos resUsersPosFromJson(String str) =>

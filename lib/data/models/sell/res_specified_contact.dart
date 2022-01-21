@@ -2,7 +2,6 @@
 //
 //     final resSpecifiedContact = resSpecifiedContactFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResSpecifiedContact resSpecifiedContactFromJson(String str) =>

@@ -15,7 +15,7 @@ import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -126,13 +126,6 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               commonCircleWithText(
-                                onTap: () async {
-                                  print("HELLO");
-                                  await player.setAsset(
-                                      'assets/audio/anime_hair_twitch.mp3');
-                                  player.play();
-                                  // HapticFeedback.heavyImpact();
-                                },
                                 text: getTranslated(context, UtilStrings.home),
                                 icon: Icons.phone_android_outlined,
                               ),
@@ -197,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                 top: 280,
                 left: 20,
                 right: 20,
-                child: Container(
+                child: SizedBox(
                   height: 400,
                   width: 350,
                   // color: AppColor.green,
@@ -205,36 +198,39 @@ class _HomePageState extends State<HomePage> {
                     child: GridView.builder(
                       itemCount: 4,
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 5.9 / 4.6,
-                          crossAxisSpacing: 20.0,
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 5.9 / 4.6,
+                              crossAxisSpacing: 20.0,
                           mainAxisSpacing: 30.0),
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () async {
                             if (index == 0) {
                               showLoadingDialog(context: context);
-                              await Provider.of<PosPageViewModel>(context, listen: false).UserDetails(context: context);
+                              await Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .userDetails(context: context);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PosPage(),
+                                  builder: (context) => const PosPage(),
                                 ),
                               );
                             } else if (index == 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AddNewContactPage(),
+                                  builder: (context) =>
+                                      const AddNewContactPage(),
                                 ),
                               );
                             }
                             else if (index == 2) {
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                    return ListOfSellPage();
-                                  }));
+                                    return const ListOfSellPage();
+                              }));
                             } else if (index == 3) {
                               Navigator.push(
                                 context,

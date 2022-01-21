@@ -373,18 +373,22 @@ class _ReturnSellPageState extends State<ReturnSellPage> {
                                     child: SmallCustomButtonWithIcon(
                                       onTap: (){
                                         Product product = Product(
-                                          quantity: '${returnQtyController.text}',
-                                          sellLineId: '${widget.item.sellingPriceGroupId}',
+                                          quantity:
+                                              '${returnQtyController.text}',
+                                          sellLineId:
+                                              '${widget.item.sellingPriceGroupId}',
                                           unitPriceIncTax: '${returnSubtoal}',
                                         );
-                                        ReqAddReturnSell data = ReqAddReturnSell(
-                                            products: [
-                                              product
-                                            ],
-                                            transactionId: '${widget.payline}'
-                                        );
-                                        Provider.of<ReturnSellViewModel>(context, listen: false).AddReturnSell(req: data);
-                                        ToastUtils.showCustomToast(context, "Success", "success");
+                                        ReqAddReturnSell data =
+                                            ReqAddReturnSell(products: [
+                                          product
+                                        ], transactionId: '${widget.payline}');
+                                        Provider.of<ReturnSellViewModel>(
+                                                context,
+                                                listen: false)
+                                            .addReturnSell(req: data);
+                                        ToastUtils.showCustomToast(
+                                            context, "Success", "success");
 
                                         Navigator.pop(context);
                                       },

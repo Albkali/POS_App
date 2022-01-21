@@ -2,16 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:pos/data/datasource/remote/dio/dio_client.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/utils/constants/api_end_points.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
 
 class AuthRepo{
   final DioClient dioClient;
 
   AuthRepo({required this.dioClient,});
   Future<ApiResponse?> login({required String email,required String password}) async {
-    print('Your secret key is ${getString(PrefKeyConstants.SECRET_KEY)}');
-    print('Your secret key is ${getString(PrefKeyConstants.BASE_URL)}');
     try {
       Response response = await dioClient.post(
         ApiEndPoints.apiLogin,
@@ -27,7 +23,6 @@ class AuthRepo{
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -36,12 +31,11 @@ class AuthRepo{
     var formData = FormData.fromMap({'id': id});
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiBaseUrl,
+        ApiEndPoints.apiGetBaseUrl,
         data: formData,
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }

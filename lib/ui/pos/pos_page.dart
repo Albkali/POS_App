@@ -45,14 +45,13 @@ class _PosPageState extends State<PosPage> {
   late TextEditingController discountController = TextEditingController();
   TextEditingController cashController = TextEditingController();
   TextEditingController totalPayableController = TextEditingController();
-  late double SubTotal = 0;
+  late double subTotal = 0;
   double balance = 0;
 
   FocusNode focus = FocusNode();
 
   @override
   void initState() {
-    print('Your page value is ${getString(PrefKeyConstants.isOpen)}');
     Provider.of<PosPageViewModel>(context, listen: false).isLoading = true;
     Provider.of<PosPageViewModel>(context, listen: false)
         .businessList()
@@ -75,12 +74,8 @@ class _PosPageState extends State<PosPage> {
   }
 
   fetchData() async {
-    print("HHHH");
-    print("VALUE OF POS STATUS IS ${getString(PrefKeyConstants.statusId)}");
     if (AppConstant.status == 'open') {
-      print("HELLO IF PART");
     } else {
-      print("HELLO ELSE PART");
       if (getString(PrefKeyConstants.isOpen) != 'true') {
         WidgetsBinding.instance!.addPostFrameCallback((_) async {
           await showDialog<String>(
@@ -195,8 +190,8 @@ class _PosPageState extends State<PosPage> {
                     // setString(PrefKeyConstants.isOpen, 'true');
                     Navigator.pushAndRemoveUntil(context,
                         MaterialPageRoute(builder: (BuildContext context) {
-                          return HomePage();
-                        }), (route) => false);
+                          return const HomePage();
+                    }), (route) => false);
                     // Navigator.pop(context);
                     // Navigator.pop(context);
                   },
@@ -205,8 +200,6 @@ class _PosPageState extends State<PosPage> {
                   child: const Text("Open Register"),
                   onPressed: () {
                     if (cashController.text.isNotEmpty) {
-                      print(
-                          "Location ID is${getString(PrefKeyConstants.locationId)}");
                       showLoadingDialog(context: context);
                       ReqPos res = ReqPos(
                           locationId: getString(PrefKeyConstants.locationId),
@@ -244,80 +237,6 @@ class _PosPageState extends State<PosPage> {
   @override
   Widget build(BuildContext context) {
     dynamic barcodeScanResList;
-    // Future<void> scanBarcodeNormal() async {
-    //   var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
-    //   try {
-    //     if(getBool(PrefKeyConstants.scanType) == false) {
-    //       barcodeScanResList = FlutterBarcodeScanner.scanBarcode('#ff6666', 'close', true, ScanMode.BARCODE);
-    //       if (barcodeScanResList == '-1') {
-    //         print("in if part");
-    //       } else {
-    //         for (int i = 0; i < posprovider.productsList.length; i++) {
-    //           if (posprovider.productsList[i].sku == barcodeScanResList) {
-    //             if (posprovider.cartItemList
-    //                 .contains(posprovider.productsList[i])) {
-    //               print("remaining part");
-    //               posprovider.productsList[i].itemCounter++;
-    //               HapticFeedback.heavyImpact();
-    //             }
-    //             else {
-    //               print("hello else part");
-    //               if (posprovider.productsList[i].enableStock == '0') {
-    //                 ToastUtils.showCustomToast(
-    //                     context, "PRODUCT NOT AVAILABLE", "warning");
-    //                 HapticFeedback.heavyImpact();
-    //
-    //               } else {
-    //                 posprovider.cartItemList.add(posprovider.productsList[i]);
-    //                 HapticFeedback.heavyImpact();
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //     else
-    //       {
-    //       FlutterBarcodeScanner.getBarcodeStreamReceiver(
-    //           '#ff6666', 'close', true, ScanMode.BARCODE)?.listen((event) {
-    //         if (event == '-1') {
-    //           print("in if part");
-    //         } else {
-    //           for (int i = 0; i < posprovider.productsList.length; i++) {
-    //             if (posprovider.productsList[i].sku == event) {
-    //               if (posprovider.cartItemList
-    //                   .contains(posprovider.productsList[i])) {
-    //                 print("remaining part");
-    //                 posprovider.productsList[i].itemCounter++;
-    //                 HapticFeedback.heavyImpact();
-    //               } else {
-    //                 print("hello else part");
-    //                 if (posprovider.productsList[i].enableStock == '0') {
-    //                   ToastUtils.showCustomToast(
-    //                       context, "PRODUCT NOT AVAILABLE", "warning");
-    //                   HapticFeedback.heavyImpact();
-    //
-    //                 } else {
-    //                   posprovider.cartItemList.add(posprovider.productsList[i]);
-    //                   HapticFeedback.heavyImpact();
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       });
-    //     }
-    //
-    //
-    //   } on PlatformException {
-    //     barcodeScanResList = 'Failed to get platform version.';
-    //   }
-    //   if (!mounted) return;
-    //   setState(() {
-    //     _scanBarcode = barcodeScanResList;
-    //   });
-    // }
-
     Future<void> scanBarcodeNormal() async {
       var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
       // try {
@@ -325,21 +244,15 @@ class _PosPageState extends State<PosPage> {
         try{
           barcodeScanResList = (await FlutterBarcodeScanner.scanBarcode(
               '#ff6666', 'close', true, ScanMode.BARCODE));
-          print("barcode list ${barcodeScanResList.runtimeType} ");
           if (barcodeScanResList == '-1') {
-            print("in if part");
           } else {
             for (int i = 0; i < posprovider.productsList.length; i++) {
               if (posprovider.productsList[i].sku == barcodeScanResList) {
-                print("HELLO VALUE${posprovider.productsList[i].sku}");
-                print("HELLO VALUE${barcodeScanResList}");
                 if (posprovider.cartItemList
                     .contains(posprovider.productsList[i])) {
-                  print("remaining part");
                   posprovider.productsList[i].itemCounter++;
                   HapticFeedback.heavyImpact();
                 } else {
-                  print("hello else part");
                   if (posprovider.productsList[i].enableStock == '0') {
                     ToastUtils.showCustomToast(
                         context, "PRODUCT NOT AVAILABLE", "warning");
@@ -364,25 +277,19 @@ class _PosPageState extends State<PosPage> {
       } else {
         FocusScope.of(context).requestFocus(FocusNode());
         try {
-          (await FlutterBarcodeScanner.getBarcodeStreamReceiver(
+          (FlutterBarcodeScanner.getBarcodeStreamReceiver(
                   '#ff6666', 'close', true, ScanMode.BARCODE))!
               .listen((barcodeScanResLists) async {
-            print("barcode list ${barcodeScanResLists.runtimeType} ");
             if (barcodeScanResLists == '-1') {
-              print("in if part");
             } else {
               setState(() {});
               for (int i = 0; i < posprovider.productsList.length; i++) {
                 if (posprovider.productsList[i].sku == barcodeScanResLists) {
-                  print("HELLO VALUE${posprovider.productsList[i].sku}");
-                  print("HELLO VALUE${barcodeScanResLists}");
                   if (posprovider.cartItemList
                       .contains(posprovider.productsList[i])) {
-                    print("remaining part");
                     posprovider.productsList[i].itemCounter++;
                     HapticFeedback.heavyImpact();
                   } else {
-                    print("hello else part");
                     if (posprovider.productsList[i].enableStock == '0') {
                       ToastUtils.showCustomToast(
                           context, "PRODUCT NOT AVAILABLE", "warning");
@@ -506,10 +413,6 @@ class _PosPageState extends State<PosPage> {
                                   var path = Provider.of<PosPageViewModel>(
                                       context,
                                       listen: false);
-                                  print(
-                                      "Location Id Is${getString(PrefKeyConstants.locationId)}");
-                                  print(
-                                      "Cash register iD IS${getString(PrefKeyConstants.customerID)}");
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -635,7 +538,7 @@ class _PosPageState extends State<PosPage> {
                               ),
                               Utils.mediumHeadingText(
                                   text:
-                                      '${getString(PrefKeyConstants.locationName)}'),
+                                      getString(PrefKeyConstants.locationName)),
                               // Consumer<PosPageViewModel>(
                               //   builder: (BuildContext context, value,
                               //       Widget? child) {
@@ -753,7 +656,6 @@ class _PosPageState extends State<PosPage> {
                                   },
                                   onSuggestionSelected: (User suggestion) {
                                     userId = suggestion.id.toString();
-                                    print('Uour userid is ${userId}');
                                     userController.text =
                                         suggestion.name.toString();
                                   }),
@@ -1113,18 +1015,18 @@ class _PosPageState extends State<PosPage> {
                                 //         FlatButton(
                                 //           child: const Text('Add'),
                                 //           onPressed: () {
-                                //             Navigator.pop(context);
-                                //           },
-                                //         ),
-                                //       ],
-                                //     );
-                                //   },
-                                // );
-                              },
-                              child: commonText(
-                                  title: UtilStrings.tax,
-                                  subTitle: '${tax.toStringAsPrecision(4)}'),
-                            ),
+                            //             Navigator.pop(context);
+                            //           },
+                            //         ),
+                            //       ],
+                            //     );
+                            //   },
+                            // );
+                          },
+                          child: commonText(
+                              title: UtilStrings.tax,
+                              subTitle: tax.toStringAsPrecision(4)),
+                        ),
                           ),
                         ],
                       ),
@@ -1251,7 +1153,6 @@ class _PosPageState extends State<PosPage> {
                                     products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -1330,7 +1231,6 @@ class _PosPageState extends State<PosPage> {
                                                         double.parse(
                                                             totalPayableController
                                                                 .text);
-                                                    print("HHH$balance");
                                                   });
                                                 }),
                                             const Gap(10),
@@ -1356,14 +1256,13 @@ class _PosPageState extends State<PosPage> {
                                                 int.parse(value.selectId),
                                                 payments: [
                                                   Payment(
-                                                      amount: '${balance}',
-                                                      method: UtilStrings.card)
+                                                      amount: '$balance',
+                                                  method: UtilStrings.card)
                                                 ],
                                                 products: items,
                                               );
                                               ReqCreateSell se =
                                               ReqCreateSell(sells: [s]);
-                                              print('Your s is ${se.toJson()}');
                                               showLoadingDialog(context: context);
                                               Provider.of<PosPageViewModel>(context,
                                                   listen: false)
@@ -1439,13 +1338,12 @@ class _PosPageState extends State<PosPage> {
                                     locationId: int.parse(value.selectId),
                                     payments: [
                                       Payment(
-                                          amount: '${totalAmount}',
-                                          method: UtilStrings.card)
+                                          amount: '$totalAmount',
+                                      method: UtilStrings.card)
                                     ],
                                     products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -1510,7 +1408,6 @@ class _PosPageState extends State<PosPage> {
                                     products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -1579,7 +1476,6 @@ class _PosPageState extends State<PosPage> {
                                     products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -1644,7 +1540,6 @@ class _PosPageState extends State<PosPage> {
                                     products: items,
                                   );
                                   ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  print('Your s is ${se.toJson()}');
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
                                       listen: false)
@@ -1885,7 +1780,7 @@ class _PosPageState extends State<PosPage> {
   commonTile({required String text, required String subText}) {
     return Row(
       children: [
-        Utils.mediumHeadingText(text: "${text}:"),
+        Utils.mediumHeadingText(text: "$text:"),
         const Gap(5),
         Utils.regularHeadingText(text: subText)
       ],

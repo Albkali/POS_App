@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/preference_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'logging_interceptor.dart';
 
@@ -16,9 +15,9 @@ class DioClient {
 
 
   DioClient(this.baseUrl, Dio dioC, {required this.loggingInterceptor,}) {
-    token = getString(PrefKeyConstants.TOKEN);
-    print('Your token is ${token}');
-    dio =  Dio();
+    token = getString(PrefKeyConstants.token);
+    print('Your token is $token');
+    dio = Dio();
     // dio = dioC ?? Dio();
     dio!
       ..options.baseUrl = baseUrl
@@ -50,9 +49,9 @@ class DioClient {
     } on SocketException catch (e) {
       throw SocketException(e.toString());
     } on FormatException catch (_) {
-      throw FormatException("Unable to process the data");
+      throw const FormatException("Unable to process the data");
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -76,9 +75,9 @@ class DioClient {
       );
       return response;
     } on FormatException catch (_) {
-      throw FormatException("Unable to process the data");
+      throw const FormatException("Unable to process the data");
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -102,9 +101,9 @@ class DioClient {
       );
       return response;
     } on FormatException catch (_) {
-      throw FormatException("Unable to process the data");
+      throw const FormatException("Unable to process the data");
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -124,9 +123,9 @@ class DioClient {
       );
       return response;
     } on FormatException catch (_) {
-      throw FormatException("Unable to process the data");
+      throw const FormatException("Unable to process the data");
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

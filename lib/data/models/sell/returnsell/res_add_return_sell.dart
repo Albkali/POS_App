@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resAddSellReturn = resAddSellReturnFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResAddSellReturn resAddSellReturnFromJson(String str) =>

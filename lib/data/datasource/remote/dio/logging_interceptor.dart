@@ -9,12 +9,9 @@ class LoggingInterceptor extends InterceptorsWrapper {
   @override
   Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var _locale = sharedPreferences.getString(PrefKeyConstants.LANGUAGE_CODE);
-  
+    var _locale = sharedPreferences.getString(PrefKeyConstants.languagecode);
+
     options.headers['lang'] = _locale;
-    print("--> ${options.method} ${options.path}");
-    print("Headers: ${options.headers['lang']}");
-    print("<-- END HTTP");
 
     return super.onRequest(options, handler);
   }
@@ -39,15 +36,11 @@ class LoggingInterceptor extends InterceptorsWrapper {
     } else {
       print(response.data);
     }
-
-    print("<-- END HTTP");
-
     return super.onResponse(response, handler);
   }
 
   @override
   Future onError(DioError err, ErrorInterceptorHandler handler) async {
-    print("ERROR[${err.response!.statusCode}] => PATH: ${err.requestOptions.path}");
     return super.onError(err, handler);
   }
 }

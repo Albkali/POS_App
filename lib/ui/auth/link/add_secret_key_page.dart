@@ -28,50 +28,14 @@ class _AddSecretKeyState extends State<AddSecretKey> {
     super.initState();
   }
   /// oauth2.0.0 Implement....
-  // final authorizationEndpoint =
-  // Uri.parse("http://example.com/oauth2/authorization");
-  // final tokenEndpoint =
-  // Uri.parse("http://example.com/oauth2/token");
-  // final identifier = "my client identifier";
-  // final secret = "my client secret";
-  // final credentialsFile = File("~/.myapp/credentials.json");
-  // final redirectUrl = Uri.parse("http://my-site.com/oauth2-redirect");
-  // Future<oauth2.Client> getClient() async {
-  //   var exists = await credentialsFile.exists();
-  //
-  //   if (exists) {
-  //     var credentials = oauth2.Credentials.fromJson(
-  //         await credentialsFile.readAsString());
-  //     return oauth2.Client(credentials,
-  //         identifier: identifier, secret: secret);
-  //   }
-  //   var grant = oauth2.AuthorizationCodeGrant(
-  //       identifier, authorizationEndpoint, tokenEndpoint,
-  //       secret: secret);
-  //
-  //   await redirect(grant.getAuthorizationUrl(redirectUrl));
-  //
-  //   // Another imaginary function that listens for a request to `redirectUrl`.
-  //   var request = await listen(redirectUrl);
-  //   var client = await loadClient();
-  //
-  //   // Once the user is redirected to `redirectUrl`, pass the query parameters to
-  //   // the AuthorizationCodeGrant. It will validate them and extract the
-  //   // authorization code to create a new Client.
-  //   return await grant.handleAuthorizationResponse(request.uri.queryParameters);
-  // }
   void checkData()async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
-   String? screatKey = preferences.getString(PrefKeyConstants.SECRET_KEY);
-    String? baseUrl =  preferences.getString(PrefKeyConstants.BASE_URL);
-    print('SECRET KEY ----> ${screatKey}');
-    print('S KEY ----> ${baseUrl}');
-    if(screatKey == keyController.text && baseUrl == tokenController.text){
-      Navigator.push(context, MaterialPageRoute(builder: (builder)=> LoginPage()));
-    }
-    else{
-        print('Worng Creditial.......');
-    }
+    String? screatKey = preferences.getString(PrefKeyConstants.secretKey);
+    String? baseUrl = preferences.getString(PrefKeyConstants.baseUrl);
+    if (screatKey == keyController.text && baseUrl == tokenController.text) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (builder) => const LoginPage()));
+    } else {}
   }
 
 
@@ -112,7 +76,7 @@ class _AddSecretKeyState extends State<AddSecretKey> {
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           InkWell(
             onTap: () {
               if (keyController.text.isEmpty && tokenController.text.isEmpty) {

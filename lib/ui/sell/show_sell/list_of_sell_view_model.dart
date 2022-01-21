@@ -16,21 +16,16 @@ class ListOfSellViewModel with ChangeNotifier {
 
 
   List<User> userList = [];
-
   List<SellItem> reversedSellItemList = [];
   List<SellItem> sellItemList = [];
   List<SellItem> reversedFilterList = [];
   List<SellItem> filterList = [];
   List<SpecifiedUser> specifiedContactList = [];
-
   List<SellItem>? get selllist => sellItemList;
   String? paymentUrl;
-
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
   String _registrationErrorMessage = '';
-
   String get registrationErrorMessage => _registrationErrorMessage;
 
   updateRegistrationErrorMessage(String message) {
@@ -47,12 +42,10 @@ class ListOfSellViewModel with ChangeNotifier {
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       ResShowSell data = ResShowSell.fromJson(apiResponse.response!.data);
-      print('Your total data ${data.data.length}');
       for (var item in data.data) {
         reversedSellItemList.add(item);
       }
       sellItemList = reversedSellItemList.reversed.toList();
-      print('Your total sellitemlist ${sellItemList.length}');
       responseModel = ResponseModel(true, 'successful');
     } else {
       String errorMessage;
@@ -61,7 +54,6 @@ class ListOfSellViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     _isLoading = false;
@@ -73,8 +65,8 @@ class ListOfSellViewModel with ChangeNotifier {
       {String? locationId,
       String? paymentStatus,
       String? contactId,
-      String? ShippingStatus,
-      String? IsSubscribed,
+      String? shippingStatus,
+      String? isSubscribed,
       String? startDate,
       String? endDate}) async {
     _isLoading = true;
@@ -84,15 +76,14 @@ class ListOfSellViewModel with ChangeNotifier {
         locationId,
         paymentStatus,
         contactId,
-        ShippingStatus,
-        IsSubscribed,
+        shippingStatus,
+        isSubscribed,
         startDate,
         endDate);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       ResShowSell data = ResShowSell.fromJson(apiResponse.response!.data);
-      print('Your total data ${data.data.length}');
       filterList.clear();
       sellItemList.clear();
       reversedSellItemList.clear();
@@ -108,7 +99,6 @@ class ListOfSellViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     _isLoading = false;
@@ -119,15 +109,14 @@ class ListOfSellViewModel with ChangeNotifier {
   Future<ResponseModel> addPayment({required String sellID,required String payment}) async {
     _isLoading = true;
     notifyListeners();
-    ApiResponse? apiResponse = await sellRepo.updateReturnSell(sellId: '$sellID',pendingPayment:payment );
+    ApiResponse? apiResponse = await sellRepo.updateReturnSell(
+        sellId: sellID, pendingPayment: payment);
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
-      ResUpdateReturnSell data = ResUpdateReturnSell.fromJson(apiResponse.response!.data);
+      ResUpdateReturnSell data =
+          ResUpdateReturnSell.fromJson(apiResponse.response!.data);
       paymentUrl = data.invoiceUrl;
-      print('Your total data is 31 ${data.type}');
-      print('Your total data is 32${data.transactionDate}');
-      print('Your total data is 33 ${data.invoiceUrl}');
 
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -137,7 +126,6 @@ class ListOfSellViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     _isLoading = false;
@@ -165,7 +153,6 @@ class ListOfSellViewModel with ChangeNotifier {
       else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     _isLoading = false;

@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final reqCreateSell = reqCreateSellFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReqCreateSell reqCreateSellFromJson(String str) =>

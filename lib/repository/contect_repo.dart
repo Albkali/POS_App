@@ -15,9 +15,6 @@ class ContactRepo
     required ReqContact data,
   }) async {
     try {
-      // print('Your data is ${data.supplierBusinessName}');
-      // print('Your data is ${data.firstName}');
-      // print('Your data is ${data.mobile}');
       Response response = await dioClient.post(ApiEndPoints.apiCreateContact, data: {
         "type": "business",
         "supplier_business_name": data.supplierBusinessName,
@@ -26,7 +23,6 @@ class ContactRepo
       });
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
