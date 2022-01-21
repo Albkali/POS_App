@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:pos/data/models/language_model.dart';
-import 'package:pos/localization/language_constrants.dart';
-import 'package:pos/main.dart';
 import 'package:pos/ui/auth/link/add_secret_key_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
 import 'package:pos/utils/images_utils.dart';
-import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
-import 'package:pos/widgets/custom_app_bar.dart';
 
 class ChooseLanguagePage extends StatefulWidget {
   bool?isLanguage;
@@ -23,10 +18,6 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    void _changeLanguage(Language language) async {
-      Locale _locale = await setLocale(language.languageCode);
-      MyApp.setLocale(context, _locale);
-    }
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,15 +79,18 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
           //     );
           //   }).toList(),
           // ),
-          Spacer(),
+          const Spacer(),
           Padding(
-            padding: const EdgeInsets.only(bottom: 10,left: 10,right: 10),
+            padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             child: InkWell(
-              onTap: (){
-                if(widget.isLanguage == true){
+              onTap: () {
+                if (widget.isLanguage == true) {
                   Navigator.pop(context);
-                }else{
-                  Navigator.push(context, MaterialPageRoute(builder: (builder)=> AddSecretKey()));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const AddSecretKey()));
                 }
               },
               child: const CustomButton(
@@ -114,7 +108,6 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
       onTap: (){
         setState(() {
           selectedIndex = index;
-          print('Index --> ${index}');
         });
       },
       child: Container(
@@ -126,13 +119,11 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
               padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
               child: Row(
                 children: [
-                  Container(
-                      height: 20,
-                      width: 20,
-                      child: Image.asset(flag)),
-                Gap(10),
-                  Utils.mediumHeadingText(text: title,textSize: 15,fontWeight: FontWeight.bold),
-                ],
+              SizedBox(height: 20, width: 20, child: Image.asset(flag)),
+              const Gap(10),
+              Utils.mediumHeadingText(
+                  text: title, textSize: 15, fontWeight: FontWeight.bold),
+            ],
               ),
             ),
           ),

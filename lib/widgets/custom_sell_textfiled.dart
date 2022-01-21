@@ -14,8 +14,6 @@ class CustomSellTextFiled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('our date is ${title}');
-    print('our date is ${controller.text}');
     return   Container(
       // margin: EdgeInsets.only(left: 10,right: 10),
       height: 35,

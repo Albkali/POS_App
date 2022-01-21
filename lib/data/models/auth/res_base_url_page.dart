@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resBaseUrl = resBaseUrlFromJson(jsonString);
-
 import 'dart:convert';
 
 ResBaseUrl resBaseUrlFromJson(String str) =>

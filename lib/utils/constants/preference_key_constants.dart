@@ -1,9 +1,9 @@
-class PrefKeyConstants{
-  static const String THEME = 'theme';
-  static const String TOKEN = 'token';
-  static const String LANGUAGE_CODE = 'laguage_code';
-  static const String BASE_URL = 'base_url';
-  static const String SECRET_KEY = 'secret_key';
+class PrefKeyConstants {
+  static const String theme = 'theme';
+  static const String token = 'token';
+  static const String languagecode = 'laguage_code';
+  static const String baseUrl = 'base_url';
+  static const String secretKey = 'secret_key';
   static const String isOpen = 'isOpen';
   static const String locationId = 'locationId';
   static const String customerID = 'customerId';

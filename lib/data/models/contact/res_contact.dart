@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final resContact = resContactFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResContact resContactFromJson(String str) => ResContact.fromJson(json.decode(str));

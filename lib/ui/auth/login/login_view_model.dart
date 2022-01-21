@@ -44,10 +44,9 @@ class LoginViewModel with ChangeNotifier {
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
       ResLogin data = ResLogin.fromJson(apiResponse.response!.data);
-      setString(PrefKeyConstants.TOKEN, data.accessToken);
+      setString(PrefKeyConstants.token, data.accessToken);
       responseModel = ResponseModel(true, 'successful');
       ToastUtils.showCustomToast(context, 'Login successfully', 'success');
-
     } else {
       hideLoadingDialog(context: context);
       String errorMessage;
@@ -57,7 +56,6 @@ class LoginViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       _loginErrorMessage = errorMessage;
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -73,13 +71,9 @@ class LoginViewModel with ChangeNotifier {
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      print("HELLO");
-      // print("HELLO111${apiResponse.response?.data["status"].toString()}");
-      print("HELLO111${apiResponse.response?.data.toString()}");
-      print("HELLO111${apiResponse.response?.data[1]}");
       if (apiResponse.response?.data["status"] == true) {
         ResBaseUrl data = ResBaseUrl.fromJson(apiResponse.response!.data);
-        setString(PrefKeyConstants.SECRET_KEY, data.data.clientSecret);
+        setString(PrefKeyConstants.secretKey, data.data.clientSecret);
         responseModel = ResponseModel(true, 'successful');
         ToastUtils.showCustomToast(context, 'ADDED successfully', 'success');
       } else {
@@ -95,7 +89,6 @@ class LoginViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();

@@ -4,7 +4,7 @@ void showLoadingDialog({required BuildContext context,
   bool idShow = true,
 }) {
   idShow
-      ? Future.delayed(Duration(seconds: 0), () {
+      ? Future.delayed(const Duration(seconds: 0), () {
           showDialog(
               context: context,
               barrierColor: Colors.black.withOpacity(0.40),

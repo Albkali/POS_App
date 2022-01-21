@@ -1,8 +1,4 @@
-// To parse this JSON data, do
-//
-//     final resBeforeClose = resBeforeCloseFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ResBeforeClose resBeforeCloseFromJson(String str) => ResBeforeClose.fromJson(json.decode(str));

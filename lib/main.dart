@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     check().then((intenet) {
-      if (intenet != null && intenet) {
+      if (intenet) {
       } else {
         final context = nav.currentState!.overlay!.context;
         showDialog(
@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> {
                   textAlign: TextAlign.center,
                 ),
                 actions: [
-                  Container(
+                  SizedBox(
                     width: Utils.getWidth(context),
                     child: Center(
                       child: RaisedButton(
@@ -108,17 +108,17 @@ class _MyAppState extends State<MyApp> {
                         color: AppColor.primaryColor,
                         onPressed: () {
                           check1().then((internet) {
-                            if (internet != null && internet) {
-                              // Navigator.push(
-                              //     context, MaterialPageRoute(builder: (context) => HomeActivity()));
+                            if (internet) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomePage()));
                               // print('tap');
-                            } else {
-                              print('tapped');
-                            }
+                            } else {}
                           });
                         },
-                        child: Text(
-                          'Recconect',
+                        child: const Text(
+                          'Reconnect',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -134,7 +134,6 @@ class _MyAppState extends State<MyApp> {
         .onConnectivityChanged
         .listen((ConnectivityResult connectivityResult) {
       if (connectivityResult == ConnectivityResult.none) {
-        print("HELLo");
         final context = nav.currentState!.overlay!.context;
         showDialog(
             barrierDismissible: false,
@@ -183,7 +182,7 @@ class _MyAppState extends State<MyApp> {
   void didChangeDependencies() {
     getLocale().then((locale) {
       setState(() {
-        this._locale = locale;
+        _locale = locale;
       });
     });
     super.didChangeDependencies();
@@ -225,7 +224,9 @@ class _MyAppState extends State<MyApp> {
         return supportedLocales.first;
       },
       // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
-      home: getString(PrefKeyConstants.TOKEN).isEmpty? LoginPage() : HomePage(),
+      home: getString(PrefKeyConstants.token).isEmpty
+          ? const LoginPage()
+          : const HomePage(),
       // home: HomePage(),
       // home:   LinkPage(),
     );

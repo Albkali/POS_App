@@ -33,11 +33,11 @@ class ApiErrorHandler {
                   ErrorResponse errorResponse =
                   ErrorResponse.fromJson(error.response!.data);
                   if (errorResponse.errors != null &&
-                      errorResponse.errors!.length > 0)
+                      errorResponse.errors!.isNotEmpty) {
                     errorDescription = errorResponse;
-                  else {
+                  } else {
                     errorDescription =
-                    "Failed to load data - status code: ${error.response!.statusCode}";
+                        "Failed to load data - status code: ${error.response!.statusCode}";
                   }
               }
               break;
@@ -46,7 +46,7 @@ class ApiErrorHandler {
               break;
           }
         } else {
-          errorDescription = "Unexpected error occured";
+          errorDescription = "Unexpected error occurred";
         }
       } on FormatException catch (e) {
         errorDescription = e.toString();

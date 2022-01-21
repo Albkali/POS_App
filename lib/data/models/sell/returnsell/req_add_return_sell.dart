@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final reqAddReturnSell = reqAddReturnSellFromJson(jsonString);
-
 import 'dart:convert';
 
 ReqAddReturnSell reqAddReturnSellFromJson(String str) => ReqAddReturnSell.fromJson(json.decode(str));

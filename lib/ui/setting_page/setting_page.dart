@@ -5,7 +5,6 @@ import 'package:pos/ui/choose_language/choose_language_page.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/utils.dart';
-import 'package:pos/widgets/custom_app_bar.dart';
 
 class SettingPage extends StatefulWidget {
   bool? isLanguagePage;
@@ -44,10 +43,11 @@ class _SettingPageState extends State<SettingPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Gap(20),
+                    const Gap(20),
                     const CircleAvatar(
                       radius: 35,
-                      backgroundImage: NetworkImage('https://us.123rf.com/450wm/fizkes/fizkes2007/fizkes200701793/152407909-profile-picture-of-smiling-young-caucasian-man-in-glasses-show-optimism-positive-and-motivation-head.jpg?ver=6'),
+                      backgroundImage: NetworkImage(
+                          'https://us.123rf.com/450wm/fizkes/fizkes2007/fizkes200701793/152407909-profile-picture-of-smiling-young-caucasian-man-in-glasses-show-optimism-positive-and-motivation-head.jpg?ver=6'),
                     ),
                     const Gap(10),
                     const Text('Yaseer Albkali',

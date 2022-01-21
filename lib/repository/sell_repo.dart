@@ -18,7 +18,6 @@ class SellRepo{
       });
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -26,16 +25,14 @@ class SellRepo{
 
     try {
       Response response = await dioClient.put(
-          ApiEndPoints.apiUpdateReturnSell + Uri.encodeFull('/${sellId}'),
-          data:{
-            'payments':[
-              {
-                "amount": pendingPayment, "method": "cash"}
+          ApiEndPoints.apiUpdateReturnSell + Uri.encodeFull('/$sellId'),
+          data: {
+            'payments': [
+              {"amount": pendingPayment, "method": "cash"}
             ]
           });
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -44,8 +41,8 @@ class SellRepo{
       String? locationId,
       String? paymentStatus,
       String? contactId,
-      String? ShippingStatus,
-      String? IsSubscribed,
+      String? shippingStatus,
+      String? isSubscribed,
       String? startDate,
       String? endDate) async {
     try {
@@ -55,14 +52,13 @@ class SellRepo{
         'location_id': '$locationId',
         'payment_status': '$paymentStatus',
         'contact_id': '$contactId',
-        'shipping_status': '$ShippingStatus',
-        'only_subscriptions': '$IsSubscribed',
+        'shipping_status': '$shippingStatus',
+        'only_subscriptions': '$isSubscribed',
         'start_date': '$startDate',
         'end_date': '$endDate'
       });
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -74,7 +70,6 @@ class SellRepo{
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -83,7 +78,6 @@ class SellRepo{
       Response response = await dioClient.get(ApiEndPoints.apiSpecifiedContact + '/$contactId');
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }

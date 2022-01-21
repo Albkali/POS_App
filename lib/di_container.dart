@@ -19,7 +19,7 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   sl.registerLazySingleton(() => DioClient(
-        ApiEndPoints.BASE_URL,
+        ApiEndPoints.apiBaseUrl,
         sl(),
         loggingInterceptor: sl(),
       ));

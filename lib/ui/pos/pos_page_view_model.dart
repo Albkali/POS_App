@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pos/data/models/pos/ResLogedUserDetils.dart';
 import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/pos/res_business_location.dart';
 import 'package:pos/data/models/pos/res_error_open_register.dart';
+import 'package:pos/data/models/pos/res_loged_user_detils.dart';
 import 'package:pos/data/models/pos/res_pos.dart';
 import 'package:pos/data/models/pos/res_product_pos.dart';
 import 'package:pos/data/models/pos/res_users_pos.dart';
@@ -24,12 +24,10 @@ class PosPageViewModel with ChangeNotifier {
   PosPageViewModel({required this.posRepo});
 
   bool isLoading = false;
-
   String selectrange = 'Fixed';
   String selectId = '1';
   String invoiceUrl = '';
   ResBeforeClose? userData;
-
   bool isShowMyAppartment = false;
   bool isShowWithinRadius = false;
   int isSelectedIndex = 0;
@@ -55,7 +53,6 @@ class PosPageViewModel with ChangeNotifier {
 
   Future<ResponseModel> openRegister(
       ReqPos data, BuildContext context, bool isClosed) async {
-    print("DATA IS${data.toJson()}");
 
     notifyListeners();
     isLoading = true;
@@ -90,7 +87,6 @@ class PosPageViewModel with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       }
       else {
-        print('Your error is ${apiResponse.error}');
         errorMessage = apiResponse.error.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);
@@ -120,7 +116,6 @@ class PosPageViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
@@ -152,7 +147,6 @@ class PosPageViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
@@ -173,7 +167,6 @@ class PosPageViewModel with ChangeNotifier {
         ResCreateSell data =
             ResCreateSell.fromJson(apiResponse.response!.data[0]);
         invoiceUrl = data.invoiceUrl;
-        print('Your total data ${data.invoiceUrl}');
         ToastUtils.showCustomToast(
             context, 'Sell added successfully', 'success');
         responseModel = ResponseModel(true, 'successful');
@@ -186,11 +179,6 @@ class PosPageViewModel with ChangeNotifier {
             'warning');
         responseModel = ResponseModel(false, 'successful');
       }
-      // for (var item in data.data) {
-      //   productsList.add(item);
-      // }
-      // print('Your total product  ${data.invoiceUrl}');
-
       isLoading = false;
     }
     else {
@@ -208,23 +196,21 @@ class PosPageViewModel with ChangeNotifier {
     return responseModel;
   }
 
-  Future<ResponseModel> UserDetails({required BuildContext context}) async {
+  Future<ResponseModel> userDetails({required BuildContext context}) async {
     // notifyListeners();
     ApiResponse? apiResponse = await posRepo.fetchRegister(
-        registerId: '${getString(PrefKeyConstants.customerID)}');
+        registerId: getString(PrefKeyConstants.customerID));
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
-        apiResponse.response!.statusCode == 200)  {
+        apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
       registerDetails.clear();
       ResLogedUserDetils data =
           await ResLogedUserDetils.fromJson(apiResponse.response!.data);
       registerDetails = await data.data;
       AppConstant.status = registerDetails[0].status;
-      print("HELLO STAUS${registerDetails[0].status}");
       responseModel = ResponseModel(true, 'successful');
-    }
-    else
+    } else
       {
         hideLoadingDialog(context: context);
         String errorMessage;
@@ -233,7 +219,6 @@ class PosPageViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
@@ -261,7 +246,6 @@ class PosPageViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
@@ -290,7 +274,6 @@ class PosPageViewModel with ChangeNotifier {
       if (apiResponse.error is String) {
         errorMessage = apiResponse.error.toString();
       } else {
-        print('Your error is ${apiResponse.error}');
         errorMessage = apiResponse.error.errors[0].message;
       }
       responseModel = ResponseModel(false, errorMessage);

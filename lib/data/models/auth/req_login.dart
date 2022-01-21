@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final reqLogin = reqLoginFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReqLogin reqLoginFromJson(String str) => ReqLogin.fromJson(json.decode(str));

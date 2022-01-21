@@ -90,7 +90,7 @@ class Utils {
       ) : Container(),
       actions:  [
         Padding(
-          padding: EdgeInsets.only(right: 15),
+          padding: const EdgeInsets.only(right: 15),
           child: Icon(
             icon,
             color: iconColor ?? AppColor.white,
@@ -139,15 +139,14 @@ class Utils {
     );
   }
 
-static Widget customVerticalDivider(){
-    return Container(
-      child: VerticalDivider(
-        color: AppColor.grey,
-        width: 1,
-      ),
+static Widget customVerticalDivider() {
+    return const VerticalDivider(
+      color: AppColor.grey,
+      width: 1,
     );
-}
-static Widget customIcon({IconData? icon,Color? color,double? size}){
+  }
+
+  static Widget customIcon({IconData? icon,Color? color,double? size}){
     return Icon(icon,color: color ?? Colors.black,size: size ?? 20,);
 }
   static Widget customDivider({double? indent, double? endent}) {

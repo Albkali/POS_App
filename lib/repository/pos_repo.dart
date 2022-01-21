@@ -4,8 +4,6 @@ import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/utils/constants/api_end_points.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
 
 class PosRepo {
   final DioClient dioClient;
@@ -39,7 +37,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -51,7 +48,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -64,7 +60,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -73,31 +68,9 @@ class PosRepo {
     try {
       Response response =
           await dioClient.post(ApiEndPoints.apiCreateSell, data:sell
-      //     {
-      //   "sells": [
-      //     {
-      //       "location_id": 1,
-      //       "contact_id": 1,
-      //       "discount_amount": 10,
-      //       "discount_type": "fixed",
-      //       "products": [
-      //         {
-      //           "product_id": 1,
-      //           "quantity": 1,
-      //           "variation_id": 1,
-      //           "unit_price": 437.5
-      //         }
-      //       ],
-      //       "payments": [
-      //         {"amount": 1200.13, "method": "cash"}
-      //       ]
-      //     }
-      //   ]
-      // }
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -109,7 +82,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -121,7 +93,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -133,7 +104,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
   }
@@ -152,7 +122,6 @@ class PosRepo {
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
-      print(e.toString());
       return ApiResponse.withError(e);
     }
 
