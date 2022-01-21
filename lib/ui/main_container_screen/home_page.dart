@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                                   await player.setAsset(
                                       'assets/audio/anime_hair_twitch.mp3');
                                   player.play();
-                                  // HapticFeedback.heavyImpact();
+                                  //
                                 },
                                 text: getTranslated(context, UtilStrings.home),
                                 icon: Icons.phone_android_outlined,

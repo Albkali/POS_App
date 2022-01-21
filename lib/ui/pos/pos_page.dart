@@ -244,80 +244,6 @@ class _PosPageState extends State<PosPage> {
   @override
   Widget build(BuildContext context) {
     dynamic barcodeScanResList;
-    // Future<void> scanBarcodeNormal() async {
-    //   var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
-    //   try {
-    //     if(getBool(PrefKeyConstants.scanType) == false) {
-    //       barcodeScanResList = FlutterBarcodeScanner.scanBarcode('#ff6666', 'close', true, ScanMode.BARCODE);
-    //       if (barcodeScanResList == '-1') {
-    //         print("in if part");
-    //       } else {
-    //         for (int i = 0; i < posprovider.productsList.length; i++) {
-    //           if (posprovider.productsList[i].sku == barcodeScanResList) {
-    //             if (posprovider.cartItemList
-    //                 .contains(posprovider.productsList[i])) {
-    //               print("remaining part");
-    //               posprovider.productsList[i].itemCounter++;
-    //               HapticFeedback.heavyImpact();
-    //             }
-    //             else {
-    //               print("hello else part");
-    //               if (posprovider.productsList[i].enableStock == '0') {
-    //                 ToastUtils.showCustomToast(
-    //                     context, "PRODUCT NOT AVAILABLE", "warning");
-    //                 HapticFeedback.heavyImpact();
-    //
-    //               } else {
-    //                 posprovider.cartItemList.add(posprovider.productsList[i]);
-    //                 HapticFeedback.heavyImpact();
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //     else
-    //       {
-    //       FlutterBarcodeScanner.getBarcodeStreamReceiver(
-    //           '#ff6666', 'close', true, ScanMode.BARCODE)?.listen((event) {
-    //         if (event == '-1') {
-    //           print("in if part");
-    //         } else {
-    //           for (int i = 0; i < posprovider.productsList.length; i++) {
-    //             if (posprovider.productsList[i].sku == event) {
-    //               if (posprovider.cartItemList
-    //                   .contains(posprovider.productsList[i])) {
-    //                 print("remaining part");
-    //                 posprovider.productsList[i].itemCounter++;
-    //                 HapticFeedback.heavyImpact();
-    //               } else {
-    //                 print("hello else part");
-    //                 if (posprovider.productsList[i].enableStock == '0') {
-    //                   ToastUtils.showCustomToast(
-    //                       context, "PRODUCT NOT AVAILABLE", "warning");
-    //                   HapticFeedback.heavyImpact();
-    //
-    //                 } else {
-    //                   posprovider.cartItemList.add(posprovider.productsList[i]);
-    //                   HapticFeedback.heavyImpact();
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       });
-    //     }
-    //
-    //
-    //   } on PlatformException {
-    //     barcodeScanResList = 'Failed to get platform version.';
-    //   }
-    //   if (!mounted) return;
-    //   setState(() {
-    //     _scanBarcode = barcodeScanResList;
-    //   });
-    // }
-
     Future<void> scanBarcodeNormal() async {
       var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
       // try {
@@ -337,18 +263,17 @@ class _PosPageState extends State<PosPage> {
                     .contains(posprovider.productsList[i])) {
                   print("remaining part");
                   posprovider.productsList[i].itemCounter++;
-                  HapticFeedback.heavyImpact();
+                  await player.setAsset(UtilStrings.soundPath);
+                  player.play();
                 } else {
                   print("hello else part");
                   if (posprovider.productsList[i].enableStock == '0') {
                     ToastUtils.showCustomToast(
                         context, "PRODUCT NOT AVAILABLE", "warning");
-                    HapticFeedback.heavyImpact();
                   } else {
                     posprovider.cartItemList.add(posprovider.productsList[i]);
                     await player.setAsset(UtilStrings.soundPath);
                     player.play();
-                    HapticFeedback.heavyImpact();
                   }
                 }
               }
@@ -380,18 +305,17 @@ class _PosPageState extends State<PosPage> {
                       .contains(posprovider.productsList[i])) {
                     print("remaining part");
                     posprovider.productsList[i].itemCounter++;
-                    HapticFeedback.heavyImpact();
+                    await player.setAsset(UtilStrings.soundPath);
+                    player.play();
                   } else {
                     print("hello else part");
                     if (posprovider.productsList[i].enableStock == '0') {
                       ToastUtils.showCustomToast(
                           context, "PRODUCT NOT AVAILABLE", "warning");
-                      HapticFeedback.heavyImpact();
                     } else {
                       posprovider.cartItemList.add(posprovider.productsList[i]);
                       await player.setAsset(UtilStrings.soundPath);
                       player.play();
-                      HapticFeedback.heavyImpact();
                     }
                   }
                 }
@@ -419,17 +343,17 @@ class _PosPageState extends State<PosPage> {
         //              .contains(posprovider.productsList[i])) {
         //            print("remaining part");
         //            posprovider.productsList[i].itemCounter++;
-        //            HapticFeedback.heavyImpact();
+        //
         //          } else {
         //            print("hello else part");
         //            if (posprovider.productsList[i].enableStock == '0') {
         //              ToastUtils.showCustomToast(
         //                  context, "PRODUCT NOT AVAILABLE", "warning");
-        //              HapticFeedback.heavyImpact();
+        //
         //
         //            } else {
         //              posprovider.cartItemList.add(posprovider.productsList[i]);
-        //              HapticFeedback.heavyImpact();
+        //
         //            }
         //          }
         //        }
@@ -899,7 +823,7 @@ class _PosPageState extends State<PosPage> {
                                       (Items suggestion) async {
                                     productController.text =
                                         suggestion.name.toString();
-                                    HapticFeedback.heavyImpact();
+
                                     productController.clear();
                                     var poproviser =
                                         Provider.of<PosPageViewModel>(context,
@@ -909,6 +833,9 @@ class _PosPageState extends State<PosPage> {
                                           "PRODUCT NOT AVAILABLE", "warning");
                                     } else if (poproviser.cartItemList
                                         .contains(suggestion)) {
+                                      await player
+                                          .setAsset(UtilStrings.soundPath);
+                                      player.play();
                                       suggestion.itemCounter++;
                                     } else {
                                       poproviser.cartItemList.add(suggestion);
@@ -1921,7 +1848,9 @@ class _PosPageState extends State<PosPage> {
                     child: Row(
                       children: [
                         InkWell(
-                          onTap: () {
+                          onTap: () async {
+                            await player.setAsset(UtilStrings.soundPath);
+                            player.play();
                             setState(() {
                               value.cartItemList[index].itemCounter = 1;
                               value.cartItemList.removeAt(index);
@@ -1957,8 +1886,11 @@ class _PosPageState extends State<PosPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       value.removeCounter(item);
+                                      await player
+                                          .setAsset(UtilStrings.soundPath);
+                                      player.play();
                                     },
                                     child: Row(
                                       children: [
@@ -1973,7 +1905,10 @@ class _PosPageState extends State<PosPage> {
                                 Utils.smallHeadingText(
                                     text: '$qty', textSize: 14),
                                 InkWell(
-                                    onTap: () {
+                                    onTap: () async {
+                                      await player
+                                          .setAsset(UtilStrings.soundPath);
+                                      player.play();
                                       value.addCounter(item);
                                     },
                                     child: Row(
