@@ -11,6 +11,7 @@ import 'package:pos/data/models/response_model.dart';
 import 'package:pos/data/models/sell/closesell/res_before_close.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/data/models/sell/create_sell/res_create_sell.dart';
+import 'package:pos/data/models/tax/res_list_of_tax.dart';
 import 'package:pos/repository/pos_repo.dart';
 import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
@@ -25,6 +26,8 @@ class PosPageViewModel with ChangeNotifier {
 
   bool isLoading = false;
   String selectrange = 'Fixed';
+  String selectTax = 'None';
+
   String selectId = '1';
   String invoiceUrl = '';
   ResBeforeClose? userData;
@@ -32,12 +35,12 @@ class PosPageViewModel with ChangeNotifier {
   bool isShowWithinRadius = false;
   int isSelectedIndex = 0;
   List<User> usersList = [];
+  List<Taxes> taxesList = [];
   List<Items> productsList = [];
   List<Items> cartItemList = [];
   List<Location> locationList = [];
   List<ItemDetails> registerDetails = [];
   List<String> skuList = [];
-
 
   void addCounter(Items item) {
     item.itemCounter++;
@@ -136,7 +139,6 @@ class PosPageViewModel with ChangeNotifier {
       for (var item in data.data) {
         productsList.add(item);
         skuList.add(item.sku);
-
       }
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -278,6 +280,36 @@ class PosPageViewModel with ChangeNotifier {
       }
       responseModel = ResponseModel(false, errorMessage);
       isLoading = false;
+    }
+    notifyListeners();
+    return responseModel;
+  }
+
+  Future<ResponseModel> taxList({required BuildContext context}) async {
+    notifyListeners();
+
+    ApiResponse? apiResponse = await posRepo.fetchTax();
+    ResponseModel responseModel;
+    if (apiResponse!.response != null &&
+        apiResponse.response!.statusCode == 200) {
+      hideLoadingDialog(context: context);
+      taxesList.clear();
+      ResListTax data = ResListTax.fromJson(apiResponse.response!.data);
+      for (var item in data.data) {
+        taxesList.add(item);
+        print("LIST IS$taxesList");
+      }
+      responseModel = ResponseModel(true, 'successful');
+    } else {
+      hideLoadingDialog(context: context);
+      String errorMessage;
+      if (apiResponse.error is String) {
+        errorMessage = apiResponse.error.toString();
+      } else {
+        errorMessage = apiResponse.error.errors[0].message;
+      }
+      print(errorMessage);
+      responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();
     return responseModel;

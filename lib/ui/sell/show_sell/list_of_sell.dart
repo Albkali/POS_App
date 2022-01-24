@@ -71,7 +71,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(

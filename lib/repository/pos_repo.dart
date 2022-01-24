@@ -112,18 +112,27 @@ class PosRepo {
   {
     try {
       Response response = await dioClient.post(
-          ApiEndPoints.apiCashRegister,
-          data:
-          {
-            'location_id' : locationId,
-            'cash_register_id' : cashId,
-            'status': 'before_close',
-          },
+        ApiEndPoints.apiCashRegister,
+        data: {
+          'location_id': locationId,
+          'cash_register_id': cashId,
+          'status': 'before_close',
+        },
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);
     }
+  }
 
+  Future<ApiResponse?> fetchTax() async {
+    try {
+      Response response = await dioClient.get(
+        ApiEndPoints.apiTaxList,
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(e);
+    }
   }
 }

@@ -21,5 +21,6 @@ class  ApiEndPoints{
   static const String apiUpdateReturnSell = "connector/api/sell";
   static const String apiSpecifiedContact = "/connector/api/contactapi";
   static const String apiGetBaseUrl = "baseurl.php";
+  static const String apiTaxList = "connector/api/tax";
 }
 

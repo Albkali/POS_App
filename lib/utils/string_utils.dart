@@ -40,6 +40,7 @@ class UtilStrings {
   static const sellReturn = 'Sell Return';
   static const parentSale = 'Parent Sale';
   static const businessLocation = 'Business Location';
+  static const orderTax = 'Order Tax:*';
   static const discountType = 'Discount Type:';
   static const discountAmount = 'Discount Amount:';
   static const sellList = 'List of Sell';

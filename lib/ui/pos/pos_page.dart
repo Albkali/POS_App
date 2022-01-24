@@ -10,6 +10,7 @@ import 'package:pos/data/models/pos/res_business_location.dart';
 import 'package:pos/data/models/pos/res_product_pos.dart';
 import 'package:pos/data/models/pos/res_users_pos.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
+import 'package:pos/data/models/tax/res_list_of_tax.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
@@ -45,8 +46,13 @@ class _PosPageState extends State<PosPage> {
   late TextEditingController discountController = TextEditingController();
   TextEditingController cashController = TextEditingController();
   TextEditingController totalPayableController = TextEditingController();
+
+  // TextEditingController taxController = TextEditingController();
   late double subTotal = 0;
   double balance = 0;
+  var tax = 0.0;
+
+  String taxId = '0';
 
   FocusNode focus = FocusNode();
 
@@ -64,7 +70,6 @@ class _PosPageState extends State<PosPage> {
     });
 
     discountController.text = '0';
-    taxController.text = '0';
     Provider.of<PosPageViewModel>(context, listen: false).userList();
     Provider.of<PosPageViewModel>(context, listen: false)
         .productList(context: context);
@@ -240,8 +245,8 @@ class _PosPageState extends State<PosPage> {
     Future<void> scanBarcodeNormal() async {
       var posprovider = Provider.of<PosPageViewModel>(context, listen: false);
       // try {
-      if(getBool(PrefKeyConstants.scanType) == false) {
-        try{
+      if (getBool(PrefKeyConstants.scanType) == false) {
+        try {
           barcodeScanResList = (await FlutterBarcodeScanner.scanBarcode(
               '#ff6666', 'close', true, ScanMode.BARCODE));
           if (barcodeScanResList == '-1') {
@@ -303,15 +308,13 @@ class _PosPageState extends State<PosPage> {
               }
             }
           });
-        }
-        on PlatformException {
+        } on PlatformException {
           // barcodeScanResLists = 'Failed to get platform version.';
         }
         if (!mounted) return;
         setState(() {
           _scanBarcode = 'Failed to get platform version';
         });
-
 
         // await FlutterBarcodeScanner.getBarcodeStreamReceiver(
         //      '#ff6666', 'close', true, ScanMode.DEFAULT)?.listen((event) {
@@ -350,7 +353,6 @@ class _PosPageState extends State<PosPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-
                 /// Custom AppBar....
                 Container(
                   height: 130,
@@ -413,13 +415,13 @@ class _PosPageState extends State<PosPage> {
                                       listen: false);
                                   showLoadingDialog(context: context);
                                   Provider.of<PosPageViewModel>(context,
-                                      listen: false)
+                                          listen: false)
                                       .beforeClose(
-                                      getString(
-                                          PrefKeyConstants.customerID),
-                                      getString(
-                                          PrefKeyConstants.locationId),
-                                      context)
+                                          getString(
+                                              PrefKeyConstants.customerID),
+                                          getString(
+                                              PrefKeyConstants.locationId),
+                                          context)
                                       .then((value) {
                                     if (value.isSuccess) {
                                       showDialog(
@@ -428,7 +430,7 @@ class _PosPageState extends State<PosPage> {
                                             return AlertDialog(
                                               title: Utils.mediumHeadingText(
                                                   text:
-                                                  "Current Register (${path.userData!.data.currentRegister})"),
+                                                      "Current Register (${path.userData!.data.currentRegister})"),
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -468,9 +470,9 @@ class _PosPageState extends State<PosPage> {
                                                               .locationId),
                                                       status: 'close',
                                                       closedAt: DateFormat(
-                                                          "yyyy-MM-dd hh:mm:ss")
+                                                              "yyyy-MM-dd hh:mm:ss")
                                                           .format(
-                                                          DateTime.now())
+                                                              DateTime.now())
                                                           .toString(),
                                                       cashRegisterId: getString(
                                                           PrefKeyConstants
@@ -491,15 +493,15 @@ class _PosPageState extends State<PosPage> {
                                                       transactionIds: '1',
                                                     );
                                                     Provider.of<PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                            context,
+                                                            listen: false)
                                                         .openRegister(
-                                                        res, context, true)
+                                                            res, context, true)
                                                         .then((value) {
                                                       if (value.isSuccess) {
                                                         Provider.of<PosPageViewModel>(
-                                                            context,
-                                                            listen: false)
+                                                                context,
+                                                                listen: false)
                                                             .cartItemList
                                                             .clear();
                                                         setString(
@@ -595,7 +597,7 @@ class _PosPageState extends State<PosPage> {
                               height: 40,
                               decoration: BoxDecoration(
                                 border:
-                                Border.all(color: AppColor.grey, width: 1),
+                                    Border.all(color: AppColor.grey, width: 1),
                                 color: AppColor.white,
                                 boxShadow: const [
                                   BoxShadow(
@@ -609,12 +611,12 @@ class _PosPageState extends State<PosPage> {
                               ),
                               child: TypeAheadField(
                                   suggestionsBoxDecoration:
-                                  SuggestionsBoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(20),
-                                      elevation: 5),
+                                      SuggestionsBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          elevation: 5),
                                   textFieldConfiguration:
-                                  TextFieldConfiguration(
+                                      TextFieldConfiguration(
                                     decoration: const InputDecoration(
                                       hintStyle: TextStyle(
                                         color: AppColor.grey,
@@ -642,7 +644,7 @@ class _PosPageState extends State<PosPage> {
                                     return Container(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(15),
+                                              BorderRadius.circular(15),
                                           border: Border.all(
                                               color: Colors.grey
                                                   .withOpacity(0.1))),
@@ -675,7 +677,7 @@ class _PosPageState extends State<PosPage> {
                               decoration: BoxDecoration(
                                 color: AppColor.white,
                                 border:
-                                Border.all(color: AppColor.grey, width: 1),
+                                    Border.all(color: AppColor.grey, width: 1),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: AppColor.grey2,
@@ -688,15 +690,15 @@ class _PosPageState extends State<PosPage> {
                               ),
                               child: TypeAheadField(
                                   suggestionsBoxDecoration:
-                                  SuggestionsBoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(20),
-                                      elevation: 5),
+                                      SuggestionsBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          elevation: 5),
                                   keepSuggestionsOnLoading: false,
                                   hideSuggestionsOnKeyboardHide: false,
                                   textFieldConfiguration:
-                                  TextFieldConfiguration(
-                                      autofocus: true,
+                                      TextFieldConfiguration(
+                                          autofocus: true,
                                           decoration: const InputDecoration(
                                             hintStyle: TextStyle(
                                               color: AppColor.grey,
@@ -708,13 +710,13 @@ class _PosPageState extends State<PosPage> {
                                             hintText:
                                                 UtilStrings.enterProductName,
                                             prefixIcon: Icon(
-                                          Icons.zoom_in_outlined,
-                                          color: AppColor.grey,
-                                        ),
-                                      ),
-                                      controller: productController,
-                                      focusNode: focus,
-                                      onChanged: (val) async {
+                                              Icons.zoom_in_outlined,
+                                              color: AppColor.grey,
+                                            ),
+                                          ),
+                                          controller: productController,
+                                          focusNode: focus,
+                                          onChanged: (val) async {
                                             final posprovider =
                                                 Provider.of<PosPageViewModel>(
                                                     context,
@@ -726,20 +728,20 @@ class _PosPageState extends State<PosPage> {
                                                       posprovider
                                                           .productsList.length;
                                                   i++) {
-                                            if (posprovider
-                                                .productsList[i].sku ==
-                                                val) {
-                                              productController.clear();
-                                              FocusScope.of(context)
-                                                  .unfocus();
-                                              if (posprovider.cartItemList
-                                                  .contains(posprovider
-                                                  .productsList[i])) {
-                                                posprovider.productsList[i]
-                                                    .itemCounter++;
-                                                HapticFeedback
-                                                    .heavyImpact();
-                                              } else {
+                                                if (posprovider
+                                                        .productsList[i].sku ==
+                                                    val) {
+                                                  productController.clear();
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  if (posprovider.cartItemList
+                                                      .contains(posprovider
+                                                          .productsList[i])) {
+                                                    posprovider.productsList[i]
+                                                        .itemCounter++;
+                                                    HapticFeedback
+                                                        .heavyImpact();
+                                                  } else {
                                                     if (posprovider
                                                             .productsList[i]
                                                             .enableStock ==
@@ -826,7 +828,7 @@ class _PosPageState extends State<PosPage> {
                           ),
                           const Gap(5),
                           InkWell(
-                            onTap: ()  async {
+                            onTap: () async {
                               focus.requestFocus();
                               // showLoadingDialog(context: context);
                               // await Provider.of<PosPageViewModel>(context, listen: false).productList(context: context);
@@ -887,18 +889,18 @@ class _PosPageState extends State<PosPage> {
                                       scrollDirection: Axis.vertical,
                                       itemBuilder: (context, index) {
                                         return productContainer(
-                                            context: context,
-                                            title:
-                                            value.cartItemList[index].name,
-                                            price: value
-                                                .cartItemList[index]
-                                                .productVariations[0]
-                                                .variations[0]
-                                                .defaultSellPrice,
-                                            qty: value.cartItemList[index]
-                                                .itemCounter,
-                                            index: index,
-                                            item: value.cartItemList[index]);
+                                          context: context,
+                                          title: value.cartItemList[index].name,
+                                          price: value
+                                              .cartItemList[index]
+                                              .productVariations[0]
+                                              .variations[0]
+                                              .defaultSellPrice,
+                                          qty: value
+                                              .cartItemList[index].itemCounter,
+                                          index: index,
+                                          item: value.cartItemList[index],
+                                        );
                                       });
                                 },
                               ),
@@ -920,102 +922,298 @@ class _PosPageState extends State<PosPage> {
   Consumer<PosPageViewModel> bottomNavigationBar(BuildContext context) {
     return Consumer<PosPageViewModel>(
         builder: (BuildContext context, value, Widget? child) {
-          List<Product> items = [];
-          var subTotal = 0.0;
-          for (var i = 0; i < value.cartItemList.length; i++) {
-            items.add(Product(
-                productId: value.cartItemList[i].id,
-                quantity: value.cartItemList[i].itemCounter.toString(),
-                variationId:
+      List<Product> items = [];
+      var subTotal = 0.0;
+      for (var i = 0; i < value.cartItemList.length; i++) {
+        items.add(Product(
+            productId: value.cartItemList[i].id,
+            quantity: value.cartItemList[i].itemCounter.toString(),
+            variationId:
                 value.cartItemList[i].productVariations[0].id.toString(),
-                unitPrice: value.cartItemList[i].productVariations[0].variations[0]
-                    .defaultSellPrice));
-            subTotal = subTotal +
-                (value.cartItemList[i].itemCounter *
-                    double.parse(value.cartItemList[i].productVariations[0]
-                        .variations[0].defaultSellPrice));
-          }
+            unitPrice: value.cartItemList[i].productVariations[0].variations[0]
+                .defaultSellPrice));
+        subTotal = subTotal +
+            (value.cartItemList[i].itemCounter *
+                double.parse(value.cartItemList[i].productVariations[0]
+                    .variations[0].defaultSellPrice)
+            // subTotal = subTotal + (value.cartItemList[i].itemCounter * double.parse(value.cartItemList[i].productVariations[0].variations[0].defaultSellPrice)
+            );
+      }
 
-          var discountAmountForFix = double.parse(discountController.text);
-          var discountAmountForPercantage =
-              subTotal * double.parse(discountController.text) / 100;
-          var tax = subTotal * 15 / 100;
+      var discountAmountForFix = double.parse(discountController.text);
+      var discountAmountForPercantage =
+          subTotal * double.parse(discountController.text) / 100;
+      var taxAmount = 0.0;
 
-          var discountPrice = value.selectrange == 'Fixed'
-              ? discountAmountForFix
-              : discountAmountForPercantage;
+      var discountPrice = value.selectrange == 'Fixed'
+          ? discountAmountForFix
+          : discountAmountForPercantage;
 
-          var totalAmount = (value.selectrange == 'Fixed'
-              ? subTotal - discountAmountForFix + tax
-              : subTotal - discountAmountForPercantage + tax);
-          // - double.parse(cashController.text);
+      var totalAmount = (value.selectrange == 'Fixed'
+          ? subTotal - discountAmountForFix + tax
+          : subTotal - discountAmountForPercantage + tax);
+      // - double.parse(cashController.text);
 
-          return Container(
-            margin: const EdgeInsets.only(left: 2, right: 2),
-            height: 210,
-            decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColor.grey,
-                  offset: Offset(5.0, 10),
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                ),
-              ],
-              color: AppColor.white,
-              border: Border.all(color: AppColor.grey2, width: 1),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(15),
-                topLeft: Radius.circular(15),
-              ),
+      return Container(
+        margin: const EdgeInsets.only(left: 2, right: 2),
+        height: 210,
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: AppColor.grey,
+              offset: Offset(5.0, 10),
+              blurRadius: 15,
+              spreadRadius: 1,
             ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 12, right: 12, top: 15, bottom: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+          color: AppColor.white,
+          border: Border.all(color: AppColor.grey2, width: 1),
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(15),
+            topLeft: Radius.circular(15),
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 12, right: 12, top: 15, bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                              child: commonText(
-                                  title: UtilStrings.subTotal,
-                                  subTitle: "$subTotal")),
-                          const Gap(10),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (BuildContext context) {
-                                //     return AlertDialog(
-                                //       title: Column(
-                                //         children: [
-                                //           const Text("Add Tax"),
-                                //           const Gap(20),
-                                //           ContainerBorder(
-                                //             child: CustomTextFiled(
-                                //               textEditingController: taxController,
-                                //               title: '0.00',
-                                //               isContentPedding: true,
-                                //             ),
-                                //           ),
-                                //         ],
-                                //       ),
-                                //       actions: [
-                                //         FlatButton(
-                                //           child: const Text('Clear'),
-                                //           onPressed: () {
-                                //             value.notifyListeners();
-                                //             taxController.text = '0';
-                                //             Navigator.pop(context);
-                                //           },
-                                //         ),
-                                //         FlatButton(
-                                //           child: const Text('Add'),
-                                //           onPressed: () {
+                      Expanded(
+                          child: commonText(
+                              title: UtilStrings.subTotal,
+                              subTitle: "$subTotal")),
+                      const Gap(10),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () async {
+                            showLoadingDialog(context: context);
+                            await Provider.of<PosPageViewModel>(context,
+                                    listen: false)
+                                .taxList(context: context);
+                            Taxes data = Taxes(name: 'None');
+                            Provider.of<PosPageViewModel>(context,
+                                    listen: false)
+                                .taxesList
+                                .insert(0, data);
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(
+                                      builder: (context, setState) {
+                                    return AlertDialog(
+                                        content: Container(
+                                      height: 300,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text("Edit Order Tax"),
+                                          const Gap(20),
+                                          Utils.customDivider(),
+                                          const Gap(20),
+                                          Utils.boldSubHeadingText(
+                                              text: UtilStrings.orderTax,
+                                              textSize: 14),
+                                          const Gap(10),
+                                          Container(
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: AppColor.grey,
+                                                  width: 1),
+                                              color: AppColor.white,
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: AppColor.grey2,
+                                                  offset: Offset(-1.0, 10),
+                                                  blurRadius: 15,
+                                                  spreadRadius: 1,
+                                                ),
+                                              ],
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: TypeAheadField(
+                                                suggestionsBoxDecoration:
+                                                    SuggestionsBoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        elevation: 5),
+                                                textFieldConfiguration:
+                                                    TextFieldConfiguration(
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintStyle: TextStyle(
+                                                      color: AppColor.grey,
+                                                      fontSize: 14,
+                                                    ),
+                                                    contentPadding:
+                                                        EdgeInsets.only(top: 4),
+                                                    border: InputBorder.none,
+                                                    hintText: "Please Select ",
+                                                    prefixIcon: Icon(
+                                                      Icons.info,
+                                                      color: AppColor.grey,
+                                                    ),
+                                                  ),
+                                                  controller: taxController,
+                                                ),
+                                                suggestionsCallback:
+                                                    (pattern) async {
+                                                  return StateService
+                                                      .getTaxSuggestions(
+                                                          pattern, context);
+                                                },
+                                                transitionBuilder: (context,
+                                                    suggestionsBox,
+                                                    controller) {
+                                                  return suggestionsBox;
+                                                },
+                                                itemBuilder: (context,
+                                                    Taxes suggestion) {
+                                                  return Container(
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          border: Border.all(
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.1))),
+                                                      child: ListTile(
+                                                          title: Text(
+                                                              suggestion.name ??
+                                                                  '')));
+                                                },
+                                                onSuggestionSelected:
+                                                    (Taxes suggestion) {
+                                                  taxController.text =
+                                                      suggestion.name
+                                                          .toString();
+                                                  taxAmount = double.parse(
+                                                      suggestion.amount
+                                                          .toString());
+                                                  taxId =
+                                                      suggestion.id.toString();
+                                                  setState(() {});
+                                                }),
+                                          ),
+                                          const Gap(20),
+                                          Center(
+                                            child: FlatButton(
+                                              child: const Text('Add'),
+                                              onPressed: () {
+                                                tax =
+                                                    subTotal * taxAmount / 100;
+                                                print("HELLO $tax");
+                                                print(
+                                                    "HELLO TAX AMOUNT $taxAmount");
+                                                print(
+                                                    "HELLO sub TOATAl $subTotal");
+                                                taxController.clear();
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ));
+                                  });
+                                });
+                            setState(() {});
+
+                            // showLoadingDialog(context: context);
+                            // await Provider.of<PosPageViewModel>(context,listen: false).taxList(context: context);
+                            // Taxes data = Taxes(name:'None');
+                            // Provider.of<PosPageViewModel>(context, listen: false).taxesList.insert(0, data);
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) {
+                            //     return AlertDialog(
+                            //       content: StatefulBuilder(builder: ,),
+                            //       title: Column(
+                            //         crossAxisAlignment: CrossAxisAlignment.start,
+                            //         children: [
+                            //           const Text("Edit Order Tax"),
+                            //           const Gap(20),
+                            //           Utils.customDivider(),
+                            //           const Gap(20),
+                            //           Utils.boldSubHeadingText(
+                            //               text: UtilStrings.orderTax,
+                            //               textSize: 14),
+                            //           const Gap(10),
+                            //           Container(
+                            //             height: 40,
+                            //             decoration: BoxDecoration(
+                            //               border: Border.all(color: AppColor.grey, width: 1),
+                            //               color: AppColor.white,
+                            //               boxShadow: const [
+                            //                 BoxShadow(
+                            //                   color: AppColor.grey2,
+                            //                   offset: Offset(-1.0, 10),
+                            //                   blurRadius: 15,
+                            //                   spreadRadius: 1,
+                            //                 ),
+                            //               ],
+                            //               borderRadius: BorderRadius.circular(12),
+                            //             ),
+                            //             child: TypeAheadField(
+                            //                 suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                            //                     borderRadius: BorderRadius.circular(20),
+                            //                     elevation: 5),
+                            //                 textFieldConfiguration: TextFieldConfiguration(
+                            //                   decoration: const InputDecoration(
+                            //                     hintStyle: TextStyle(
+                            //                       color: AppColor.grey,
+                            //                       fontSize: 14,
+                            //                     ),
+                            //                     contentPadding: EdgeInsets.only(top: 4),
+                            //                     border: InputBorder.none,
+                            //                     hintText: "Please Select ",
+                            //                     prefixIcon: Icon(
+                            //                       Icons.info,
+                            //                       color: AppColor.grey,
+                            //                     ),
+                            //                   ),
+                            //                   controller: taxController,
+                            //                 ),
+                            //                 suggestionsCallback: (pattern) async {
+                            //                   return StateService.getTaxSuggestions(
+                            //                       pattern, context);
+                            //                 },
+                            //                 transitionBuilder:
+                            //                     (context, suggestionsBox, controller) {
+                            //                   return suggestionsBox;
+                            //                 },
+                            //                 itemBuilder: (context, Taxes suggestion) {
+                            //                   return Container(
+                            //                     decoration: BoxDecoration(
+                            //                         borderRadius: BorderRadius.circular(15),
+                            //                         border: Border.all(
+                            //                             color: Colors.grey.withOpacity(0.1))),
+                            //                     child: ListTile(
+                            //                       title: Text(suggestion.name ?? '')));
+                            //                 },
+                            //                 onSuggestionSelected: (Taxes suggestion) {
+                            //                   taxController.text = suggestion.name.toString();
+                            //                  taxAmount =  double.parse(suggestion.amount.toString());
+                            //                 }),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       actions: [
+                            //         FlatButton(
+                            //           child: const Text('Add'),
+                            //           onPressed: () {
+                            //             tax = subTotal * taxAmount / 100;
+                            //             taxController.clear();
                             //             Navigator.pop(context);
                             //           },
                             //         ),
@@ -1028,668 +1226,678 @@ class _PosPageState extends State<PosPage> {
                               title: UtilStrings.tax,
                               subTitle: tax.toStringAsPrecision(4)),
                         ),
-                          ),
-                        ],
-                      ),
-                      const Gap(10),
-                      Row(
-                        children: [
-                          Expanded(
-                              child: InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Column(
-                                            children: [
-                                              const Text("Add Discount"),
-                                              const Gap(20),
-                                              Utils.boldSubHeadingText(
-                                                  text: UtilStrings.discountType,
-                                                  textSize: 14),
-                                              Consumer<PosPageViewModel>(
-                                                builder: (BuildContext context,
-                                                    value, Widget? child) {
-                                                  return DropdownButton<String>(
-                                                    value: value.selectrange,
-                                                    borderRadius:
-                                                    BorderRadius.circular(10),
-                                                    dropdownColor:
-                                                    AppColor.light_grey2,
-                                                    items: <String>[
-                                                      'Fixed',
-                                                      'Percentage',
-                                                    ].map<DropdownMenuItem<String>>(
-                                                            (String value) {
-                                                          return DropdownMenuItem<
-                                                              String>(
-                                                            value: value,
-                                                            child: Text(
-                                                              value,
-                                                              style: const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                  FontWeight.w400),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                    onChanged: (String? val) async {
-                                                      value.selectrange = val ?? '';
-                                                      value.notifyListeners();
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                              const Gap(20),
-                                              ContainerBorder(
-                                                height: 50,
-                                                child: Center(
-                                                  child: CustomTextFiled(
-                                                    textInputType:
-                                                    TextInputType.number,
-                                                    textEditingController:
-                                                    discountController,
-                                                    title: '0.00',
-                                                    isContentPedding: true,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            FlatButton(
-                                              child: const Text('Add'),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: commonText(
-                                      title: UtilStrings.discount,
-                                      subTitle: discountPrice.toString()))),
-                          const Gap(10),
-                          Expanded(
-                            child: commonText(
-                                title: UtilStrings.totalPayable,
-                                subTitle: totalAmount.toStringAsPrecision(5)),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 10, bottom: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FittedBox(
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: int.parse(userId ?? '1'),
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage.toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    status: 'draft',
-                                    subStatus: 'quotation',
-                                    isQuotation: 'true',
-                                    payments: [
-                                      Payment(
-                                          amount: '$totalAmount',
-                                          method: UtilStrings.quotation)
-                                    ],
-                                    products: items,
-                                  );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    if (value.isSuccess) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text("My Invoice"),
-                                            content: const Text(
-                                                "Do you want to see invoice."),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text("YES"),
-                                                onPressed: () async {
-                                                  if (await canLaunch(
-                                                      Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                          .invoiceUrl)) {
-                                                    await launch(Provider.of<
-                                                        PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
-                                                        .invoiceUrl);
-                                                  } else {
-                                                    throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                  }
+                  const Gap(10),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Column(
+                                        children: [
+                                          const Text("Add Discount"),
+                                          const Gap(20),
+                                          Utils.boldSubHeadingText(
+                                              text: UtilStrings.discountType,
+                                              textSize: 14),
+                                          Consumer<PosPageViewModel>(
+                                            builder: (BuildContext context,
+                                                value, Widget? child) {
+                                              return DropdownButton<String>(
+                                                value: value.selectrange,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                dropdownColor:
+                                                    AppColor.light_grey2,
+                                                items: <String>[
+                                                  'Fixed',
+                                                  'Percentage',
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(
+                                                      value,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? val) async {
+                                                  value.selectrange = val ?? '';
+                                                  value.notifyListeners();
                                                 },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                                child: commonContainer(
-                                  title: 'Quote',
-                                  color: const Color(0xffb0bec5),
-                                  icon: Icons.description_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              InkWell(
-                                onTap: () {
+                                              );
+                                            },
+                                          ),
+                                          const Gap(20),
+                                          ContainerBorder(
+                                            height: 50,
+                                            child: Center(
+                                              child: CustomTextFiled(
+                                                textInputType:
+                                                    TextInputType.number,
+                                                textEditingController:
+                                                    discountController,
+                                                title: '0.00',
+                                                isContentPedding: true,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        FlatButton(
+                                          child: const Text('Add'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: commonText(
+                                  title: UtilStrings.discount,
+                                  subTitle: discountPrice.toString()))),
+                      const Gap(10),
+                      Expanded(
+                        child: commonText(
+                            title: UtilStrings.totalPayable,
+                            subTitle: totalAmount.toStringAsPrecision(5)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 10, bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: int.parse(userId ?? '1'),
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                status: 'draft',
+                                subStatus: 'quotation',
+                                isQuotation: 'true',
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.quotation)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Utils.boldSubHeadingText(
-                                                text: "Payment", textSize: 14),
-                                            const Divider(),
-                                            const Gap(10),
-                                            commonText(
-                                                title: "Total Items",
-                                                subTitle: items[0].quantity),
-                                            const Gap(10),
-                                            commonText(
-                                                title: "Total Payable",
-                                                subTitle: totalAmount.toString()),
-                                            const Gap(10),
-                                            commonText2(
-                                                title: "Total Paying",
-                                                cntrl: totalPayableController,
-                                                onChanged: (String) {
-                                                  setState(() {
-                                                    balance = totalAmount -
-                                                        double.parse(
-                                                            totalPayableController
-                                                                .text);
-                                                  });
-                                                }),
-                                            const Gap(10),
-                                            commonText(
-                                                title: "Balance",
-                                                subTitle: balance.toString()),
-                                          ],
-                                        ),
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
                                         actions: [
-                                          FlatButton(
-                                            child: const Text('Finalize Payment'),
-                                            onPressed: () {
-                                              Sell s = Sell(
-                                                contactId: int.parse(userId ?? '1'),
-                                                discountAmount: value.selectrange ==
-                                                    'Fixed'
-                                                    ? discountAmountForFix
-                                                    .toString()
-                                                    : discountAmountForPercantage
-                                                    .toString(),
-                                                discountType: value.selectrange,
-                                                locationId:
-                                                int.parse(value.selectId),
-                                                payments: [
-                                                  Payment(
-                                                      amount: '$balance',
-                                                  method: UtilStrings.card)
-                                                ],
-                                                products: items,
-                                              );
-                                              ReqCreateSell se =
-                                              ReqCreateSell(sells: [s]);
-                                              showLoadingDialog(context: context);
-                                              Provider.of<PosPageViewModel>(context,
-                                                  listen: false)
-                                                  .createSell(se, context)
-                                                  .then((value) {
-                                                if (value.isSuccess) {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Text(
-                                                            "My Invoice"),
-                                                        content: const Text(
-                                                            "Do you want to see invoice."),
-                                                        actions: [
-                                                          TextButton(
-                                                            child:
-                                                            const Text("YES"),
-                                                            onPressed: () async {
-                                                              if (await canLaunch(
-                                                                  Provider.of<PosPageViewModel>(
-                                                                      context,
-                                                                      listen:
-                                                                      false)
-                                                                      .invoiceUrl)) {
-                                                                await launch(Provider.of<
-                                                                    PosPageViewModel>(
-                                                                    context,
-                                                                    listen:
-                                                                    false)
-                                                                    .invoiceUrl);
-                                                              } else {
-                                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                              }
-                                                            },
-                                                          )
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                }
-                                              });
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
                                             },
-                                          ),
-                                          FlatButton(
-                                            child: const Text('close'),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
+                                          )
                                         ],
                                       );
                                     },
                                   );
-                                },
-                                child: commonContainer(
-                                  title: 'Multi',
-                                  color: const Color(0xffffb74d),
-                                  icon: Icons.notes_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: int.parse(userId ?? '1'),
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage.toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    payments: [
-                                      Payment(
-                                          amount: '$totalAmount',
-                                      method: UtilStrings.card)
-                                    ],
-                                    products: items,
-                                  );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    if (value.isSuccess) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text("My Invoice"),
-                                            content: const Text(
-                                                "Do you want to see invoice."),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text("YES"),
-                                                onPressed: () async {
-                                                  if (await canLaunch(
-                                                      Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                          .invoiceUrl)) {
-                                                    await launch(Provider.of<
-                                                        PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
-                                                        .invoiceUrl);
-                                                  } else {
-                                                    throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                  }
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                                child: commonContainer(
-                                  title: UtilStrings.card,
-                                  color: const Color(0xff7986cb),
-                                  icon: Icons.credit_card_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: int.parse(userId ?? '1'),
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage.toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    payments: [
-                                      Payment(
-                                          amount: '$totalAmount',
-                                          method: UtilStrings.cash)
-                                    ],
-                                    products: items,
-                                  );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    if (value.isSuccess) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text("My Invoice"),
-                                            content: const Text(
-                                                "Do you want to see invoice."),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text("YES"),
-                                                onPressed: () async {
-                                                  if (await canLaunch(
-                                                      Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                          .invoiceUrl)) {
-                                                    await launch(Provider.of<
-                                                        PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
-                                                        .invoiceUrl);
-                                                  } else {
-                                                    throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                  }
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                                child: commonContainer(
-                                  title: UtilStrings.cash,
-                                  color: const Color(0xff81c784),
-                                  icon: Icons.monetization_on_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                            ],
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: 'Quote',
+                              color: const Color(0xffb0bec5),
+                              icon: Icons.description_outlined,
+                              iconColor: AppColor.white,
+                            ),
                           ),
-                        ),
-                        const Gap(15),
-                        FittedBox(
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: int.parse(userId ?? '1'),
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage.toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    payments: [
-                                      Payment(amount: '0', method: UtilStrings.cash)
-                                    ],
-                                    products: items,
-                                  );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    if (value.isSuccess) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text("My Invoice"),
-                                            content: const Text(
-                                                "Do you want to see invoice."),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text("YES"),
-                                                onPressed: () async {
-                                                  if (await canLaunch(
-                                                      Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                          .invoiceUrl)) {
-                                                    await launch(Provider.of<
-                                                        PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
-                                                        .invoiceUrl);
-                                                  } else {
-                                                    throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                  }
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                                child: commonContainer(
-                                  title: 'Credit',
-                                  color: const Color(0xff9575cd),
-                                  icon: Icons.check,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              InkWell(
-                                onTap: () {
-                                  Sell s = Sell(
-                                    contactId: int.parse(userId ?? '1'),
-                                    discountAmount: value.selectrange == 'Fixed'
-                                        ? discountAmountForFix.toString()
-                                        : discountAmountForPercantage.toString(),
-                                    discountType: value.selectrange,
-                                    locationId: int.parse(value.selectId),
-                                    payments: [
-                                      Payment(
-                                          amount: '$totalAmount',
-                                          method: UtilStrings.other)
-                                    ],
-                                    products: items,
-                                  );
-                                  ReqCreateSell se = ReqCreateSell(sells: [s]);
-                                  showLoadingDialog(context: context);
-                                  Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                      .createSell(se, context)
-                                      .then((value) {
-                                    if (value.isSuccess) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text("My Invoice"),
-                                            content: const Text(
-                                                "Do you want to see invoice."),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text("YES"),
-                                                onPressed: () async {
-                                                  if (await canLaunch(
-                                                      Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
-                                                          .invoiceUrl)) {
-                                                    await launch(Provider.of<
-                                                        PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
-                                                        .invoiceUrl);
-                                                  } else {
-                                                    throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                  }
-                                                },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  });
-                                },
-                                child: commonContainer(
-                                  title: UtilStrings.other,
-                                  color: const Color(0xffaed581),
-                                  icon: Icons.notes_outlined,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              const Gap(10),
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        title: const Text("Are You Sure"),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Cancel")),
-                                          TextButton(
-                                            onPressed: () {
-                                              userController.clear();
-                                              productController.clear();
-                                              setState(() {
-                                                Provider.of<PosPageViewModel>(
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              if (items.isEmpty) {
+                                ToastUtils.showCustomToast(context,
+                                    "Please Select One Item", "warning");
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Utils.boldSubHeadingText(
+                                              text: "Payment", textSize: 14),
+                                          const Divider(),
+                                          const Gap(10),
+                                          commonText(
+                                              title: "Total Items",
+                                              subTitle: items[0].quantity),
+                                          const Gap(10),
+                                          commonText(
+                                              title: "Total Payable",
+                                              subTitle: totalAmount.toString()),
+                                          const Gap(10),
+                                          commonText2(
+                                              title: "Total Paying",
+                                              cntrl: totalPayableController,
+                                              onChanged: (String) {
+                                                setState(() {
+                                                  balance = totalAmount -
+                                                      double.parse(
+                                                          totalPayableController
+                                                              .text);
+                                                });
+                                              }),
+                                          const Gap(10),
+                                          commonText(
+                                              title: "Balance",
+                                              subTitle: balance.toString()),
+                                        ],
+                                      ),
+                                      actions: [
+                                        FlatButton(
+                                          child: const Text('Finalize Payment'),
+                                          onPressed: () {
+                                            Sell s = Sell(
+                                              contactId:
+                                                  int.parse(userId ?? '1'),
+                                              discountAmount: value
+                                                          .selectrange ==
+                                                      'Fixed'
+                                                  ? discountAmountForFix
+                                                      .toString()
+                                                  : discountAmountForPercantage
+                                                      .toString(),
+                                              discountType: value.selectrange,
+                                              locationId:
+                                                  int.parse(value.selectId),
+                                              payments: [
+                                                Payment(
+                                                    amount: '$balance',
+                                                    method: UtilStrings.card)
+                                              ],
+                                              products: items,
+                                            );
+                                            ReqCreateSell se =
+                                                ReqCreateSell(sells: [s]);
+                                            showLoadingDialog(context: context);
+                                            Provider.of<PosPageViewModel>(
                                                     context,
                                                     listen: false)
-                                                    .cartItemList
-                                                    .clear();
-                                              });
-                                              Navigator.pop(context);
+                                                .createSell(se, context)
+                                                .then((value) {
+                                              if (value.isSuccess) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          "My Invoice"),
+                                                      content: const Text(
+                                                          "Do you want to see invoice."),
+                                                      actions: [
+                                                        TextButton(
+                                                          child:
+                                                              const Text("YES"),
+                                                          onPressed: () async {
+                                                            if (await canLaunch(
+                                                                Provider.of<PosPageViewModel>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .invoiceUrl)) {
+                                                              await launch(Provider.of<
+                                                                          PosPageViewModel>(
+                                                                      context,
+                                                                      listen:
+                                                                          false)
+                                                                  .invoiceUrl);
+                                                            } else {
+                                                              throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                                            }
+                                                          },
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            });
+                                          },
+                                        ),
+                                        FlatButton(
+                                          child: const Text('close'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            child: commonContainer(
+                              title: 'Multi',
+                              color: const Color(0xffffb74d),
+                              icon: Icons.notes_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: int.parse(userId ?? '1'),
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.card)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
                                             },
-                                            child: const Text("OK"),
-                                          ),
+                                          )
                                         ],
                                       );
                                     },
                                   );
-                                },
-                                child: commonContainer(
-                                  title: 'Cancel',
-                                  color: const Color(0xfff06292),
-                                  icon: Icons.cancel,
-                                  iconColor: AppColor.white,
-                                ),
-                              ),
-                              Container(
-                                height: 30,
-                                width: 90,
-                                color: Colors.transparent,
-                              ),
-                            ],
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.card,
+                              color: const Color(0xff7986cb),
+                              icon: Icons.credit_card_outlined,
+                              iconColor: AppColor.white,
+                            ),
                           ),
-                        ),
-                      ],
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: int.parse(userId ?? '1'),
+                                taxId: taxId,
+                                taxAmount: tax.toString(),
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$subTotal',
+                                      method: UtilStrings.cash)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.cash,
+                              color: const Color(0xff81c784),
+                              icon: Icons.monetization_on_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const Gap(15),
+                    FittedBox(
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: int.parse(userId ?? '1'),
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(amount: '0', method: UtilStrings.cash)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: 'Credit',
+                              color: const Color(0xff9575cd),
+                              icon: Icons.check,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              Sell s = Sell(
+                                contactId: int.parse(userId ?? '1'),
+                                discountAmount: value.selectrange == 'Fixed'
+                                    ? discountAmountForFix.toString()
+                                    : discountAmountForPercantage.toString(),
+                                discountType: value.selectrange,
+                                locationId: int.parse(value.selectId),
+                                payments: [
+                                  Payment(
+                                      amount: '$totalAmount',
+                                      method: UtilStrings.other)
+                                ],
+                                products: items,
+                              );
+                              ReqCreateSell se = ReqCreateSell(sells: [s]);
+                              showLoadingDialog(context: context);
+                              Provider.of<PosPageViewModel>(context,
+                                      listen: false)
+                                  .createSell(se, context)
+                                  .then((value) {
+                                if (value.isSuccess) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("My Invoice"),
+                                        content: const Text(
+                                            "Do you want to see invoice."),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("YES"),
+                                            onPressed: () async {
+                                              if (await canLaunch(
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .invoiceUrl)) {
+                                                await launch(Provider.of<
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
+                                                    .invoiceUrl);
+                                              } else {
+                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              });
+                            },
+                            child: commonContainer(
+                              title: UtilStrings.other,
+                              color: const Color(0xffaed581),
+                              icon: Icons.notes_outlined,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          const Gap(10),
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0))),
+                                    title: const Text("Are You Sure"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Cancel")),
+                                      TextButton(
+                                        onPressed: () {
+                                          userController.clear();
+                                          productController.clear();
+                                          setState(() {
+                                            Provider.of<PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .cartItemList
+                                                .clear();
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: commonContainer(
+                              title: 'Cancel',
+                              color: const Color(0xfff06292),
+                              icon: Icons.cancel,
+                              iconColor: AppColor.white,
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 90,
+                            color: Colors.transparent,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            // Column(
-            //   children: [
-            //     Row(
-            //       children: [
-            //         Column(
-            //           children: [
-            //                     commonText(title: UtilStrings.subTotal, subTitle: '6.00'),
-            //                     const Gap(5),
-            //                     commonText(title: UtilStrings.discount, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //         Utils.customVerticalDivider(),
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //     Utils.customDivider(),
-            //     Row(
-            //       children: [
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //         Utils.customVerticalDivider(),
-            //         Column(
-            //           children: [
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //             const Gap(5),
-            //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //   ],
-            // ),
-          );
-        });
+          ],
+        ),
+        // Column(
+        //   children: [
+        //     Row(
+        //       children: [
+        //         Column(
+        //           children: [
+        //                     commonText(title: UtilStrings.subTotal, subTitle: '6.00'),
+        //                     const Gap(5),
+        //                     commonText(title: UtilStrings.discount, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //         Utils.customVerticalDivider(),
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
+        //     Utils.customDivider(),
+        //     Row(
+        //       children: [
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //         Utils.customVerticalDivider(),
+        //         Column(
+        //           children: [
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //             const Gap(5),
+        //             commonText(title: UtilStrings.tax, subTitle: '6.00'),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
+        //   ],
+        // ),
+      );
+    });
 
     ///..................///
 
@@ -1795,6 +2003,7 @@ class _PosPageState extends State<PosPage> {
     required String price,
     required int qty,
     required Items item,
+    TextEditingController? subTotalController,
   }) {
     return Container(
         height: 60,
@@ -1809,7 +2018,7 @@ class _PosPageState extends State<PosPage> {
           builder: (BuildContext context, value, Widget? child) {
             return Padding(
               padding:
-              const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+                  const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1875,10 +2084,12 @@ class _PosPageState extends State<PosPage> {
                                     text: '$qty', textSize: 14),
                                 InkWell(
                                     onTap: () async {
+                                      value.addCounter(item);
+                                      // subTotalController!.text = '1000';
+                                      // print("HELLO VALUE IS${subTotalController!.text}");
                                       await player
                                           .setAsset(UtilStrings.soundPath);
                                       player.play();
-                                      value.addCounter(item);
                                     },
                                     child: Row(
                                       children: [
@@ -1903,6 +2114,43 @@ class _PosPageState extends State<PosPage> {
                     child: Row(
                       children: [
                         Expanded(child: Container()),
+                        // Container(
+                        //   height: 30,
+                        //   width: 80,
+                        //   alignment: Alignment.center,
+                        //   decoration: BoxDecoration(
+                        //     color: AppColor.blue.withOpacity(0.3),
+                        //     borderRadius: BorderRadius.circular(5),
+                        //   ),
+                        //   child:
+                        //   TextFormField(
+                        //     textAlign: TextAlign.center,
+                        //     style: const TextStyle(
+                        //         color:AppColor.blue,
+                        //         fontSize:14,
+                        //         fontWeight:FontWeight.w900,
+                        //     ),
+                        //     cursorColor: Colors.black,
+                        //     keyboardType: TextInputType.number,
+                        //     decoration:  const InputDecoration(
+                        //         border: InputBorder.none,
+                        //         enabledBorder: InputBorder.none,
+                        //         errorBorder: InputBorder.none,
+                        //         disabledBorder: InputBorder.none,
+                        //     ),
+                        //     textAlignVertical: TextAlignVertical.center,
+                        //     initialValue: '000',
+                        //     // initialValue: '${double.parse(price) * item.itemCounter}',
+                        //     controller: subTotalController,
+                        //     onChanged: (val)
+                        //     {
+                        //       // print("HHH$val");
+                        //       // price = val;
+                        //       // item.productVariations[0].variations[0].defaultSellPrice = price ;
+                        //       // print("PRICE IS $price");
+                        //     },
+                        //   )
+                        // ),
                         Container(
                           height: 30,
                           width: 80,
@@ -1926,10 +2174,11 @@ class _PosPageState extends State<PosPage> {
         ));
   }
 
-  Widget commonContainer({required title,
-    required Color? color,
-    required IconData? icon,
-    Color? iconColor}) {
+  Widget commonContainer(
+      {required title,
+      required Color? color,
+      required IconData? icon,
+      Color? iconColor}) {
     return Container(
       height: 30,
       width: 90,
@@ -1953,7 +2202,8 @@ class _PosPageState extends State<PosPage> {
     );
   }
 
-  Widget commonText({required String title, required String subTitle, Color? color}) {
+  Widget commonText(
+      {required String title, required String subTitle, Color? color}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -1975,10 +2225,11 @@ class _PosPageState extends State<PosPage> {
     );
   }
 
-  Widget commonText2({required String title,
-    Color? color,
-    TextEditingController? cntrl,
-    void Function(String)? onChanged}) {
+  Widget commonText2(
+      {required String title,
+      Color? color,
+      TextEditingController? cntrl,
+      void Function(String)? onChanged}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -2039,5 +2290,17 @@ class StateService {
       return s.locationId!.toLowerCase().contains(query.toLowerCase());
     });
     return locations;
+  }
+
+  static Future<List<Taxes>> getTaxSuggestions(
+      String query, BuildContext context) async {
+    List<Taxes> taxes = [];
+
+    taxes.addAll(
+        Provider.of<PosPageViewModel>(context, listen: false).taxesList);
+    taxes.retainWhere((s) {
+      return s.name!.toLowerCase().contains(query.toLowerCase());
+    });
+    return taxes;
   }
 }

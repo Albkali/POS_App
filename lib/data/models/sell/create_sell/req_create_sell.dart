@@ -27,6 +27,8 @@ class Sell {
     required this.contactId,
     required this.discountAmount,
     required this.discountType,
+    this.taxId,
+    this.taxAmount,
     this.status,
     this.subStatus,
     this.isQuotation,
@@ -36,6 +38,8 @@ class Sell {
 
   int locationId;
   int contactId;
+  String? taxId;
+  String? taxAmount;
   String discountAmount;
   String discountType;
   String? status;
@@ -47,6 +51,8 @@ class Sell {
   factory Sell.fromJson(Map<String, dynamic> json) => Sell(
         locationId: json["location_id"],
         contactId: json["contact_id"],
+        taxId: json["tax_id"].toString(),
+        taxAmount: json["tax_amount"].toString(),
         discountAmount: json["discount_amount"].toString(),
         discountType: json["discount_type"].toString(),
         status: json["status"].toString(),
@@ -58,12 +64,15 @@ class Sell {
             json["payments"].map((x) => Payment.fromJson(x))),
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "location_id": locationId,
         "contact_id": contactId,
+        "tax_id": taxId,
+        "tax_amount": taxAmount,
         "discount_amount": discountAmount,
         "discount_type": discountType,
-        "status" : status,
+        "status": status,
         "sub_status": subStatus,
         "is_quotation": isQuotation,
         "products": List<dynamic>.from(products.map((x) => x.toJson())),
