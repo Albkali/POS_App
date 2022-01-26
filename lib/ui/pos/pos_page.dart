@@ -36,6 +36,8 @@ class PosPage extends StatefulWidget {
 class _PosPageState extends State<PosPage> {
   final player = AudioPlayer();
 
+  bool isSubtotalEditable = false;
+
   String? userId;
   late final TabController tabController;
   late AnimationController animationController;
@@ -55,6 +57,7 @@ class _PosPageState extends State<PosPage> {
   String taxId = '0';
 
   FocusNode focus = FocusNode();
+  FocusNode subTotalFocus = FocusNode();
 
   @override
   void initState() {
@@ -195,7 +198,7 @@ class _PosPageState extends State<PosPage> {
                     // setString(PrefKeyConstants.isOpen, 'true');
                     Navigator.pushAndRemoveUntil(context,
                         MaterialPageRoute(builder: (BuildContext context) {
-                          return const HomePage();
+                      return const HomePage();
                     }), (route) => false);
                     // Navigator.pop(context);
                     // Navigator.pop(context);
@@ -799,7 +802,7 @@ class _PosPageState extends State<PosPage> {
                                   },
                                   onSuggestionSelected:
                                       (Items suggestion) async {
-                                    productController.text =
+                                        productController.text =
                                         suggestion.name.toString();
 
                                     productController.clear();
@@ -2065,6 +2068,8 @@ class _PosPageState extends State<PosPage> {
                               children: [
                                 InkWell(
                                     onTap: () async {
+                                      isSubtotalEditable = false;
+                                      subTotalFocus.unfocus();
                                       value.removeCounter(item);
                                       await player
                                           .setAsset(UtilStrings.soundPath);
@@ -2082,11 +2087,54 @@ class _PosPageState extends State<PosPage> {
                                     )),
                                 Utils.smallHeadingText(
                                     text: '$qty', textSize: 14),
+                                // Container(
+                                //   width: 20,
+                                //   padding:const EdgeInsets.only(bottom: 3),
+                                //   child: TextFormField(
+                                //     textAlign: TextAlign.center,
+                                //     style: const TextStyle(
+                                //       color:AppColor.black,
+                                //       fontSize:14,
+                                //     ),
+                                //     cursorColor: Colors.black,
+                                //     keyboardType: TextInputType.number,
+                                //     decoration:  const InputDecoration(
+                                //       border: InputBorder.none,
+                                //       enabledBorder: InputBorder.none,
+                                //       errorBorder: InputBorder.none,
+                                //       disabledBorder: InputBorder.none,
+                                //     ),
+                                //     textAlignVertical: TextAlignVertical.center,
+                                //     focusNode: subTotalFocus,
+                                //     // initialValue: '000',
+                                //     initialValue: qty.toString(),
+                                //     controller: subTotalController,
+                                //     onFieldSubmitted: (val){
+                                //       isSubtotalEditable = false;
+                                //       setState(() {
+                                //
+                                //       });
+                                //     },
+                                //     onChanged: (val)
+                                //     {
+                                //       // print("HHH$val");
+                                //       // price = val;
+                                //       var newPrice = double.parse(val) / item.itemCounter;
+                                //       item.productVariations[0].variations[0].defaultSellPrice = newPrice.toStringAsFixed(2);
+                                //       print("PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
+                                //     },
+                                //   ),
+                                // ),
                                 InkWell(
                                     onTap: () async {
+                                      isSubtotalEditable = false;
+                                      subTotalFocus.unfocus();
                                       value.addCounter(item);
                                       // subTotalController!.text = '1000';
                                       // print("HELLO VALUE IS${subTotalController!.text}");
+                                      // subTotalController?.text = ( double.parse(price) * item.itemCounter).toString();
+                                      // print('Your total is ${subTotalController?.text}');
+
                                       await player
                                           .setAsset(UtilStrings.soundPath);
                                       player.play();
@@ -2114,56 +2162,77 @@ class _PosPageState extends State<PosPage> {
                     child: Row(
                       children: [
                         Expanded(child: Container()),
-                        // Container(
-                        //   height: 30,
-                        //   width: 80,
-                        //   alignment: Alignment.center,
-                        //   decoration: BoxDecoration(
-                        //     color: AppColor.blue.withOpacity(0.3),
-                        //     borderRadius: BorderRadius.circular(5),
-                        //   ),
-                        //   child:
-                        //   TextFormField(
-                        //     textAlign: TextAlign.center,
-                        //     style: const TextStyle(
-                        //         color:AppColor.blue,
-                        //         fontSize:14,
-                        //         fontWeight:FontWeight.w900,
-                        //     ),
-                        //     cursorColor: Colors.black,
-                        //     keyboardType: TextInputType.number,
-                        //     decoration:  const InputDecoration(
-                        //         border: InputBorder.none,
-                        //         enabledBorder: InputBorder.none,
-                        //         errorBorder: InputBorder.none,
-                        //         disabledBorder: InputBorder.none,
-                        //     ),
-                        //     textAlignVertical: TextAlignVertical.center,
-                        //     initialValue: '000',
-                        //     // initialValue: '${double.parse(price) * item.itemCounter}',
-                        //     controller: subTotalController,
-                        //     onChanged: (val)
-                        //     {
-                        //       // print("HHH$val");
-                        //       // price = val;
-                        //       // item.productVariations[0].variations[0].defaultSellPrice = price ;
-                        //       // print("PRICE IS $price");
-                        //     },
-                        //   )
-                        // ),
-                        Container(
-                          height: 30,
-                          width: 80,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: AppColor.blue.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(5),
+                        if (isSubtotalEditable == true)
+                          Container(
+                              height: 30,
+                              width: 80,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: AppColor.blue.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: TextFormField(
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: AppColor.blue,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                cursorColor: Colors.black,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                                textAlignVertical: TextAlignVertical.center,
+                                focusNode: subTotalFocus,
+                                // initialValue: '000',
+                                initialValue:
+                                    (double.parse(price) * item.itemCounter)
+                                        .toStringAsFixed(2),
+                                controller: subTotalController,
+                                onFieldSubmitted: (val) {
+                                  isSubtotalEditable = false;
+                                  setState(() {});
+                                },
+                                onChanged: (val) {
+                                  // print("HHH$val");
+                                  // price = val;
+                                  var newPrice =
+                                      double.parse(val) / item.itemCounter;
+                                  item.productVariations[0].variations[0]
+                                          .defaultSellPrice =
+                                      newPrice.toStringAsFixed(2);
+                                  print(
+                                      "PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
+                                },
+                              ))
+                        else
+                          InkWell(
+                            onTap: () {
+                              isSubtotalEditable = true;
+                              FocusScope.of(context)
+                                  .requestFocus(subTotalFocus);
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 80,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: AppColor.blue.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Utils.boldSubHeadingText(
+                                  text: (double.parse(price) * item.itemCounter)
+                                      .toStringAsFixed(2),
+                                  textSize: 12,
+                                  color: AppColor.blue),
+                            ),
                           ),
-                          child: Utils.boldSubHeadingText(
-                              text: '${double.parse(price) * item.itemCounter}',
-                              textSize: 12,
-                              color: AppColor.blue),
-                        ),
                       ],
                     ),
                   ),

@@ -1,7 +1,12 @@
 /* API End Points Constants*/
 
-class  ApiEndPoints{
-    static String apiBaseUrl = "https://erpx.shajan-sa.com/";
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
+
+class ApiEndPoints {
+  static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
+
+  // static String apiBaseUrl = "https://erpx.shajan-sa.com/";
 
   // static String BASE_URL = "https://${getString(PrefKeyConstants.BASE_URL)}/" ;
   // ?'https://erpx.shajan-sa.com/';
@@ -20,7 +25,7 @@ class  ApiEndPoints{
   static const String apiLUserList = "connector/api/cash-register";
   static const String apiUpdateReturnSell = "connector/api/sell";
   static const String apiSpecifiedContact = "/connector/api/contactapi";
-  static const String apiGetBaseUrl = "baseurl.php";
+  static const String apiGetBaseUrl = "https://erpx.shajan-sa.com/baseurl.php";
   static const String apiTaxList = "connector/api/tax";
 }
 

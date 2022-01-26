@@ -11,4 +11,5 @@ class PrefKeyConstants {
   static const String discountPrice = 'discountPrice';
   static const String locationName = 'locationName';
   static const String scanType = 'scanType';
+  static const String clientId = 'clientId';
 }

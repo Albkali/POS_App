@@ -81,7 +81,7 @@ class _AddSecretKeyState extends State<AddSecretKey> {
             onTap: () {
               if (keyController.text.isEmpty && tokenController.text.isEmpty) {
                 ToastUtils.showCustomToast(
-                    context, 'Please Enter Client Secret Key', 'warning');
+                    context, 'Please Enter Your Client Id ', 'warning');
               } else {
                 // setString(PrefKeyConstants.SECRET_KEY, keyController.text);
                 // setString(PrefKeyConstants.BASE_URL, tokenController.text);
@@ -89,11 +89,6 @@ class _AddSecretKeyState extends State<AddSecretKey> {
                 showLoadingDialog(context: context);
                 Provider.of<LoginViewModel>(context, listen: false)
                     .baseUrl(keyController.text, context);
-
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return const LoginPage();
-                }));
               }
             },
             child: const Padding(

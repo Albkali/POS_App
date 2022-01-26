@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:pos/data/models/auth/res_base_url_page.dart';
 import 'package:pos/data/models/auth/res_login.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
@@ -9,6 +12,8 @@ import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/widgets/loading_dialog.dart';
+
+import 'login_page.dart';
 
 class LoginViewModel with ChangeNotifier {
   late final AuthRepo authRepo;
@@ -33,7 +38,8 @@ class LoginViewModel with ChangeNotifier {
 
   String get loginErrorMessage => _loginErrorMessage;
 
-  Future<ResponseModel> login(String email, String password,BuildContext context) async {
+  Future<ResponseModel> login(
+      String email, String password, BuildContext context) async {
     _isLoading = true;
     _loginErrorMessage = '';
     notifyListeners();
@@ -71,11 +77,22 @@ class LoginViewModel with ChangeNotifier {
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      if (apiResponse.response?.data["status"] == true) {
-        ResBaseUrl data = ResBaseUrl.fromJson(apiResponse.response!.data);
-        setString(PrefKeyConstants.secretKey, data.data.clientSecret);
+      var xyz = jsonDecode(apiResponse.response?.data);
+      if (xyz['status'] == true) {
+        ResBaseUrl data =
+            ResBaseUrl.fromJson(jsonDecode(apiResponse.response!.data));
+        await setString(PrefKeyConstants.secretKey, data.data.clientSecret);
+        await setString(PrefKeyConstants.baseUrl, data.data.baseUrl);
+        await setString(PrefKeyConstants.clientId, data.data.clientId);
+        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.secretKey)}");
+        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.baseUrl)}");
+        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.clientId)}");
         responseModel = ResponseModel(true, 'successful');
         ToastUtils.showCustomToast(context, 'ADDED successfully', 'success');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+          return const LoginPage();
+        }));
       } else {
         responseModel = ResponseModel(true, 'successful');
         ToastUtils.showCustomToast(context, 'Invalid Subdomain', 'warning');
