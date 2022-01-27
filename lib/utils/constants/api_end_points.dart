@@ -1,12 +1,9 @@
 /* API End Points Constants*/
 
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
-
 class ApiEndPoints {
-  static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
+  // static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
 
-  // static String apiBaseUrl = "https://erpx.shajan-sa.com/";
+  static String apiBaseUrl = "https://erpx.shajan-sa.com/";
 
   // static String BASE_URL = "https://${getString(PrefKeyConstants.BASE_URL)}/" ;
   // ?'https://erpx.shajan-sa.com/';

@@ -12,10 +12,13 @@ class SellRepo{
 
   Future<ApiResponse?> getListSell() async {
     try {
-      Response response =
-          await dioClient.get(ApiEndPoints.apiListOfSell, queryParameters: {
-        'per_page': "-1",
-      });
+      Response response = await dioClient.get(
+          ApiEndPoints.apiListOfSell
+          // ApiEndPoints.apiListOfSell
+          ,
+          queryParameters: {
+            'per_page': "-1",
+          });
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);

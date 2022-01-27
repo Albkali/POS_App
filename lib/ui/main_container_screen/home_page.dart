@@ -9,6 +9,8 @@ import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell.dart';
 import 'package:pos/ui/setting_page/setting_page.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:pos/widgets/loading_dialog.dart';
@@ -125,16 +127,26 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              commonCircleWithText(
-                                text: getTranslated(context, UtilStrings.home),
-                                icon: Icons.phone_android_outlined,
+                              InkWell(
+                                onTap: () {
+                                  // context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
+                                  print(
+                                      "TOKEN IS${getString(PrefKeyConstants.token)}");
+                                },
+                                child: commonCircleWithText(
+                                  text:
+                                      getTranslated(context, UtilStrings.home),
+                                  icon: Icons.phone_android_outlined,
+                                ),
                               ),
                               commonCircleWithText(
-                                text: getTranslated(context, UtilStrings.quotation),
+                                text: getTranslated(
+                                    context, UtilStrings.quotation),
                                 icon: Icons.description_outlined,
                               ),
                               commonCircleWithText(
-                                text: getTranslated(context, UtilStrings.customer),
+                                text: getTranslated(
+                                    context, UtilStrings.customer),
                                 icon: Icons.group_outlined,
                               ),
                               commonCircleWithText(

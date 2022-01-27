@@ -16,7 +16,8 @@ class AuthRepo {
       {required String email, required String password}) async {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiLogin,
+        // ApiEndPoints.apiLogin,
+        'https://erpx.shajan-sa.com/oauth/token',
         options: Options(headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

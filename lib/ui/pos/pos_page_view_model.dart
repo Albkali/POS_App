@@ -157,15 +157,15 @@ class PosPageViewModel with ChangeNotifier {
 
   Future<ResponseModel> createSell(
       ReqCreateSell sell, BuildContext context) async {
+    print("HELOO DATA IS${sell.toJson()}");
     notifyListeners();
     isLoading = true;
     ApiResponse? apiResponse = await posRepo.createSell(sell);
     ResponseModel responseModel;
-    if(apiResponse!.response != null &&
+    if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
-      if(apiResponse.response?.data[0]['original'] == null )
-      {
+      if (apiResponse.response?.data[0]['original'] == null) {
         ResCreateSell data =
             ResCreateSell.fromJson(apiResponse.response!.data[0]);
         invoiceUrl = data.invoiceUrl;
@@ -173,9 +173,8 @@ class PosPageViewModel with ChangeNotifier {
             context, 'Sell added successfully', 'success');
         responseModel = ResponseModel(true, 'successful');
       }
-      else
-        {
-          ToastUtils.showCustomToast(
+      else {
+        ToastUtils.showCustomToast(
             context,
             apiResponse.response?.data[0]['original']['error']['message'],
             'warning');

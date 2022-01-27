@@ -41,6 +41,9 @@ class ListOfSellViewModel with ChangeNotifier {
     ResponseModel responseModel;
     if (apiResponse!.response != null &&
         apiResponse.response!.statusCode == 200) {
+      print("API RES${apiResponse.response?.headers}");
+      print("API RUNTIUM${apiResponse.response.runtimeType}");
+      print("API MSG${apiResponse.response?.statusMessage}");
       ResShowSell data = ResShowSell.fromJson(apiResponse.response!.data);
       for (var item in data.data) {
         reversedSellItemList.add(item);

@@ -5,6 +5,8 @@ import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -26,6 +28,11 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                               }),
                           Utils.mediumHeadingText(
-                            text: 'Remember me',
+                              text: 'Remember me',
                               // text: getTranslated(
                               //   context,
                               //   UtilStrings.rememberMe,
@@ -112,11 +119,11 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-
               ],
             ),
             InkWell(
-              onTap: () {
+              onTap: () async {
+                print("BASE URL IS ${getString((PrefKeyConstants.baseUrl))}");
                 if (emailController.text.isEmpty) {
                   ToastUtils.showCustomToast(
                       context,
@@ -128,24 +135,29 @@ class _LoginPageState extends State<LoginPage> {
                       getTranslated(context, UtilStrings.enterPassword),
                       'warning');
                 } else {
+                  print("HELLO 1");
                   showLoadingDialog(context: context);
-                  context
-                      .read<LoginViewModel>()
+                  print("HELLO 2");
+
+                  // context.read<LoginViewModel>().login(emailController.text, passwordController.text, context).then((value) {
+                  await Provider.of<LoginViewModel>(context, listen: false)
                       .login(emailController.text, passwordController.text,
-                      context)
+                          context)
                       .then((value) {
+                    print("HELLO 3");
                     if (value.isSuccess) {
+                      print("HELLO 4");
                       Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return const HomePage();
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        // return const HomePage();
+                        return const HomePage();
                       }), (route) => false);
                     }
                   });
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 10,left: 10,right: 10),
+                padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
                 child: CustomButton(
                   title: getTranslated(context, UtilStrings.login).toString(),
                 ),

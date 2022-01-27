@@ -15,6 +15,7 @@ class DioClient {
 
 
   DioClient(this.baseUrl, Dio dioC, {required this.loggingInterceptor,}) {
+    // token = AppConstant.token;
     token = getString(PrefKeyConstants.token);
     print('Your token is $token');
     dio = Dio();
@@ -26,6 +27,7 @@ class DioClient {
       ..httpClientAdapter
       ..options.headers = {
         'Content-Type': 'application/json; charset=UTF-8',
+        // 'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       };
     dio!.interceptors.add(loggingInterceptor);
@@ -38,6 +40,7 @@ class DioClient {
      ProgressCallback? onReceiveProgress,
   }) async {
     try {
+      print("URL IS ${uri}");
       var response = await dio!.get(
         uri,
         queryParameters: queryParameters,
@@ -64,6 +67,8 @@ class DioClient {
      ProgressCallback? onReceiveProgress,
   }) async {
     try {
+      print("URL IS ${uri}");
+      print("DATA IS ${data}");
       var response = await dio!.post(
         uri,
         data: data,

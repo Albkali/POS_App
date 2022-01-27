@@ -37,6 +37,7 @@ class _PosPageState extends State<PosPage> {
   final player = AudioPlayer();
 
   bool isSubtotalEditable = false;
+  bool isQuantityEditable = false;
 
   String? userId;
   late final TabController tabController;
@@ -53,11 +54,13 @@ class _PosPageState extends State<PosPage> {
   late double subTotal = 0;
   double balance = 0;
   var tax = 0.0;
+  var taxAmount = 0.0;
 
   String taxId = '0';
 
   FocusNode focus = FocusNode();
   FocusNode subTotalFocus = FocusNode();
+  FocusNode quantityFocus = FocusNode();
 
   @override
   void initState() {
@@ -266,9 +269,9 @@ class _PosPageState extends State<PosPage> {
                     ToastUtils.showCustomToast(
                         context, "PRODUCT NOT AVAILABLE", "warning");
                   } else {
-                    posprovider.cartItemList.add(posprovider.productsList[i]);
                     await player.setAsset(UtilStrings.soundPath);
                     player.play();
+                    posprovider.cartItemList.add(posprovider.productsList[i]);
                   }
                 }
               }
@@ -294,17 +297,17 @@ class _PosPageState extends State<PosPage> {
                 if (posprovider.productsList[i].sku == barcodeScanResLists) {
                   if (posprovider.cartItemList
                       .contains(posprovider.productsList[i])) {
-                    posprovider.productsList[i].itemCounter++;
                     await player.setAsset(UtilStrings.soundPath);
                     player.play();
+                    posprovider.productsList[i].itemCounter++;
                   } else {
                     if (posprovider.productsList[i].enableStock == '0') {
                       ToastUtils.showCustomToast(
                           context, "PRODUCT NOT AVAILABLE", "warning");
                     } else {
-                      posprovider.cartItemList.add(posprovider.productsList[i]);
                       await player.setAsset(UtilStrings.soundPath);
                       player.play();
+                      posprovider.cartItemList.add(posprovider.productsList[i]);
                     }
                   }
                 }
@@ -740,6 +743,9 @@ class _PosPageState extends State<PosPage> {
                                                   if (posprovider.cartItemList
                                                       .contains(posprovider
                                                           .productsList[i])) {
+                                                    await player.setAsset(
+                                                        UtilStrings.soundPath);
+                                                    player.play();
                                                     posprovider.productsList[i]
                                                         .itemCounter++;
                                                     HapticFeedback
@@ -756,13 +762,13 @@ class _PosPageState extends State<PosPage> {
                                                       HapticFeedback
                                                           .heavyImpact();
                                                     } else {
-                                                      posprovider.cartItemList
-                                                          .add(posprovider
-                                                              .productsList[i]);
                                                       await player.setAsset(
                                                           UtilStrings
                                                               .soundPath);
                                                       player.play();
+                                                      posprovider.cartItemList
+                                                          .add(posprovider
+                                                              .productsList[i]);
                                                     }
                                                   }
                                                 }
@@ -925,8 +931,9 @@ class _PosPageState extends State<PosPage> {
   Consumer<PosPageViewModel> bottomNavigationBar(BuildContext context) {
     return Consumer<PosPageViewModel>(
         builder: (BuildContext context, value, Widget? child) {
-      List<Product> items = [];
+          List<Product> items = [];
       var subTotal = 0.0;
+      var totalTax = 0.0;
       for (var i = 0; i < value.cartItemList.length; i++) {
         items.add(Product(
             productId: value.cartItemList[i].id,
@@ -941,17 +948,16 @@ class _PosPageState extends State<PosPage> {
                     .variations[0].defaultSellPrice)
             // subTotal = subTotal + (value.cartItemList[i].itemCounter * double.parse(value.cartItemList[i].productVariations[0].variations[0].defaultSellPrice)
             );
+        totalTax = subTotal * taxAmount / 100;
       }
 
       var discountAmountForFix = double.parse(discountController.text);
       var discountAmountForPercantage =
           subTotal * double.parse(discountController.text) / 100;
-      var taxAmount = 0.0;
 
       var discountPrice = value.selectrange == 'Fixed'
           ? discountAmountForFix
           : discountAmountForPercantage;
-
       var totalAmount = (value.selectrange == 'Fixed'
           ? subTotal - discountAmountForFix + tax
           : subTotal - discountAmountForPercantage + tax);
@@ -1096,7 +1102,7 @@ class _PosPageState extends State<PosPage> {
                                                 },
                                                 onSuggestionSelected:
                                                     (Taxes suggestion) {
-                                                  taxController.text =
+                                                      taxController.text =
                                                       suggestion.name
                                                           .toString();
                                                   taxAmount = double.parse(
@@ -1226,8 +1232,10 @@ class _PosPageState extends State<PosPage> {
                             // );
                           },
                           child: commonText(
-                              title: UtilStrings.tax,
-                              subTitle: tax.toStringAsPrecision(4)),
+                            title: UtilStrings.tax,
+                            // subTitle: tax.toStringAsPrecision(4)),
+                            subTitle: totalTax.toString(),
+                          ),
                         ),
                       ),
                     ],
@@ -1344,6 +1352,7 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+                                taxId: taxId,
                                 status: 'draft',
                                 subStatus: 'quotation',
                                 isQuotation: 'true',
@@ -1462,6 +1471,7 @@ class _PosPageState extends State<PosPage> {
                                               discountType: value.selectrange,
                                               locationId:
                                                   int.parse(value.selectId),
+                                              taxId: taxId,
                                               payments: [
                                                 Payment(
                                                     amount: '$balance',
@@ -1546,6 +1556,7 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+                                taxId: taxId,
                                 payments: [
                                   Payment(
                                       amount: '$totalAmount',
@@ -1606,12 +1617,13 @@ class _PosPageState extends State<PosPage> {
                               Sell s = Sell(
                                 contactId: int.parse(userId ?? '1'),
                                 taxId: taxId,
-                                taxAmount: tax.toString(),
+                                // taxAmount: tax.toString(),
                                 discountAmount: value.selectrange == 'Fixed'
                                     ? discountAmountForFix.toString()
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+
                                 payments: [
                                   Payment(
                                       amount: '$subTotal',
@@ -1682,6 +1694,7 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+                                taxId: taxId,
                                 payments: [
                                   Payment(amount: '0', method: UtilStrings.cash)
                                 ],
@@ -1744,6 +1757,7 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
+                                taxId: taxId,
                                 payments: [
                                   Payment(
                                       amount: '$totalAmount',
@@ -2007,6 +2021,7 @@ class _PosPageState extends State<PosPage> {
     required int qty,
     required Items item,
     TextEditingController? subTotalController,
+    TextEditingController? quantityController,
   }) {
     return Container(
         height: 60,
@@ -2069,11 +2084,13 @@ class _PosPageState extends State<PosPage> {
                                 InkWell(
                                     onTap: () async {
                                       isSubtotalEditable = false;
-                                      subTotalFocus.unfocus();
-                                      value.removeCounter(item);
+                                      isQuantityEditable = false;
+                                      // subTotalFocus.unfocus();
+                                      // quantityFocus.unfocus();
                                       await player
                                           .setAsset(UtilStrings.soundPath);
                                       player.play();
+                                      value.removeCounter(item);
                                     },
                                     child: Row(
                                       children: [
@@ -2085,59 +2102,58 @@ class _PosPageState extends State<PosPage> {
                                         Utils.customVerticalDivider(),
                                       ],
                                     )),
-                                Utils.smallHeadingText(
-                                    text: '$qty', textSize: 14),
-                                // Container(
-                                //   width: 20,
-                                //   padding:const EdgeInsets.only(bottom: 3),
-                                //   child: TextFormField(
-                                //     textAlign: TextAlign.center,
-                                //     style: const TextStyle(
-                                //       color:AppColor.black,
-                                //       fontSize:14,
-                                //     ),
-                                //     cursorColor: Colors.black,
-                                //     keyboardType: TextInputType.number,
-                                //     decoration:  const InputDecoration(
-                                //       border: InputBorder.none,
-                                //       enabledBorder: InputBorder.none,
-                                //       errorBorder: InputBorder.none,
-                                //       disabledBorder: InputBorder.none,
-                                //     ),
-                                //     textAlignVertical: TextAlignVertical.center,
-                                //     focusNode: subTotalFocus,
-                                //     // initialValue: '000',
-                                //     initialValue: qty.toString(),
-                                //     controller: subTotalController,
-                                //     onFieldSubmitted: (val){
-                                //       isSubtotalEditable = false;
-                                //       setState(() {
-                                //
-                                //       });
-                                //     },
-                                //     onChanged: (val)
-                                //     {
-                                //       // print("HHH$val");
-                                //       // price = val;
-                                //       var newPrice = double.parse(val) / item.itemCounter;
-                                //       item.productVariations[0].variations[0].defaultSellPrice = newPrice.toStringAsFixed(2);
-                                //       print("PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
-                                //     },
-                                //   ),
-                                // ),
+                                if (isQuantityEditable == true)
+                                  Container(
+                                    width: 20,
+                                    padding: const EdgeInsets.only(bottom: 3),
+                                    child: TextFormField(
+                                      autofocus: true,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        color: AppColor.black,
+                                        fontSize: 14,
+                                      ),
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                      ),
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      focusNode: quantityFocus,
+                                      initialValue: qty.toString(),
+                                      controller: quantityController,
+                                      onFieldSubmitted: (val) {
+                                        isQuantityEditable = false;
+                                        setState(() {});
+                                      },
+                                      onChanged: (val) {
+                                        item.itemCounter = int.parse(val);
+                                      },
+                                    ),
+                                  )
+                                else
+                                  GestureDetector(
+                                      onTap: () {
+                                        isQuantityEditable = true;
+                                        // FocusScope.of(context).requestFocus(quantityFocus);
+                                        setState(() {});
+                                      },
+                                      child: Utils.smallHeadingText(
+                                          text: '$qty', textSize: 14)),
                                 InkWell(
                                     onTap: () async {
                                       isSubtotalEditable = false;
-                                      subTotalFocus.unfocus();
-                                      value.addCounter(item);
-                                      // subTotalController!.text = '1000';
-                                      // print("HELLO VALUE IS${subTotalController!.text}");
-                                      // subTotalController?.text = ( double.parse(price) * item.itemCounter).toString();
-                                      // print('Your total is ${subTotalController?.text}');
-
+                                      isQuantityEditable = false;
+                                      // subTotalFocus.unfocus();
+                                      // quantityFocus.unfocus();
                                       await player
                                           .setAsset(UtilStrings.soundPath);
                                       player.play();
+                                      value.addCounter(item);
                                     },
                                     child: Row(
                                       children: [
@@ -2173,6 +2189,7 @@ class _PosPageState extends State<PosPage> {
                               ),
                               padding: const EdgeInsets.only(bottom: 5),
                               child: TextFormField(
+                                autofocus: true,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: AppColor.blue,
@@ -2191,20 +2208,18 @@ class _PosPageState extends State<PosPage> {
                                 focusNode: subTotalFocus,
                                 // initialValue: '000',
                                 initialValue:
-                                    (double.parse(price) * item.itemCounter)
-                                        .toStringAsFixed(2),
+                                (double.parse(price) * item.itemCounter)
+                                    .toStringAsFixed(2),
                                 controller: subTotalController,
                                 onFieldSubmitted: (val) {
                                   isSubtotalEditable = false;
                                   setState(() {});
                                 },
                                 onChanged: (val) {
-                                  // print("HHH$val");
-                                  // price = val;
                                   var newPrice =
                                       double.parse(val) / item.itemCounter;
                                   item.productVariations[0].variations[0]
-                                          .defaultSellPrice =
+                                      .defaultSellPrice =
                                       newPrice.toStringAsFixed(2);
                                   print(
                                       "PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
@@ -2214,8 +2229,9 @@ class _PosPageState extends State<PosPage> {
                           InkWell(
                             onTap: () {
                               isSubtotalEditable = true;
-                              FocusScope.of(context)
-                                  .requestFocus(subTotalFocus);
+                              // FocusScope.of(context).unfocus();
+                              // FocusScope.of(context).requestFocus(subTotalFocus);
+                              print("HELLO$isSubtotalEditable");
                               setState(() {});
                             },
                             child: Container(
@@ -2227,6 +2243,7 @@ class _PosPageState extends State<PosPage> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Utils.boldSubHeadingText(
+                                // text: "122",
                                   text: (double.parse(price) * item.itemCounter)
                                       .toStringAsFixed(2),
                                   textSize: 12,

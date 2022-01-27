@@ -51,7 +51,7 @@ class Sell {
   factory Sell.fromJson(Map<String, dynamic> json) => Sell(
         locationId: json["location_id"],
         contactId: json["contact_id"],
-        taxId: json["tax_id"].toString(),
+        taxId: json["tax_rate_id"].toString(),
         taxAmount: json["tax_amount"].toString(),
         discountAmount: json["discount_amount"].toString(),
         discountType: json["discount_type"].toString(),
@@ -68,7 +68,7 @@ class Sell {
       {
         "location_id": locationId,
         "contact_id": contactId,
-        "tax_id": taxId,
+        "tax_rate_id": taxId,
         "tax_amount": taxAmount,
         "discount_amount": discountAmount,
         "discount_type": discountType,

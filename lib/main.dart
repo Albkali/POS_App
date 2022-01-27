@@ -12,6 +12,7 @@ import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,8 @@ class _MyAppState extends State<MyApp> {
 
   late ConnectivityResult _previousResult;
 
+  var subToken = '';
+
   Future<bool> check() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -78,6 +81,10 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // clear();
+    subToken = getString(PrefKeyConstants.token);
+    print("VALUE OF TOKEN $subToken");
+    print("VALUE OF TOKEN ${subToken.runtimeType}");
     check().then((intenet) {
       if (intenet) {
       } else {
@@ -223,10 +230,11 @@ class _MyAppState extends State<MyApp> {
         return supportedLocales.first;
       },
       // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
-      // home: getString(PrefKeyConstants.token).isEmpty
-      //     ? const LoginPage()
-      //     : const HomePage(),
-      home: AddSecretKey(),
+      home: subToken.isEmpty
+          // home: getString(PrefKeyConstants.token).isEmpty
+          ? const AddSecretKey()
+          : const AddSecretKey(),
+      // home: AddSecretKey(),
       // home:   LinkPage(),
     );
   }

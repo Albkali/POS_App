@@ -51,7 +51,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
     await Provider.of<PosPageViewModel>(context, listen: false).userList();
     await Provider.of<PosPageViewModel>(context, listen: false)
         .productList(context: context);
-
     Location data = Location(name: 'all', id: 'all', locationId: "");
     Provider.of<PosPageViewModel>(context, listen: false)
         .locationList
@@ -61,8 +60,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
         .usersList
         .insert(0, data2);
 
-    // await Provider.of<PosPageViewModel>(context, listen: false).userList();
-    // Provider.of<ListOfSellViewModel>(context, listen: false).userList.addAll(Provider.of<PosPageViewModel>(context, listen: false).usersList);
   }
 
   late ListOfSellViewModel listOfSellViewModel;
