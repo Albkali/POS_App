@@ -808,7 +808,7 @@ class _PosPageState extends State<PosPage> {
                                   },
                                   onSuggestionSelected:
                                       (Items suggestion) async {
-                                        productController.text =
+                                    productController.text =
                                         suggestion.name.toString();
 
                                     productController.clear();
@@ -1004,7 +1004,8 @@ class _PosPageState extends State<PosPage> {
                             await Provider.of<PosPageViewModel>(context,
                                     listen: false)
                                 .taxList(context: context);
-                            Taxes data = Taxes(name: 'None');
+                            Taxes data =
+                                Taxes(name: 'None', amount: '0', id: '0');
                             Provider.of<PosPageViewModel>(context,
                                     listen: false)
                                 .taxesList
@@ -1016,7 +1017,10 @@ class _PosPageState extends State<PosPage> {
                                       builder: (context, setState) {
                                     return AlertDialog(
                                         content: Container(
-                                      height: 300,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                      height: 200,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -1116,6 +1120,7 @@ class _PosPageState extends State<PosPage> {
                                           const Gap(20),
                                           Center(
                                             child: FlatButton(
+                                              color: Colors.blue,
                                               child: const Text('Add'),
                                               onPressed: () {
                                                 tax =
@@ -1370,6 +1375,26 @@ class _PosPageState extends State<PosPage> {
                                   .createSell(se, context)
                                   .then((value) {
                                 if (value.isSuccess) {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  userController.clear();
+                                  productController.clear();
+                                  for (var i = 0;
+                                      i < path.cartItemList.length;
+                                      i++) {
+                                    path.cartItemList[i].itemCounter = 1;
+                                  }
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .cartItemList
+                                      .clear();
+                                  subTotal = 0;
+                                  totalAmount = 0.0;
+                                  totalTax = 0.0;
+                                  tax = 0.0;
+                                  taxId = '0';
+
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1383,13 +1408,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
+                                                      context,
+                                                      listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                            PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                    PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1420,121 +1445,155 @@ class _PosPageState extends State<PosPage> {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Utils.boldSubHeadingText(
-                                              text: "Payment", textSize: 14),
-                                          const Divider(),
-                                          const Gap(10),
-                                          commonText(
-                                              title: "Total Items",
-                                              subTitle: items[0].quantity),
-                                          const Gap(10),
-                                          commonText(
-                                              title: "Total Payable",
-                                              subTitle: totalAmount.toString()),
-                                          const Gap(10),
-                                          commonText2(
-                                              title: "Total Paying",
-                                              cntrl: totalPayableController,
-                                              onChanged: (String) {
-                                                setState(() {
-                                                  balance = totalAmount -
-                                                      double.parse(
-                                                          totalPayableController
-                                                              .text);
-                                                });
-                                              }),
-                                          const Gap(10),
-                                          commonText(
-                                              title: "Balance",
-                                              subTitle: balance.toString()),
-                                        ],
-                                      ),
-                                      actions: [
-                                        FlatButton(
-                                          child: const Text('Finalize Payment'),
-                                          onPressed: () {
-                                            Sell s = Sell(
-                                              contactId:
-                                                  int.parse(userId ?? '1'),
-                                              discountAmount: value
-                                                          .selectrange ==
-                                                      'Fixed'
-                                                  ? discountAmountForFix
-                                                      .toString()
-                                                  : discountAmountForPercantage
-                                                      .toString(),
-                                              discountType: value.selectrange,
-                                              locationId:
-                                                  int.parse(value.selectId),
-                                              taxId: taxId,
-                                              payments: [
-                                                Payment(
-                                                    amount: '$balance',
-                                                    method: UtilStrings.card)
-                                              ],
-                                              products: items,
-                                            );
-                                            ReqCreateSell se =
-                                                ReqCreateSell(sells: [s]);
-                                            showLoadingDialog(context: context);
-                                            Provider.of<PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .createSell(se, context)
-                                                .then((value) {
-                                              if (value.isSuccess) {
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: const Text(
-                                                          "My Invoice"),
-                                                      content: const Text(
-                                                          "Do you want to see invoice."),
-                                                      actions: [
-                                                        TextButton(
-                                                          child:
-                                                              const Text("YES"),
-                                                          onPressed: () async {
-                                                            if (await canLaunch(
-                                                                Provider.of<PosPageViewModel>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .invoiceUrl)) {
-                                                              await launch(Provider.of<
+                                    return StatefulBuilder(
+                                        builder: (context, setState) {
+                                      return AlertDialog(
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Utils.boldSubHeadingText(
+                                                text: "Payment", textSize: 14),
+                                            const Divider(),
+                                            const Gap(10),
+                                            commonText(
+                                                title: "Total Items",
+                                                subTitle: items[0].quantity),
+                                            const Gap(10),
+                                            commonText(
+                                                title: "Total Payable",
+                                                subTitle:
+                                                    totalAmount.toString()),
+                                            const Gap(10),
+                                            commonText2(
+                                                title: "Total Paying",
+                                                cntrl: totalPayableController,
+                                                onChanged: (String) {
+                                                  setState(() {
+                                                    balance = totalAmount -
+                                                        double.parse(
+                                                            totalPayableController
+                                                                .text);
+                                                    print(
+                                                        "BALANCE IS${balance}");
+                                                  });
+                                                }),
+                                            const Gap(10),
+                                            commonText(
+                                                title: "Balance",
+                                                subTitle: balance.toString()),
+                                          ],
+                                        ),
+                                        actions: [
+                                          FlatButton(
+                                            child:
+                                                const Text('Finalize Payment'),
+                                            onPressed: () {
+                                              Sell s = Sell(
+                                                contactId:
+                                                    int.parse(userId ?? '1'),
+                                                discountAmount: value
+                                                            .selectrange ==
+                                                        'Fixed'
+                                                    ? discountAmountForFix
+                                                        .toString()
+                                                    : discountAmountForPercantage
+                                                        .toString(),
+                                                discountType: value.selectrange,
+                                                locationId:
+                                                    int.parse(value.selectId),
+                                                taxId: taxId,
+                                                payments: [
+                                                  Payment(
+                                                      amount:
+                                                          '${totalPayableController.text}',
+                                                      method: UtilStrings.card)
+                                                ],
+                                                products: items,
+                                              );
+                                              ReqCreateSell se =
+                                                  ReqCreateSell(sells: [s]);
+                                              showLoadingDialog(
+                                                  context: context);
+                                              Provider.of<PosPageViewModel>(
+                                                      context,
+                                                      listen: false)
+                                                  .createSell(se, context)
+                                                  .then((value) {
+                                                if (value.isSuccess) {
+                                                  var path = Provider.of<
+                                                          PosPageViewModel>(
+                                                      context,
+                                                      listen: false);
+                                                  userController.clear();
+                                                  productController.clear();
+                                                  for (var i = 0;
+                                                      i <
+                                                          path.cartItemList
+                                                              .length;
+                                                      i++) {
+                                                    path.cartItemList[i]
+                                                        .itemCounter = 1;
+                                                  }
+                                                  Provider.of<PosPageViewModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .cartItemList
+                                                      .clear();
+                                                  subTotal = 0;
+                                                  totalAmount = 0.0;
+                                                  totalTax = 0.0;
+                                                  tax = 0.0;
+                                                  taxId = '0';
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text(
+                                                            "My Invoice"),
+                                                        content: const Text(
+                                                            "Do you want to see invoice."),
+                                                        actions: [
+                                                          TextButton(
+                                                            child: const Text(
+                                                                "YES"),
+                                                            onPressed:
+                                                                () async {
+                                                              if (await canLaunch(Provider.of<
                                                                           PosPageViewModel>(
                                                                       context,
                                                                       listen:
                                                                           false)
-                                                                  .invoiceUrl);
-                                                            } else {
-                                                              throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
-                                                            }
-                                                          },
-                                                        )
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            });
-                                          },
-                                        ),
-                                        FlatButton(
-                                          child: const Text('close'),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    );
+                                                                  .invoiceUrl)) {
+                                                                await launch(Provider.of<
+                                                                            PosPageViewModel>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .invoiceUrl);
+                                                              } else {
+                                                                throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
+                                                              }
+                                                            },
+                                                          )
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          FlatButton(
+                                            child: const Text('close'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
                                   },
                                 );
                               }
@@ -1571,6 +1630,25 @@ class _PosPageState extends State<PosPage> {
                                   .createSell(se, context)
                                   .then((value) {
                                 if (value.isSuccess) {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  userController.clear();
+                                  productController.clear();
+                                  for (var i = 0;
+                                      i < path.cartItemList.length;
+                                      i++) {
+                                    path.cartItemList[i].itemCounter = 1;
+                                  }
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .cartItemList
+                                      .clear();
+                                  subTotal = 0;
+                                  totalAmount = 0.0;
+                                  totalTax = 0.0;
+                                  tax = 0.0;
+                                  taxId = '0';
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1584,13 +1662,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
+                                                      context,
+                                                      listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                            PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                    PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1623,10 +1701,9 @@ class _PosPageState extends State<PosPage> {
                                     : discountAmountForPercantage.toString(),
                                 discountType: value.selectrange,
                                 locationId: int.parse(value.selectId),
-
                                 payments: [
                                   Payment(
-                                      amount: '$subTotal',
+                                      amount: '$totalAmount',
                                       method: UtilStrings.cash)
                                 ],
                                 products: items,
@@ -1638,6 +1715,28 @@ class _PosPageState extends State<PosPage> {
                                   .createSell(se, context)
                                   .then((value) {
                                 if (value.isSuccess) {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  userController.clear();
+                                  productController.clear();
+                                  for (var i = 0;
+                                      i < path.cartItemList.length;
+                                      i++) {
+                                    path.cartItemList[i].itemCounter = 1;
+                                  }
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .cartItemList
+                                      .clear();
+                                  subTotal = 0;
+                                  totalAmount = 0.0;
+                                  totalTax = 0.0;
+                                  tax = 0.0;
+                                  taxId = '0';
+                                  // setState(() {
+                                  //   Provider.of<PosPageViewModel>(context, listen: false).cartItemList.clear();
+                                  // });
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1651,13 +1750,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
+                                                      context,
+                                                      listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                            PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                    PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1707,6 +1806,25 @@ class _PosPageState extends State<PosPage> {
                                   .createSell(se, context)
                                   .then((value) {
                                 if (value.isSuccess) {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  userController.clear();
+                                  productController.clear();
+                                  for (var i = 0;
+                                      i < path.cartItemList.length;
+                                      i++) {
+                                    path.cartItemList[i].itemCounter = 1;
+                                  }
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .cartItemList
+                                      .clear();
+                                  subTotal = 0;
+                                  totalAmount = 0.0;
+                                  totalTax = 0.0;
+                                  tax = 0.0;
+                                  taxId = '0';
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1720,13 +1838,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
+                                                      context,
+                                                      listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                            PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                    PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1772,6 +1890,25 @@ class _PosPageState extends State<PosPage> {
                                   .createSell(se, context)
                                   .then((value) {
                                 if (value.isSuccess) {
+                                  var path = Provider.of<PosPageViewModel>(
+                                      context,
+                                      listen: false);
+                                  userController.clear();
+                                  productController.clear();
+                                  for (var i = 0;
+                                      i < path.cartItemList.length;
+                                      i++) {
+                                    path.cartItemList[i].itemCounter = 1;
+                                  }
+                                  Provider.of<PosPageViewModel>(context,
+                                          listen: false)
+                                      .cartItemList
+                                      .clear();
+                                  subTotal = 0;
+                                  totalAmount = 0.0;
+                                  totalTax = 0.0;
+                                  tax = 0.0;
+                                  taxId = '0';
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -1785,13 +1922,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                          context,
-                                                          listen: false)
+                                                      context,
+                                                      listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                            PosPageViewModel>(
-                                                        context,
-                                                        listen: false)
+                                                    PosPageViewModel>(
+                                                    context,
+                                                    listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1833,13 +1970,21 @@ class _PosPageState extends State<PosPage> {
                                         onPressed: () {
                                           userController.clear();
                                           productController.clear();
-                                          setState(() {
-                                            Provider.of<PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .cartItemList
-                                                .clear();
-                                          });
+                                          for (var i = 0;
+                                              i < value.cartItemList.length;
+                                              i++) {
+                                            value.cartItemList[i].itemCounter =
+                                                1;
+                                          }
+                                          subTotal = 0;
+                                          totalAmount = 0.0;
+                                          totalTax = 0.0;
+                                          tax = 0.0;
+                                          taxId = '0';
+                                          Provider.of<PosPageViewModel>(context,
+                                                  listen: false)
+                                              .cartItemList
+                                              .clear();
                                           Navigator.pop(context);
                                         },
                                         child: const Text("OK"),
@@ -2208,8 +2353,8 @@ class _PosPageState extends State<PosPage> {
                                 focusNode: subTotalFocus,
                                 // initialValue: '000',
                                 initialValue:
-                                (double.parse(price) * item.itemCounter)
-                                    .toStringAsFixed(2),
+                                    (double.parse(price) * item.itemCounter)
+                                        .toStringAsFixed(2),
                                 controller: subTotalController,
                                 onFieldSubmitted: (val) {
                                   isSubtotalEditable = false;
@@ -2219,7 +2364,7 @@ class _PosPageState extends State<PosPage> {
                                   var newPrice =
                                       double.parse(val) / item.itemCounter;
                                   item.productVariations[0].variations[0]
-                                      .defaultSellPrice =
+                                          .defaultSellPrice =
                                       newPrice.toStringAsFixed(2);
                                   print(
                                       "PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
@@ -2331,7 +2476,13 @@ class _PosPageState extends State<PosPage> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: TextField(
-            style: const TextStyle(color: AppColor.blue, fontSize: 15),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'DMSans',
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: AppColor.blue,
+            ),
             onChanged: onChanged,
             controller: cntrl,
           ),

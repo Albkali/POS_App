@@ -107,46 +107,57 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                       ],
                     ),
                     customNewContactTextFiled(
-                        title: '${getTranslated(context, UtilStrings.contactId)} : ',
+                        title:
+                            '${getTranslated(context, UtilStrings.contactId)} : ',
                         icon: Icons.account_circle,
-                        subTitle: getTranslated(context, UtilStrings.contactId),
+                        subTitle:
+                            '${getTranslated(context, UtilStrings.contactId)}',
                         controller: contactIdController),
                     const Gap(10),
                     customNewContactTextFiled(
-                        title: '${getTranslated(context, UtilStrings.customerGroup)} : ',
+                        title:
+                            '${getTranslated(context, UtilStrings.customerGroup)} : ',
                         icon: Icons.people,
                         subTitle: getTranslated(context, UtilStrings.none),
-                        controller: customerGroupIdController
-                    ),
+                        controller: customerGroupIdController),
                     const Gap(10),
                     customNewContactTextFiled(
                         controller: businessNameController,
-                        title: '${getTranslated(context, UtilStrings.businessName)} : ',
+                        title:
+                            '${getTranslated(context, UtilStrings.businessName)} : ',
                         icon: Icons.work,
-                        subTitle: getTranslated(context, UtilStrings.businessName)),
+                        subTitle:
+                            '${getTranslated(context, UtilStrings.businessName)}'
+                            '*'),
                     const Gap(10),
                     customNewContactTextFiled(
                         controller: firstNameController,
-                        title: '${getTranslated(context, UtilStrings.firstName)} : ',
+                        title:
+                            '${getTranslated(context, UtilStrings.firstName)} : ',
                         icon: Icons.person,
-                        subTitle: getTranslated(context, UtilStrings.firstName)),
+                        subTitle:
+                            '${getTranslated(context, UtilStrings.firstName)}'
+                            '*'),
                     const Gap(10),
                     customNewContactTextFiled(
                         controller: mobileController,
-                        title: '${getTranslated(context, UtilStrings.mobileNo)} : ',
+                        title:
+                            '${getTranslated(context, UtilStrings.mobileNo)} : ',
                         icon: Icons.settings_phone,
-                        subTitle: getTranslated(context, UtilStrings.mobileNo)),
+                        subTitle:
+                            '${getTranslated(context, UtilStrings.mobileNo)}'
+                            '*'),
                     const Gap(15),
                     Center(
                         child: Container(
-                          height: 40,
-                          width: 170,
-                          // width: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.amber,
-                          ),
-                          child: SmallCustomButtonWithIcon(
+                      height: 40,
+                      width: 170,
+                      // width: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.amber,
+                      ),
+                      child: SmallCustomButtonWithIcon(
                             isTagType: true,
                             label: getTranslated(context, UtilStrings.moreInfirmation),
                             textColor: AppColor.black,
@@ -206,8 +217,9 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                   child: InkWell(
                     onTap: (){
                       ReqContact m = ReqContact(
-                        type: 'business',
-                        supplierBusinessName: businessNameController.text.toString(),
+                        type: 'customer',
+                        supplierBusinessName:
+                            businessNameController.text.toString(),
                         prefix: '',
                         firstName: firstNameController.text.toString(),
                         middleName: '',

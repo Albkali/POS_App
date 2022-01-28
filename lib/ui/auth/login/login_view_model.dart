@@ -44,10 +44,6 @@ class LoginViewModel with ChangeNotifier {
     _isLoading = true;
     _loginErrorMessage = '';
     notifyListeners();
-    print("HELLO EMAILO$email");
-    print("HELLO PASSWORD$password");
-    print("HELLO CLIENT ID ${getString(PrefKeyConstants.clientId)} ");
-    print("HELLO CLIENT SECRET IS ${getString(PrefKeyConstants.secretKey)}");
     ApiResponse? apiResponse =
         await authRepo.login(email: email, password: password);
     print("API RES CODE${apiResponse?.response?.statusCode}");

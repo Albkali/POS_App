@@ -12,6 +12,7 @@ import 'package:pos/ui/pos/pos_page_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
+import 'package:pos/utils/constants/app_constants.dart';
 import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     // clear();
-    subToken = getString(PrefKeyConstants.token);
+    AppConstant.token = getString(PrefKeyConstants.token);
     print("VALUE OF TOKEN $subToken");
     print("VALUE OF TOKEN ${subToken.runtimeType}");
     check().then((intenet) {
@@ -230,11 +231,12 @@ class _MyAppState extends State<MyApp> {
         return supportedLocales.first;
       },
       // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
-      home: subToken.isEmpty
-          // home: getString(PrefKeyConstants.token).isEmpty
-          ? const AddSecretKey()
-          : const AddSecretKey(),
-      // home: AddSecretKey(),
+      //     // home: getString(PrefKeyConstants.token).isEmpty
+
+      // home: AppConstant.token.isEmpty
+      //     ? const AddSecretKey()
+      //     : const HomePage(),
+      home: AddSecretKey(),
       // home:   LinkPage(),
     );
   }
