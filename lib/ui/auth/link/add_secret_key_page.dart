@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:pos/ui/auth/login/login_page.dart';
 import 'package:pos/ui/auth/login/login_view_model.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/widgets/custom_text_filed.dart';
 import 'package:pos/widgets/loading_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:oauth2/oauth2.dart' as oauth2;
 
 class AddSecretKey extends StatefulWidget {
@@ -27,17 +24,17 @@ class _AddSecretKeyState extends State<AddSecretKey> {
   void initState() {
     super.initState();
   }
-  /// oauth2.0.0 Implement....
-  void checkData()async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? screatKey = preferences.getString(PrefKeyConstants.secretKey);
-    String? baseUrl = preferences.getString(PrefKeyConstants.baseUrl);
-    if (screatKey == keyController.text && baseUrl == tokenController.text) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (builder) => const LoginPage()));
-    } else {}
-  }
 
+  /// oauth2.0.0 Implement....
+  // void checkData()async{
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   String? screatKey = preferences.getString(PrefKeyConstants.secretKey);
+  //   String? baseUrl = preferences.getString(PrefKeyConstants.baseUrl);
+  //   if (screatKey == keyController.text && baseUrl == tokenController.text) {
+  //     Navigator.push(
+  //         context, MaterialPageRoute(builder: (builder) => const LoginPage()));
+  //   } else {}
+  // }
 
   @override
   Widget build(BuildContext context) {

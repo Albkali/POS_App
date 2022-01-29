@@ -206,87 +206,87 @@ class _HomePageState extends State<HomePage> {
                   height: 400,
                   width: 350,
                   // color: AppColor.green,
-                  child: Expanded(
-                    child: GridView.builder(
-                      itemCount: 4,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 5.9 / 4.6,
-                              crossAxisSpacing: 20.0,
-                          mainAxisSpacing: 30.0),
-                      itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                          onTap: () async {
-                            if (index == 0) {
-                              showLoadingDialog(context: context);
-                              await Provider.of<PosPageViewModel>(context,
-                                      listen: false)
-                                  .userDetails(context: context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const PosPage(),
-                                ),
-                              );
-                            } else if (index == 1) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AddNewContactPage(),
-                                ),
-                              );
-                            }
-                            else if (index == 2) {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return const ListOfSellPage();
-                              }));
-                            } else if (index == 3) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SettingPage(),
-                                ),
-                              );
-                            } else if (index == 4) {} else if (index == 5) {} else if (index == 6) {} else if (index == 7) {} else if (index == 8) {}
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 5),
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: AppColor.grey2,
-                                    offset: Offset(-1.0, 10),
-                                    blurRadius: 10,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                                border: Border.all(color: AppColor.grey),
-                                color: AppColor.white,
-                                borderRadius: BorderRadius.circular(40),
+                  child: GridView.builder(
+                    itemCount: 4,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 5.9 / 4.6,
+                            crossAxisSpacing: 20.0,
+                            mainAxisSpacing: 30.0),
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () async {
+                          if (index == 0) {
+                            showLoadingDialog(context: context);
+                            await Provider.of<PosPageViewModel>(context,
+                                    listen: false)
+                                .userDetails(context: context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PosPage(),
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    iconList[index],
-                                    size: 35,
-                                  ),
-                                  const Gap(4),
-                                  Utils.mediumHeadingText(
-                                      text: textList[index], textSize: 15),
-                                ],
+                            );
+                          } else if (index == 1) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AddNewContactPage(),
                               ),
+                            );
+                          } else if (index == 2) {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return const ListOfSellPage();
+                            }));
+                          } else if (index == 3) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SettingPage(),
+                              ),
+                            );
+                          } else if (index == 4) {
+                          } else if (index == 5) {
+                          } else if (index == 6) {
+                          } else if (index == 7) {
+                          } else if (index == 8) {}
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 5),
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: AppColor.grey2,
+                                  offset: Offset(-1.0, 10),
+                                  blurRadius: 10,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                              border: Border.all(color: AppColor.grey),
+                              color: AppColor.white,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  iconList[index],
+                                  size: 35,
+                                ),
+                                const Gap(4),
+                                Utils.mediumHeadingText(
+                                    text: textList[index], textSize: 15),
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

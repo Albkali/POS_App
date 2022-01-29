@@ -8,18 +8,19 @@ import 'package:pos/ui/add_new_contact/add_new_contact_view_model.dart';
 import 'package:pos/ui/auth/login/login_view_model.dart';
 import 'package:pos/ui/sell/return_sell/return_sell_view_model.dart';
 import 'package:pos/ui/sell/show_sell/list_of_sell_view_model.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/datasource/remote/dio/dio_client.dart';
 import 'data/datasource/remote/dio/logging_interceptor.dart';
 import 'ui/pos/pos_page_view_model.dart';
-import 'utils/constants/api_end_points.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   sl.registerLazySingleton(() => DioClient(
-        ApiEndPoints.apiBaseUrl,
+        getString(PrefKeyConstants.baseUrl) + '/',
         sl(),
         loggingInterceptor: sl(),
       ));

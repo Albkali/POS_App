@@ -84,8 +84,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     // clear();
     AppConstant.token = getString(PrefKeyConstants.token);
+    AppConstant().baseUrl = getString(PrefKeyConstants.baseUrl);
     print("VALUE OF TOKEN $subToken");
     print("VALUE OF TOKEN ${subToken.runtimeType}");
+    print("VALUE OF BASE URL IS${AppConstant().baseUrl}");
     check().then((intenet) {
       if (intenet) {
       } else {
@@ -210,7 +212,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      locale: _locale,
+      // locale: _locale,
       supportedLocales: const [
         Locale("en", "US"),
         Locale("ar", "SA"),

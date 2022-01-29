@@ -1,9 +1,14 @@
 /* API End Points Constants*/
 
-class ApiEndPoints {
-  // static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
+import 'package:pos/utils/constants/preference_key_constants.dart';
 
-  static String apiBaseUrl = "https://erpx.shajan-sa.com/";
+import '../preference_utils.dart';
+
+class ApiEndPoints {
+  // static String apiBaseUrl = AppConstant().baseUrl + "/";
+  static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
+
+  // static String apiBaseUrl = "https://erpx.shajan-sa.com/";
 
   // static String BASE_URL = "https://${getString(PrefKeyConstants.BASE_URL)}/" ;
   // ?'https://erpx.shajan-sa.com/';

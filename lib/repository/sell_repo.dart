@@ -13,7 +13,7 @@ class SellRepo{
   Future<ApiResponse?> getListSell() async {
     try {
       Response response = await dioClient.get(
-          ApiEndPoints.apiListOfSell
+          ApiEndPoints.apiBaseUrl + ApiEndPoints.apiListOfSell
           // ApiEndPoints.apiListOfSell
           ,
           queryParameters: {
