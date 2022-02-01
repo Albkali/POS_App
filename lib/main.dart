@@ -235,10 +235,10 @@ class _MyAppState extends State<MyApp> {
       // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
       //     // home: getString(PrefKeyConstants.token).isEmpty
 
-      // home: AppConstant.token.isEmpty
-      //     ? const AddSecretKey()
-      //     : const HomePage(),
-      home: AddSecretKey(),
+      home: AppConstant.token.isEmpty
+          ? const AddSecretKey()
+          : const HomePage(),
+      // home: AddSecretKey(),
       // home:   LinkPage(),
     );
   }
