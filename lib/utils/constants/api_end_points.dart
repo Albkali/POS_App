@@ -6,7 +6,7 @@ import '../preference_utils.dart';
 
 class ApiEndPoints {
   // static String apiBaseUrl = AppConstant().baseUrl + "/";
-  static String apiBaseUrl = getString(PrefKeyConstants.baseUrl) + "/";
+  static String apiBaseUrl = getString(PrefKeyConstants.baseUrl);
 
   // static String apiBaseUrl = "https://erpx.shajan-sa.com/";
 
@@ -26,7 +26,7 @@ class ApiEndPoints {
   static const String apiLocationList = "connector/api/business-location";
   static const String apiLUserList = "connector/api/cash-register";
   static const String apiUpdateReturnSell = "connector/api/sell";
-  static const String apiSpecifiedContact = "/connector/api/contactapi";
+  static const String apiSpecifiedContact = "connector/api/contactapi";
   static const String apiGetBaseUrl = "https://erpx.shajan-sa.com/baseurl.php";
   static const String apiTaxList = "connector/api/tax";
 }

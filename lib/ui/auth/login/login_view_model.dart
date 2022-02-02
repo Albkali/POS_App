@@ -54,8 +54,10 @@ class LoginViewModel with ChangeNotifier {
         apiResponse.response!.statusCode == 200) {
       hideLoadingDialog(context: context);
       ResLogin data = ResLogin.fromJson(apiResponse.response!.data);
-      setString(PrefKeyConstants.token, data.accessToken);
       AppConstant.token = data.accessToken;
+      setString(PrefKeyConstants.token, data.accessToken);
+      // print("SET TOKEN IS${}");
+      // print();
       responseModel = ResponseModel(true, 'successful');
       ToastUtils.showCustomToast(context, 'Login successfully', 'success');
     } else {
@@ -92,9 +94,10 @@ class LoginViewModel with ChangeNotifier {
         await setString(PrefKeyConstants.baseUrl, data.data.baseUrl);
         await setString(PrefKeyConstants.clientId, data.data.clientId);
         // ApiEndPoints.apiBaseUrl =  data.data.baseUrl;
-        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.secretKey)}");
-        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.baseUrl)}");
-        print("HELLO CLIENT SECRET ${getString(PrefKeyConstants.clientId)}");
+        print(
+            "HELLO CLIENT SECRETKEY ${getString(PrefKeyConstants.secretKey)}");
+        print("HELLO CLIENT BASE URL ${getString(PrefKeyConstants.baseUrl)}");
+        print("HELLO CLIENT CLIENT ID ${getString(PrefKeyConstants.clientId)}");
         responseModel = ResponseModel(true, 'successful');
         ToastUtils.showCustomToast(context, 'ADDED successfully', 'success');
         Navigator.push(context,

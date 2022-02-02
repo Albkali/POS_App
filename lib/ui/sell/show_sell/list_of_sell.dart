@@ -29,7 +29,6 @@ class ListOfSellPage extends StatefulWidget {
 }
 
 class _ListOfSellPageState extends State<ListOfSellPage> {
-
   late TextEditingController locationController = TextEditingController();
   late TextEditingController customerController = TextEditingController();
   late TextEditingController paymentStatusController = TextEditingController();
@@ -59,7 +58,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
     Provider.of<PosPageViewModel>(context, listen: false)
         .usersList
         .insert(0, data2);
-
   }
 
   late ListOfSellViewModel listOfSellViewModel;
@@ -119,111 +117,119 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                   ),
                 ),
               ),
-              Consumer<ListOfSellViewModel>(builder: (BuildContext context, value, Widget? child) {
-                if(value.isLoading == true)
-                {
-                  return SizedBox(height: Utils.getHeight(context),width: Utils.getWidth(context),child: const Center(child: CircularProgressIndicator( )));
-                }
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Gap(15),
+              Consumer<ListOfSellViewModel>(
+                builder: (BuildContext context, value, Widget? child) {
+                  if (value.isLoading == true) {
+                    return SizedBox(
+                        height: Utils.getHeight(context),
+                        width: Utils.getWidth(context),
+                        child:
+                            const Center(child: CircularProgressIndicator()));
+                  }
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Gap(15),
 
-                    /// Filter Button...
-                    InkWell(
-                      onTap: () {
-                        showDialogBox();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                      /// Filter Button...
+                      InkWell(
+                        onTap: () {
+                          showDialogBox();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.filter_list_outlined,
+                              ),
+                              Utils.mediumHeadingText(
+                                  text: 'Flters', textSize: 15),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                      Container(
+                        margin: const EdgeInsets.only(left: 10, right: 10),
+                        height: 45,
+                        width: Utils.getWidth(context),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            width: 1,
+                            color: AppColor.grey2,
+                          ),
+                        ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
-                              Icons.filter_list_outlined,
-                            ),
-                            Utils.mediumHeadingText(text: 'Flters', textSize: 15),
+                            Expanded(
+                                child: Utils.mediumHeadingText(
+                                    text: 'Invoice No.',
+                                    color: AppColor.dark_green,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w700)),
+                            Utils.customVerticalDivider(),
+                            Expanded(
+                                child: Utils.mediumHeadingText(
+                                    text: 'Payment status',
+                                    color: AppColor.dark_green,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w700)),
+                            Utils.customVerticalDivider(),
+                            Expanded(
+                                child: Utils.mediumHeadingText(
+                                    text: 'Payment method',
+                                    color: AppColor.dark_green,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w700)),
+                            Utils.customVerticalDivider(),
+                            Expanded(
+                                child: Utils.mediumHeadingText(
+                                    text: 'Total amount',
+                                    color: AppColor.dark_green,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w700)),
+                            Utils.customVerticalDivider(),
+                            Expanded(
+                                child: Utils.mediumHeadingText(
+                                    text: 'Customer name',
+                                    color: AppColor.dark_green,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w700)),
                           ],
                         ),
                       ),
-                    ),
-                    const Gap(10),
-                    Container(
-                      margin: const EdgeInsets.only(left: 10, right: 10),
-                      height: 45,
-                      width: Utils.getWidth(context),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(
-                          width: 1,
-                          color: AppColor.grey2,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                              child: Utils.mediumHeadingText(
-                                  text: 'Invoice No.',
-                                  color: AppColor.dark_green,
-                                  textAlign: TextAlign.center,
-                                  fontWeight: FontWeight.w700)),
-                          Utils.customVerticalDivider(),
-                          Expanded(
-                              child: Utils.mediumHeadingText(
-                                  text: 'Payment status',
-                                  color: AppColor.dark_green,
-                                  textAlign: TextAlign.center,
-                                  fontWeight: FontWeight.w700)),
-                          Utils.customVerticalDivider(),
-                          Expanded(
-                              child: Utils.mediumHeadingText(
-                                  text: 'Payment method',
-                                  color: AppColor.dark_green,
-                                  textAlign: TextAlign.center,
-                                  fontWeight: FontWeight.w700)),
-                          Utils.customVerticalDivider(),
-                          Expanded(
-                              child: Utils.mediumHeadingText(
-                                  text: 'Total amount',
-                                  color: AppColor.dark_green,
-                                  textAlign: TextAlign.center,
-                                  fontWeight: FontWeight.w700)),
-                          Utils.customVerticalDivider(),
-                          Expanded(
-                              child: Utils.mediumHeadingText(
-                                  text: 'Customer name',
-                                  color: AppColor.dark_green,
-                                  textAlign: TextAlign.center,
-                                  fontWeight: FontWeight.w700)),
-                        ],
-                      ),
-                    ),
-                    const Gap(10),
-                    Consumer<ListOfSellViewModel>(
-                      builder: (BuildContext context, value, Widget? child) {
-                        return SizedBox(
-                          height: Utils.getHeight(context) * 0.76,
-                          width: Utils.getWidth(context),
-                          child: ListView.builder(
-                              itemCount: value.sellItemList.length,
-                              itemBuilder: (context, index) {
-                                return SwipeActionCell(
-                                  key: const ObjectKey(10),
-                                  ///this key is necessary
-                                  trailingActions: <SwipeAction>[
-                                    SwipeAction(
-                                        backgroundRadius: 20,
-                                        title: "Add",
-                                        onTap:
-                                            (CompletionHandler handler) async {
-                                          if(value.sellItemList[index].paymentStatus == 'paid')
-                                          {
-                                            ToastUtils.showCustomToast(context, "Alreasy Paid", "warning");
-                                          }
-                                          else
-                                          {
+                      const Gap(10),
+                      Consumer<ListOfSellViewModel>(
+                        builder: (BuildContext context, value, Widget? child) {
+                          return SizedBox(
+                            height: Utils.getHeight(context) * 0.76,
+                            width: Utils.getWidth(context),
+                            child: ListView.builder(
+                                itemCount: value.sellItemList.length,
+                                itemBuilder: (context, index) {
+                                  return SwipeActionCell(
+                                    key: const ObjectKey(10),
+
+                                    ///this key is necessary
+                                    trailingActions: <SwipeAction>[
+                                      SwipeAction(
+                                          backgroundRadius: 20,
+                                          title: "Add",
+                                          onTap: (CompletionHandler
+                                              handler) async {
+                                            if (value.sellItemList[index]
+                                                    .paymentStatus ==
+                                                'paid') {
+                                              ToastUtils.showCustomToast(
+                                                  context,
+                                                  "Alreasy Paid",
+                                                  "warning");
+                                            } else {
                                               showDialog(
                                                   context: context,
                                                   builder:
@@ -239,7 +245,7 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                                 .start,
                                                         mainAxisSize:
                                                             MainAxisSize.min,
-                                                      children: [
+                                                        children: [
                                                           commonTile(
                                                               text: 'Customer',
                                                               subText: value
@@ -352,17 +358,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             ],
                                                           )
                                                         ],
-                                                    ),
-                                                    actions: [
-                                                      FlatButton(
-                                                        child: const Text('Close'),
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
                                                       ),
-                                                      FlatButton(
-                                                        child: const Text('Save'),
-                                                        onPressed: () {
+                                                      actions: [
+                                                        FlatButton(
+                                                          child: const Text(
+                                                              'Close'),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                        FlatButton(
+                                                          child: const Text(
+                                                              'Save'),
+                                                          onPressed: () {
                                                             Provider.of<ListOfSellViewModel>(
                                                                     context,
                                                                     listen:
@@ -390,22 +399,22 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                             Navigator.pop(
                                                                 context);
                                                             // }
-                                                          // _launchURL(value
-                                                          //     .sellItemList[index]
-                                                          //     .invoiceUrl);
-                                                        },
-                                                      ),
-                                                    ],
-                                                  );
-                                                }
-                                            );
-                                          }
-                                        },
-                                        color: Colors.blue),
-                                    SwipeAction(
-                                        backgroundRadius: 20,
-                                        title: "View",
-                                        onTap: (CompletionHandler handler) async {
+                                                            // _launchURL(value
+                                                            //     .sellItemList[index]
+                                                            //     .invoiceUrl);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                            }
+                                          },
+                                          color: Colors.blue),
+                                      SwipeAction(
+                                          backgroundRadius: 20,
+                                          title: "View",
+                                          onTap: (CompletionHandler
+                                              handler) async {
                                             // showLoadingDialog(context: context);
                                             // await Provider.of<
                                             //             ListOfSellViewModel>(
@@ -531,18 +540,21 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                                         .method ??
                                                                     '')
                                                       ],
-                                                  ),
-                                                  actions: [
-                                                    FlatButton(
-                                                      child: const Text('Close'),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
                                                     ),
-                                                    FlatButton(
-                                                      child: const Text('Print'),
-                                                      onPressed: () {
-                                                        Navigator.pop(
+                                                    actions: [
+                                                      FlatButton(
+                                                        child:
+                                                            const Text('Close'),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                      FlatButton(
+                                                        child:
+                                                            const Text('Print'),
+                                                        onPressed: () {
+                                                          Navigator.pop(
                                                               context);
                                                           _launchURL(value
                                                                   .sellItemList[
@@ -550,32 +562,33 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                                   .invoiceUrl ??
                                                               "");
                                                         },
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        color: Colors.pink),
-                                  ],
-                                  leadingActions: [
-                                    SwipeAction(
-                                        backgroundRadius: 20,
-                                        title: "Print",
-                                        onTap:
-                                            (CompletionHandler handler) async {
-                                              _launchURL(value.sellItemList[index]
+                                                      ),
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                          color: Colors.pink),
+                                    ],
+                                    leadingActions: [
+                                      SwipeAction(
+                                          backgroundRadius: 20,
+                                          title: "Print",
+                                          onTap: (CompletionHandler
+                                              handler) async {
+                                            _launchURL(value.sellItemList[index]
                                                     .invoiceUrl ??
                                                 "");
                                           },
-                                        color: Colors.red),
-                                    SwipeAction(
-                                        backgroundRadius: 20,
-                                        title: "Return",
-                                        onTap:
-                                            (CompletionHandler handler) async {
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)
-                                          {
-                                            return ReturnSellPage(
+                                          color: Colors.red),
+                                      SwipeAction(
+                                          backgroundRadius: 20,
+                                          title: "Return",
+                                          onTap: (CompletionHandler
+                                              handler) async {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(builder:
+                                                    (BuildContext context) {
+                                              return ReturnSellPage(
                                                   item:
                                                       value.sellItemList[index],
                                                   payline: value
@@ -590,10 +603,10 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                               .transactionId ??
                                                           "");
                                             }));
-                                        },
-                                        color: Colors.amber),
-                                  ],
-                                  child: InkWell(
+                                          },
+                                          color: Colors.amber),
+                                    ],
+                                    child: InkWell(
                                       onTap: () async {
                                         showDialog(
                                           context: context,
@@ -724,88 +737,102 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                               ''),
                                                   const Gap(5),
                                                 ],
-                                            ),
-                                            actions:[
-
-                                              FlatButton(
-                                                child: const Text("Close"),
-                                                onPressed: (){
-                                                  Navigator.of(context).pop();
-                                                },
                                               ),
-                                              FlatButton(
-                                                child: const Text("Print Invoice"),
-
-                                                onPressed: () async {
-                                                  _launchURL(value
+                                              actions: [
+                                                FlatButton(
+                                                  child: const Text("Close"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: const Text(
+                                                      "Print Invoice"),
+                                                  onPressed: () async {
+                                                    _launchURL(value
                                                             .sellItemList[index]
                                                             .invoiceUrl ??
                                                         "");
                                                   },
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, right: 10, top: 5),
-                                      height: 60,
-                                      width: Utils.getWidth(context),
-                                      decoration: BoxDecoration(
-                                        color: AppColor.grey2,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            width: 1, color: AppColor.grey2),
-                                      ),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                              flex: 2,
-                                              child: Center(
-                                                child: Utils.mediumHeadingText(
-                                                    text: value.sellItemList[index].invoiceNo,
-                                                    color: AppColor.dark_green),
-                                              )),
-                                          Utils.customVerticalDivider(),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Container(
-                                              height: 20,
-                                                width: 40,
-                                                margin: const EdgeInsets.all(6),
-                                                padding: const EdgeInsets.symmetric(
-                                                    vertical: 1, horizontal: 8),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(20),
-                                                  color: value.sellItemList[index]
-                                                      .paymentStatus ==
-                                                      'paid'
-                                                      ? AppColor.green
-                                                      .withOpacity(0.4)
-                                                      : AppColor.orange
-                                                      .withOpacity(0.4),
-                                                ),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 10, right: 10, top: 5),
+                                        height: 60,
+                                        width: Utils.getWidth(context),
+                                        decoration: BoxDecoration(
+                                          color: AppColor.grey2,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                              width: 1, color: AppColor.grey2),
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                                flex: 2,
                                                 child: Center(
-                                                  child: Utils.mediumHeadingText(
-                                                      text: value.sellItemList[index]
-                                                          .paymentStatus ==
-                                                          'paid'
-                                                          ? 'Paid'
-                                                          : 'Due',
-                                                      color: AppColor.black),
+                                                  child:
+                                                      Utils.mediumHeadingText(
+                                                          text: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .invoiceNo,
+                                                          color: AppColor
+                                                              .dark_green),
                                                 )),
-                                          ),
-                                          Utils.customVerticalDivider(),
-                                          Expanded(
+                                            Utils.customVerticalDivider(),
+                                            Expanded(
                                               flex: 2,
-                                              child: Center(
-                                                  child: Provider.of<
+                                              child: Container(
+                                                  height: 20,
+                                                  width: 40,
+                                                  margin:
+                                                      const EdgeInsets.all(6),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 1,
+                                                      horizontal: 8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    color: value
+                                                                .sellItemList[
+                                                                    index]
+                                                                .paymentStatus ==
+                                                            'paid'
+                                                        ? AppColor.green
+                                                            .withOpacity(0.4)
+                                                        : AppColor.orange
+                                                            .withOpacity(0.4),
+                                                  ),
+                                                  child: Center(
+                                                    child: Utils.mediumHeadingText(
+                                                        text: value
+                                                                    .sellItemList[
+                                                                        index]
+                                                                    .paymentStatus ==
+                                                                'paid'
+                                                            ? 'Paid'
+                                                            : 'Due',
+                                                        color: AppColor.black),
+                                                  )),
+                                            ),
+                                            Utils.customVerticalDivider(),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Center(
+                                                    child: Provider.of<
                                                                     ListOfSellViewModel>(
                                                                 context,
                                                                 listen: false)
@@ -824,19 +851,25 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                         : Utils
                                                             .mediumHeadingText(
                                                                 text: ""))),
-                                          Utils.customVerticalDivider(),
-                                          Expanded(
-                                              flex: 2,
-                                              child: Center(
-                                                child: Utils.mediumHeadingText(
-                                                    text: value.sellItemList[index].finalTotal,
-                                                    color: AppColor.dark_green),
-                                              )),
-                                          Utils.customVerticalDivider(),
-                                          Expanded(
-                                              flex: 2,
-                                              child: Center(
-                                                child: Utils.mediumHeadingText(
+                                            Utils.customVerticalDivider(),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Center(
+                                                  child:
+                                                      Utils.mediumHeadingText(
+                                                          text: value
+                                                              .sellItemList[
+                                                                  index]
+                                                              .finalTotal,
+                                                          color: AppColor
+                                                              .dark_green),
+                                                )),
+                                            Utils.customVerticalDivider(),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Center(
+                                                  child:
+                                                      Utils.mediumHeadingText(
                                                           // text: value.sellItemList[index].id,
                                                           text: value
                                                                   .sellItemList[
@@ -848,19 +881,20 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
                                                               TextAlign.center,
                                                           color: AppColor
                                                               .dark_green),
-                                              )),
-                                        ],
+                                                )),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                        );
-                      },
-                    ),
-                  ],
-                );
-              },)
+                                  );
+                                }),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              )
             ],
           ),
         ),
@@ -1624,7 +1658,6 @@ class _ListOfSellPageState extends State<ListOfSellPage> {
       ),
     );
   }
-
 }
 
 class FilterServices {

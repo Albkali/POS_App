@@ -4,6 +4,7 @@ import 'package:pos/data/models/pos/req_pos.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/sell/create_sell/req_create_sell.dart';
 import 'package:pos/utils/constants/api_end_points.dart';
+import 'package:pos/utils/constants/app_constants.dart';
 
 class PosRepo {
   final DioClient dioClient;
@@ -25,7 +26,7 @@ class PosRepo {
               }
             : {
                 "location_id": data.locationId,
-                "closed_at" : data.closedAt,
+                "closed_at": data.closedAt,
                 "status": data.status,
                 "cash_register_id": data.cashRegisterId,
                 "closing_amount": data.closingAmount,
@@ -34,6 +35,11 @@ class PosRepo {
                 "closing_note": data.closingNote,
                 "transaction_ids": data.transactionIds
               },
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -45,6 +51,11 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiCustomerList,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -56,6 +67,12 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiProductList,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
+
         // queryParameters: {"location_id":getString(PrefKeyConstants.locationId)}
       );
       return ApiResponse.withSuccess(response);
@@ -66,8 +83,14 @@ class PosRepo {
 
   Future<ApiResponse?> createSell(ReqCreateSell sell) async {
     try {
-      Response response =
-          await dioClient.post(ApiEndPoints.apiCreateSell, data:sell
+      Response response = await dioClient.post(
+        ApiEndPoints.apiCreateSell,
+        data: sell,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -76,9 +99,14 @@ class PosRepo {
   }
   Future<ApiResponse?> createSellError(ReqCreateSell sell) async {
     try {
-      Response response =
-      await dioClient.post(ApiEndPoints.apiCreateSell, data:sell
-
+      Response response = await dioClient.post(
+        ApiEndPoints.apiCreateSell,
+        data: sell,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -90,6 +118,11 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiLocationList,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -100,7 +133,12 @@ class PosRepo {
   Future<ApiResponse?> fetchRegister({required String registerId}) async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiLUserList + '/' + registerId
+        ApiEndPoints.apiLUserList + '/' + registerId,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -118,6 +156,11 @@ class PosRepo {
           'cash_register_id': cashId,
           'status': 'before_close',
         },
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {
@@ -129,6 +172,11 @@ class PosRepo {
     try {
       Response response = await dioClient.get(
         ApiEndPoints.apiTaxList,
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
       );
       return ApiResponse.withSuccess(response);
     } catch (e) {

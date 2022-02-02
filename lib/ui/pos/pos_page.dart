@@ -931,7 +931,7 @@ class _PosPageState extends State<PosPage> {
   Consumer<PosPageViewModel> bottomNavigationBar(BuildContext context) {
     return Consumer<PosPageViewModel>(
         builder: (BuildContext context, value, Widget? child) {
-          List<Product> items = [];
+      List<Product> items = [];
       var subTotal = 0.0;
       var totalTax = 0.0;
       for (var i = 0; i < value.cartItemList.length; i++) {
@@ -1408,13 +1408,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                      context,
-                                                      listen: false)
+                                                          context,
+                                                          listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                    PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1662,13 +1662,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                      context,
-                                                      listen: false)
+                                                          context,
+                                                          listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                    PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1750,13 +1750,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                      context,
-                                                      listen: false)
+                                                          context,
+                                                          listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                    PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1838,13 +1838,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                      context,
-                                                      listen: false)
+                                                          context,
+                                                          listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                    PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";
@@ -1922,13 +1922,13 @@ class _PosPageState extends State<PosPage> {
                                             onPressed: () async {
                                               if (await canLaunch(
                                                   Provider.of<PosPageViewModel>(
-                                                      context,
-                                                      listen: false)
+                                                          context,
+                                                          listen: false)
                                                       .invoiceUrl)) {
                                                 await launch(Provider.of<
-                                                    PosPageViewModel>(
-                                                    context,
-                                                    listen: false)
+                                                            PosPageViewModel>(
+                                                        context,
+                                                        listen: false)
                                                     .invoiceUrl);
                                               } else {
                                                 throw "Could not launch https://erpx.shajan-sa.com/invoice/cae9ca96fa6bb77ac0ba9291da421f96";

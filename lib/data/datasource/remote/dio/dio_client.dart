@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pos/utils/constants/app_constants.dart';
+import 'package:pos/utils/constants/preference_key_constants.dart';
+import 'package:pos/utils/preference_utils.dart';
 
 import 'logging_interceptor.dart';
 
@@ -10,13 +12,18 @@ class DioClient {
   String? token;
   final String baseUrl;
   final LoggingInterceptor loggingInterceptor;
+
   // final SharedPreferences sharedPreferences;
 
-
-  DioClient(this.baseUrl, Dio dioC, {required this.loggingInterceptor,}) {
+  DioClient(
+    this.baseUrl,
+    Dio dioC,
+    this.token, {
+    required this.loggingInterceptor,
+  }) {
     // token = AppConstant.token;
-    token = AppConstant.token;
-    // token = getString(PrefKeyConstants.token);
+    // token = AppConstant.token;
+    token = AppConstant.token ?? getString(PrefKeyConstants.token);
     print('Your token is $token');
     dio = Dio();
     // dio = dioC ?? Dio();

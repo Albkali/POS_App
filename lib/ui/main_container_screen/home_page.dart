@@ -51,7 +51,6 @@ class _HomePageState extends State<HomePage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   /// custom AppBar...
                   Container(
                     height: 150,

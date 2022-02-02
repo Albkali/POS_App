@@ -30,14 +30,12 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => di.sl<LoginViewModel>()),
     ChangeNotifierProvider(create: (context) => di.sl<ListOfSellViewModel>()),
-    ChangeNotifierProvider(create: (context) => di.sl<AddNewContactViewModel>()),
-            ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
-            ChangeNotifierProvider(create: (context) => di.sl<ReturnSellViewModel>()),
-          ],
-          child: const MyApp()
-      ));
+    ChangeNotifierProvider(
+        create: (context) => di.sl<AddNewContactViewModel>()),
+    ChangeNotifierProvider(create: (context) => di.sl<PosPageViewModel>()),
+    ChangeNotifierProvider(create: (context) => di.sl<ReturnSellViewModel>()),
+  ], child: const MyApp()));
 }
-
 
 class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, Locale newLocale) {
@@ -85,9 +83,9 @@ class _MyAppState extends State<MyApp> {
     // clear();
     AppConstant.token = getString(PrefKeyConstants.token);
     AppConstant().baseUrl = getString(PrefKeyConstants.baseUrl);
-    print("VALUE OF TOKEN $subToken");
-    print("VALUE OF TOKEN ${subToken.runtimeType}");
-    print("VALUE OF BASE URL IS${AppConstant().baseUrl}");
+    // print("VALUE OF TOKEN $subToken");
+    // print("VALUE OF TOKEN ${subToken.runtimeType}");
+    // print("VALUE OF BASE URL IS${AppConstant().baseUrl}");
     check().then((intenet) {
       if (intenet) {
       } else {
@@ -235,10 +233,11 @@ class _MyAppState extends State<MyApp> {
       // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
       //     // home: getString(PrefKeyConstants.token).isEmpty
 
-      // home: AppConstant.token.isEmpty
-      //     ? const AddSecretKey()
-      //     : const HomePage(),
-      home: AddSecretKey(),
+      // home: AppConstant.token.isEmpty ?
+      home: getString(PrefKeyConstants.token).isEmpty
+          ? const AddSecretKey()
+          : const HomePage(),
+      // home: AddSecretKey(),
       // home:   LinkPage(),
     );
   }

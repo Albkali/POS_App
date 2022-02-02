@@ -3,6 +3,7 @@ import 'package:pos/data/datasource/remote/dio/dio_client.dart';
 import 'package:pos/data/models/response/base/api_response.dart';
 import 'package:pos/data/models/sell/returnsell/req_add_return_sell.dart';
 import 'package:pos/utils/constants/api_end_points.dart';
+import 'package:pos/utils/constants/app_constants.dart';
 
 class SellRepo{
   final DioClient dioClient;
@@ -16,6 +17,11 @@ class SellRepo{
           ApiEndPoints.apiBaseUrl + ApiEndPoints.apiListOfSell
           // ApiEndPoints.apiListOfSell
           ,
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            // 'Accept': 'application/json',
+            'Authorization': 'Bearer ${AppConstant.token}'
+          }),
           queryParameters: {
             'per_page': "-1",
           });
@@ -28,12 +34,18 @@ class SellRepo{
 
     try {
       Response response = await dioClient.put(
-          ApiEndPoints.apiUpdateReturnSell + Uri.encodeFull('/$sellId'),
-          data: {
-            'payments': [
-              {"amount": pendingPayment, "method": "cash"}
-            ]
-          });
+        ApiEndPoints.apiUpdateReturnSell + Uri.encodeFull('/$sellId'),
+        data: {
+          'payments': [
+            {"amount": pendingPayment, "method": "cash"}
+          ]
+        },
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);
@@ -49,17 +61,25 @@ class SellRepo{
       String? startDate,
       String? endDate) async {
     try {
-      Response response =
-          await dioClient.get(ApiEndPoints.apiListOfSell, queryParameters: {
-        'per_page': '-1',
-        'location_id': '$locationId',
-        'payment_status': '$paymentStatus',
-        'contact_id': '$contactId',
-        'shipping_status': '$shippingStatus',
-        'only_subscriptions': '$isSubscribed',
-        'start_date': '$startDate',
-        'end_date': '$endDate'
-      });
+      Response response = await dioClient.get(
+        ApiEndPoints.apiListOfSell,
+        queryParameters: {
+          'per_page': '-1',
+          'location_id': '$locationId',
+          'payment_status': '$paymentStatus',
+          'contact_id': '$contactId',
+          'shipping_status': '$shippingStatus',
+          'only_subscriptions': '$isSubscribed',
+          'start_date': '$startDate',
+          'end_date': '$endDate'
+        },
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
+      );
+
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);
@@ -69,8 +89,12 @@ class SellRepo{
 
     try {
       Response response = await dioClient.post(ApiEndPoints.apiAddSellReturn,
-          queryParameters: req.toJson()
-      );
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            // 'Accept': 'application/json',
+            'Authorization': 'Bearer ${AppConstant.token}'
+          }),
+          queryParameters: req.toJson());
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);
@@ -78,7 +102,14 @@ class SellRepo{
   }
   Future<ApiResponse?> getSpecifiedContact({required String contactId}) async {
     try {
-      Response response = await dioClient.get(ApiEndPoints.apiSpecifiedContact + '/$contactId');
+      Response response = await dioClient.get(
+        ApiEndPoints.apiSpecifiedContact + '/$contactId',
+        options: Options(headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          // 'Accept': 'application/json',
+          'Authorization': 'Bearer ${AppConstant.token}'
+        }),
+      );
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(e);
