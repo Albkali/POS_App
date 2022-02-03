@@ -55,10 +55,7 @@ class UtilStrings {
 
   static const creditSale = 'Credit Sale';
   static const multiplePay = 'Multiple Pay';
-  static const pleaseEnterYourCash = 'Please enter your cash';
-
-
-
+  static const pleaseEnterYourCash = 'Please enter details carefully';
 
   static const moreInfirmation = 'moreInfirmation';
   static const customerGroup = 'customerGroup';

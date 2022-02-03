@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pos/localization/language_constrants.dart';
 import 'package:pos/ui/main_container_screen/home_page.dart';
 import 'package:pos/utils/color_utils.dart';
 import 'package:pos/utils/constants/custom_button.dart';
-import 'package:pos/utils/constants/preference_key_constants.dart';
-import 'package:pos/utils/preference_utils.dart';
 import 'package:pos/utils/string_utils.dart';
 import 'package:pos/utils/toast_utils.dart';
 import 'package:pos/utils/utils.dart';
@@ -123,7 +120,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
             InkWell(
               onTap: () async {
-                print("BASE URL IS ${getString((PrefKeyConstants.baseUrl))}");
                 if (emailController.text.isEmpty) {
                   ToastUtils.showCustomToast(
                       context,
@@ -135,18 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                       getTranslated(context, UtilStrings.enterPassword),
                       'warning');
                 } else {
-                  print("HELLO 1");
                   showLoadingDialog(context: context);
-                  print("HELLO 2");
 
                   // context.read<LoginViewModel>().login(emailController.text, passwordController.text, context).then((value) {
                   await Provider.of<LoginViewModel>(context, listen: false)
                       .login(emailController.text, passwordController.text,
                           context)
                       .then((value) {
-                    print("HELLO 3");
                     if (value.isSuccess) {
-                      print("HELLO 4");
                       Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (BuildContext context) {
                         // return const HomePage();
@@ -162,14 +154,6 @@ class _LoginPageState extends State<LoginPage> {
                   title: getTranslated(context, UtilStrings.login).toString(),
                 ),
               ),
-              // Container(
-              //   height: 35,
-              //   width: 150,
-              //   color: AppColor.blue,
-              //   alignment: Alignment.center,
-              //   child: Utils.mediumHeadingText(
-              //       text: getTranslated(context, UtilStrings.login), color: AppColor.white),
-              // ),
             ),
           ],
         ),

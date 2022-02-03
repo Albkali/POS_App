@@ -83,9 +83,6 @@ class _MyAppState extends State<MyApp> {
     // clear();
     AppConstant.token = getString(PrefKeyConstants.token);
     AppConstant().baseUrl = getString(PrefKeyConstants.baseUrl);
-    // print("VALUE OF TOKEN $subToken");
-    // print("VALUE OF TOKEN ${subToken.runtimeType}");
-    // print("VALUE OF BASE URL IS${AppConstant().baseUrl}");
     check().then((intenet) {
       if (intenet) {
       } else {
@@ -230,10 +227,6 @@ class _MyAppState extends State<MyApp> {
         }
         return supportedLocales.first;
       },
-      // home: getString(PrefKeyConstants.TOKEN).isEmpty? ChooseLanguagePage(isLanguage: false,) : HomePage(),
-      //     // home: getString(PrefKeyConstants.token).isEmpty
-
-      // home: AppConstant.token.isEmpty ?
       home: getString(PrefKeyConstants.token).isEmpty
           ? const AddSecretKey()
           : const HomePage(),

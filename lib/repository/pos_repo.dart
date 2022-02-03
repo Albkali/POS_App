@@ -16,7 +16,7 @@ class PosRepo {
       {required ReqPos data, required bool isClosed}) async {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiCashRegister,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCashRegister,
         data: isClosed == false
             ? {
                 "location_id": data.locationId,
@@ -50,7 +50,7 @@ class PosRepo {
   Future<ApiResponse?> fetchUser() async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiCustomerList,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCustomerList,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',
@@ -66,7 +66,7 @@ class PosRepo {
   Future<ApiResponse?> fetchItem() async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiProductList,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiProductList,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',
@@ -84,7 +84,7 @@ class PosRepo {
   Future<ApiResponse?> createSell(ReqCreateSell sell) async {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiCreateSell,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCreateSell,
         data: sell,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -100,7 +100,7 @@ class PosRepo {
   Future<ApiResponse?> createSellError(ReqCreateSell sell) async {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiCreateSell,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCreateSell,
         data: sell,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -117,7 +117,7 @@ class PosRepo {
   Future<ApiResponse?> fetchBusiness() async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiLocationList,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiLocationList,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',
@@ -133,7 +133,7 @@ class PosRepo {
   Future<ApiResponse?> fetchRegister({required String registerId}) async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiLUserList + '/' + registerId,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiLUserList + '/' + registerId,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',
@@ -150,7 +150,7 @@ class PosRepo {
   {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiCashRegister,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCashRegister,
         data: {
           'location_id': locationId,
           'cash_register_id': cashId,
@@ -171,7 +171,7 @@ class PosRepo {
   Future<ApiResponse?> fetchTax() async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiTaxList,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiTaxList,
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',

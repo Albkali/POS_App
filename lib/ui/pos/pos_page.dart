@@ -210,7 +210,8 @@ class _PosPageState extends State<PosPage> {
                 FlatButton(
                   child: const Text("Open Register"),
                   onPressed: () {
-                    if (cashController.text.isNotEmpty) {
+                    if (cashController.text.isNotEmpty &&
+                        locationController.text.isNotEmpty) {
                       showLoadingDialog(context: context);
                       ReqPos res = ReqPos(
                           locationId: getString(PrefKeyConstants.locationId),
@@ -1125,11 +1126,6 @@ class _PosPageState extends State<PosPage> {
                                               onPressed: () {
                                                 tax =
                                                     subTotal * taxAmount / 100;
-                                                print("HELLO $tax");
-                                                print(
-                                                    "HELLO TAX AMOUNT $taxAmount");
-                                                print(
-                                                    "HELLO sub TOATAl $subTotal");
                                                 taxController.clear();
                                                 Navigator.pop(context);
                                                 setState(() {});
@@ -1474,8 +1470,6 @@ class _PosPageState extends State<PosPage> {
                                                         double.parse(
                                                             totalPayableController
                                                                 .text);
-                                                    print(
-                                                        "BALANCE IS${balance}");
                                                   });
                                                 }),
                                             const Gap(10),
@@ -2366,17 +2360,12 @@ class _PosPageState extends State<PosPage> {
                                   item.productVariations[0].variations[0]
                                           .defaultSellPrice =
                                       newPrice.toStringAsFixed(2);
-                                  print(
-                                      "PRICE IS ${item.productVariations[0].variations[0].defaultSellPrice}");
                                 },
                               ))
                         else
                           InkWell(
                             onTap: () {
                               isSubtotalEditable = true;
-                              // FocusScope.of(context).unfocus();
-                              // FocusScope.of(context).requestFocus(subTotalFocus);
-                              print("HELLO$isSubtotalEditable");
                               setState(() {});
                             },
                             child: Container(

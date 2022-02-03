@@ -17,7 +17,7 @@ class ContactRepo
   }) async {
     try {
       Response response = await dioClient.post(
-        ApiEndPoints.apiCreateContact,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiCreateContact,
         data: {
           "type": "business",
           "supplier_business_name": data.supplierBusinessName,

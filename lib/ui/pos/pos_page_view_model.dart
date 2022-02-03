@@ -157,7 +157,6 @@ class PosPageViewModel with ChangeNotifier {
 
   Future<ResponseModel> createSell(
       ReqCreateSell sell, BuildContext context) async {
-    print("HELOO DATA IS${sell.toJson()}");
     notifyListeners();
     isLoading = true;
     ApiResponse? apiResponse = await posRepo.createSell(sell);
@@ -296,7 +295,6 @@ class PosPageViewModel with ChangeNotifier {
       ResListTax data = ResListTax.fromJson(apiResponse.response!.data);
       for (var item in data.data) {
         taxesList.add(item);
-        print("LIST IS$taxesList");
       }
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -307,7 +305,6 @@ class PosPageViewModel with ChangeNotifier {
       } else {
         errorMessage = apiResponse.error.errors[0].message;
       }
-      print(errorMessage);
       responseModel = ResponseModel(false, errorMessage);
     }
     notifyListeners();

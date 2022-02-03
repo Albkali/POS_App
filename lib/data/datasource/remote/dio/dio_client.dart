@@ -21,10 +21,7 @@ class DioClient {
     this.token, {
     required this.loggingInterceptor,
   }) {
-    // token = AppConstant.token;
-    // token = AppConstant.token;
     token = AppConstant.token ?? getString(PrefKeyConstants.token);
-    print('Your token is $token');
     dio = Dio();
     // dio = dioC ?? Dio();
     dio!
@@ -47,7 +44,7 @@ class DioClient {
      ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      print("URL IS ${uri}");
+      print("URL IS $uri");
       var response = await dio!.get(
         uri,
         queryParameters: queryParameters,
@@ -74,8 +71,8 @@ class DioClient {
      ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      print("URL IS ${uri}");
-      print("DATA IS ${data}");
+      print("URL IS $uri");
+
       var response = await dio!.post(
         uri,
         data: data,

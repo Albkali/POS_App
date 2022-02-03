@@ -34,7 +34,9 @@ class SellRepo{
 
     try {
       Response response = await dioClient.put(
-        ApiEndPoints.apiUpdateReturnSell + Uri.encodeFull('/$sellId'),
+        ApiEndPoints.apiBaseUrl +
+            ApiEndPoints.apiUpdateReturnSell +
+            Uri.encodeFull('/$sellId'),
         data: {
           'payments': [
             {"amount": pendingPayment, "method": "cash"}
@@ -62,7 +64,7 @@ class SellRepo{
       String? endDate) async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiListOfSell,
+        ApiEndPoints.apiBaseUrl + ApiEndPoints.apiListOfSell,
         queryParameters: {
           'per_page': '-1',
           'location_id': '$locationId',
@@ -88,7 +90,8 @@ class SellRepo{
   Future<ApiResponse?> addSellReturn({required ReqAddReturnSell req}) async {
 
     try {
-      Response response = await dioClient.post(ApiEndPoints.apiAddSellReturn,
+      Response response = await dioClient.post(
+          ApiEndPoints.apiBaseUrl + ApiEndPoints.apiAddSellReturn,
           options: Options(headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             // 'Accept': 'application/json',
@@ -103,7 +106,9 @@ class SellRepo{
   Future<ApiResponse?> getSpecifiedContact({required String contactId}) async {
     try {
       Response response = await dioClient.get(
-        ApiEndPoints.apiSpecifiedContact + '/$contactId',
+        ApiEndPoints.apiBaseUrl +
+            ApiEndPoints.apiSpecifiedContact +
+            '/$contactId',
         options: Options(headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // 'Accept': 'application/json',
